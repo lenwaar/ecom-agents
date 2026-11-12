@@ -11,7 +11,7 @@ Coche chaque case en lisant le rapport produit dans `outputs/`.
 
 **Structure**
 - [ ] Le fichier existe dans `outputs/` avec le bon nom et l'en-tête YAML
-- [ ] Les 8 sections sont présentes, dans l'ordre
+- [ ] Les 9 sections sont présentes, dans l'ordre, et le statut est `à-valider`
 
 **Exploration**
 - [ ] 20 niches ou plus, venant de 6 univers ou plus
@@ -27,6 +27,8 @@ Coche chaque case en lisant le rapport produit dans `outputs/`.
 
 **Utilité**
 - [ ] Le top 3 est compatible avec un budget de 0 € et du contenu sans visage
+- [ ] Aucune niche du top 3 n'a besoin d'animal, de sport, de lieu ou de personne : tout se filme seul chez soi
+- [ ] Les niches écartées dans `knowledge/contraintes.md` ne reviennent pas
 - [ ] Chaque niche du top 3 a des concurrents réels, un persona et un angle de différenciation
 - [ ] La recommandation finale est claire
 
