@@ -2,57 +2,45 @@
 
 Statuts : `à faire` · `fait` · `bloqué (raison)`
 
-## Synchro n°1 à n°6 (T1 à T25) · `fait`
-Réponse à ta question de la synchro n°6 : oui, `knowledge/direction-design.md` et la ligne Style de `docs/site-technique.md` viennent de Cowork. Ils ont depuis été remplacés par une **v2** (voir T27).
+## Synchro n°1 à n°7 (T1 à T30) · `fait`
+Pour info : la règle « Gros livrables » ajoutée dans `CLAUDE.md` vient de Cowork (suite au blocage de l'architecte en T28).
 
 ---
 
-## Synchro n°7 (2026-11-12) : identité validée, enrichissement, catalogue de démonstration
+## Synchro n°8 (2026-11-12) : fiches, visuels, construction du site
 
-Décisions de l'humain : **piste C « Laiton » en version cinématique** (prototype `docs/reference/prototype-accueil.html`), **10 produits de démonstration** avec plusieurs vues, **plusieurs sections animées**, une boutique « vraiment attractive ».
+À lancer **après un redémarrage de Claude Code** (les agents `redacteur-catalogue` et `studio-visuel` doivent être chargés).
+Lance les agents **l'un après l'autre**, jamais en parallèle. Après chaque tâche : commit + push, et une ligne de compte rendu dans `vers-cowork.md` (pour que Cowork suive en direct). Si un agent se bloque, relance-le en lui demandant d'écrire en plusieurs fois (règle « Gros livrables » de `CLAUDE.md`).
 
-### T26 · Installer deux agents · `fait`
-- `coordination/a-installer/redacteur-catalogue.md` → `.claude/agents/redacteur-catalogue.md`
-- `coordination/a-installer/studio-visuel.md` → `.claude/agents/studio-visuel.md`
-- Copies identiques, puis supprime `coordination/a-installer/`.
+Spécification de référence pour tout le site : `outputs/2026-11-12-architecte-web-conception-boutique-v2.md` + `outputs/2026-11-12-architecte-web-conception-boutique-v2-partie-2.md`.
 
-### T27 · Fichiers écrits par Cowork, à commiter tels quels · `fait`
-- `knowledge/marque.md` (nouveau : piste C, couleurs, typographies, ton, nom de travail provisoire)
-- `knowledge/catalogue-demo.md` (nouveau : 10 produits de démonstration et leurs règles)
-- `knowledge/direction-design.md` (v2 : registres cinématique et boutique claire, mouvement, GSAP)
-- `docs/site-technique.md` (animations GSAP, visuels 3D Three.js, champs `demo`, `collections`, `modele_3d`)
-- `docs/reference/prototype-accueil.html` (prototype de référence)
-- `tests/scenarios/redacteur-catalogue.md` et `tests/scenarios/studio-visuel.md` (nouveaux)
+### T31 · Fiches des 10 produits de démonstration · `fait`
+Lance `redacteur-catalogue` avec la demande de `tests/scenarios/redacteur-catalogue.md`.
+Commit `feat(catalogue): 10 fiches produits de démonstration`.
 
-### T28 · Lancer architecte-web : version 2 de la conception · `fait`
-`architecte-web` est déjà chargé : tu peux le lancer dans cette session. Demande exacte :
+### T32 · Visuels 3D des produits · `à faire`
+Lance `studio-visuel` avec la demande de `tests/scenarios/studio-visuel.md`.
+Si c'est trop long en une fois : d'abord l'atelier (`studio/lib/`, matériaux, éclairage, script de rendu) + 2 produits, montre la planche contact dans le compte rendu, puis les 8 autres.
+Commit `feat(studio): visuels 3D des produits de démonstration`.
+
+### T33 · Construction du site, étape 1 : fondations · `à faire`
+Lance `developpeur-web` :
 ```
-Utilise l'agent architecte-web : produis la v2 de la conception de la boutique, dans un nouveau fichier outputs/AAAA-MM-JJ-architecte-web-conception-boutique-v2.md.
-1. Identité : piste C retenue (knowledge/marque.md), en version cinématique selon knowledge/direction-design.md v2 ; supprime les pistes A et B.
-2. Accueil au niveau du prototype docs/reference/prototype-accueil.html ou au-dessus, avec ces sections animées (à spécifier en détail : contenu, animation, déclencheur, durée, version mobile, version sans animation) :
-   - héros engrenages (repris du prototype) ;
-   - récit épinglé « Ouvrir, Assembler, Tourner » ;
-   - « De la planche à l'objet » : comparateur avant / après glissant (planches à plat → maquette montée) ;
-   - « Dans la boîte » : vue éclatée qui se rassemble au défilement ;
-   - collections (Mécanique, Véhicules, Miniatures, Pour débuter) en grandes cartes avec visuel qui s'anime au survol ;
-   - « Trouver ma maquette » : mini-questionnaire en 3 questions (pour qui, niveau, temps disponible) qui recommande des produits, sans compte ni cookie ;
-   - échelle de difficulté expliquée visuellement ;
-   - section « Offrir » (idée cadeau, message cadeau si possible) ;
-   - « L'atelier » : conseils d'assemblage, inscription à une lettre d'information avec consentement ;
-   - aperçu FAQ et réassurance.
-3. Fiche produit : galerie des 6 vues (knowledge/catalogue-demo.md) avec zoom, vue 3D tournante en option, bandeau « Produit de démonstration » si demo: true, tout le reste de la v1.
-4. Pages de collection animées dans le registre cinématique.
-5. Intègre toutes les corrections de l'audit outputs/2026-11-12-conformite-qa-audit-conception-boutique.md (en priorité les 5 prioritaires).
-6. Propositions pour augmenter le panier moyen sans tromper (lots, seuil de livraison offerte compatible avec knowledge/prix-et-marges.md).
+Utilise l'agent developpeur-web : étape 1 du site selon la spécification v2 (2 fichiers dans outputs/). Crée site/ (Astro, Tailwind, polices auto-hébergées, icônes Lucide, GSAP), le thème (couleurs et typographies de knowledge/marque.md), les composants de base façon shadcn/ui (bouton, carte, badge, accordéon, navigation, pied de page), la mise en page commune, et toutes les pages légales et d'aide avec les textes de knowledge/politiques.md ([À VALIDER] là où une valeur manque). Pas encore l'accueil animé. npm run build doit passer.
 ```
+Commit `feat(site): fondations, thème, composants, pages légales`.
 
-### T29 · Audit de la v2 · `fait`
-Lance `conformite-qa` en mode audit sur la v2 produite en T28.
+### T34 · Construction du site, étape 2 : catalogue et fiches · `à faire`
+Lance `developpeur-web` : catalogue, pages de collection, fiche produit (galerie des 6 vues, zoom, bandeau démonstration, achat désactivé si `demo: true`), à partir des fiches de T31 et des images de T32.
+Commit `feat(site): catalogue, collections, fiches produits`.
 
-### T30 · Commit, push, compte rendu · `fait`
-- Commit `feat: agents redacteur-catalogue et studio-visuel, conception v2, identité Laiton`, puis push.
-- Compte rendu dans `vers-cowork.md` (résumé de la v2, liste des sections animées, verdict de l'audit, 🔔 ACTION HUMAINE).
-- Ne lance pas `redacteur-catalogue` ni `studio-visuel` (installés pendant cette session) : demande à l'humain de redémarrer Claude Code. La synchro n°8 lancera fiches, visuels et construction du site.
+### T35 · Construction du site, étape 3 : accueil cinématique · `à faire`
+Lance `developpeur-web` : l'accueil complet de la spécification v2 (11 sections, animations GSAP, versions mobile, sans animation et sans JavaScript), au niveau de `docs/reference/prototype-accueil.html` ou au-dessus.
+Commit `feat(site): accueil cinématique`.
+
+### T36 · Compte rendu final · `à faire`
+Dans `vers-cowork.md` : ce qui marche, ce qui manque, la commande exacte pour que l'humain voie le site sur son PC (`cd site && npm install && npm run dev`, adresse locale), et les 🔔 ACTION HUMAINE.
+Ne lance pas `conformite-qa` sur le site : Cowork le planifiera après sa propre revue.
 
 ## Règle permanente
 Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.
