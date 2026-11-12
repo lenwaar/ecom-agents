@@ -8,9 +8,10 @@
 - [ ] Dépôt connecté à Graphify
 
 ## Phase 1 : Stratégie (définir QUOI vendre) 🔄 en cours
-- [x] `analyste-marche` + test (à lancer et valider)
-- [ ] `sourcing-produits` + test
-- [ ] Remplir `knowledge/` avec la niche, la cible et la marque choisies
+- [x] `analyste-marche` v1.1 + test (validé : 3 études, niche choisie)
+- [x] `sourcing-produits` + test (à lancer et valider)
+- [x] `knowledge/niche.md` : maquettes en bois pour adultes
+- [ ] `knowledge/persona.md`, `marque.md`, `prix-et-marges.md`
 
 ## Phase 2 : Contrôle qualité
 - [ ] `conformite-qa` + test (avant tout agent qui produit du contenu public)
