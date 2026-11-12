@@ -1,5 +1,50 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-12 11:53 · Synchro n°6 : conception de la boutique
+
+**Tâches faites** : T23 à T25 (toutes `fait`).
+- T23 : `architecte-web` lancé avec la demande exacte du test. Premier lancement arrêté à la demande de l'humain (aucun fichier produit), puis relancé ; rapport complet (YAML, statut `à-valider`, 10 sections).
+- T24 : `conformite-qa` lancé en mode audit sur ce rapport. Livrable audité non modifié (horodatage antérieur à l'audit).
+- T25 : commit `7b5e14b` docs(outputs): conception de la boutique + audit conformité, poussé. `developpeur-web` **non lancé**.
+
+**Fichiers modifiés** : `outputs/2026-11-12-architecte-web-conception-boutique.md` (nouveau), `outputs/2026-11-12-conformite-qa-audit-conception-boutique.md` (nouveau), `coordination/`. Également commités tels quels dans le commit de synchro : `knowledge/direction-design.md` (nouveau) et `docs/site-technique.md` (ligne « Style : Tailwind + shadcn/ui + Lucide »), apparus à 11:31 pendant le premier lancement : je suppose qu'ils viennent de toi, **confirme-le** (sinon ils viennent de l'agent arrêté et sont à revoir).
+
+**Rapport 1 · architecte-web** : `outputs/2026-11-12-architecte-web-conception-boutique.md`
+1. Parcours mobile en 12 étapes : vidéo → lien en bio → fiche produit → « Acheter » → Stripe Payment Link → `/merci/` → email avec CGV en PDF. Ni compte, ni panier, ni pop-up.
+2. 15 pages, une action principale chacune ; réglages Stripe détaillés (France seule, case CGV, quantité 1 à 3, pas de codes promo).
+3. Fiche produit en 18 blocs, bloc GPSR toujours ouvert, badge 14+, aucun bloc d'avis ; 10 règles qui bloquent la construction du site si une fiche est non conforme.
+4. Bouton « Renoncer au contrat ici » selon D221-5 : lien en pied de page, formulaire sans JS, fonction Cloudflare qui horodate et envoie l'accusé de réception.
+5. Aucun cookie non essentiel au lancement (bandeau spécifié mais inactif) ; 12 indicateurs + convention UTM. Propose (sans l'appliquer) une mise à jour de `docs/site-technique.md`.
+
+**Les 3 pistes d'identité visuelle** (contrastes WCAG AA calculés, à revérifier sur le rendu réel)
+| Piste | Couleurs | Ambiance | Police |
+|---|---|---|---|
+| **A · Atelier** | fond blanc cassé chaud `#FAF8F5`, accent **noyer** `#8B4513`, texte `#1C1917` | établi en bois, lumière de fin de journée, kraft : chaleureuse, idée cadeau | Inter |
+| **B · Sapin** | fond `#F7F7F5`, accent **vert sapin** `#1E5B3F`, texte `#18181B` | bois clair et feuillage, sobriété scandinave : moderne, apaisante | Geist |
+| **C · Laiton** | fond `#FBFAF7`, accent **bleu nuit** `#1E3A5F` + laiton foncé `#8A6A3A` pour les icônes | horlogerie, engrenages, cabinet de curiosités : premium, mixte | Manrope + Inter |
+
+Recommandation de l'agent : **C** si l'offre met en avant les maquettes mécaniques et l'angle cadeau adulte, **A** si elle penche vers les miniatures déco ; B est la plus neutre. Idées de noms proposées par piste, **non vérifiées** (INPI, domaine, réseaux).
+
+**Rapport 2 · conformite-qa (audit)** : `outputs/2026-11-12-conformite-qa-audit-conception-boutique.md` · **verdict : À CORRIGER** (aucun point bloquant dans la conception ; 14 conformes, 21 à corriger dont 5 prioritaires)
+1. Conformes : toutes les pages obligatoires, bouton de rétractation D221-5, GPSR + 14+, aucune technique trompeuse, prix barrés sur 30 jours.
+2. Prioritaires : champ anti-robots de la rétractation (ne jamais afficher un faux succès sans enregistrer) ; droits légaux présentés comme avantages (« Retours 14 jours », L121-4 10°) ; CGV : langue du contrat + archivage (> 120 € possible) ; encadré garanties à recopier mot pour mot (annexe D. 211-2) ; aucune expédition avant l'envoi de l'email avec CGV.
+3. Points 13 à 19 : bouton Stripe « Payer » probablement conforme (à capturer en français, Apple/Google Pay/Link à vérifier) ; PDF par email = support durable ; Cloudflare Web Analytics **non validé** en l'état (recommande de ne pas mettre de script au lancement) ; « TVA non applicable, art. 293 B du CGI » conforme sur le site.
+4. Limites : plusieurs articles lus via sources secondaires (« à reconfirmer ») ; durée d'archivage de 10 ans `À VÉRIFIER`.
+5. Rien n'est publiable tant que les valeurs vides (identité, SIREN, médiateur, IDU, frais de retour…) ne sont pas remplies.
+
+**Grille de test** `tests/scenarios/architecte-web.md` : non cochée (à faire par toi ou l'humain).
+
+**🔔 ACTION HUMAINE**
+1. **Choisir la piste d'identité visuelle** (A Atelier, B Sapin, C Laiton) et le **nom de la boutique** : bloque `developpeur-web`.
+2. Trancher les décisions de l'audit : Cloudflare Web Analytics (oui / non au lancement), paiements Apple Pay / Google Pay / Link (garder ou non), politique « pièce cassée pendant le montage ».
+3. Répondre aux questions de conception (section 9 du rapport architecte-web) : vouvoiement, contenu de la page « À propos », réseau principal, quantité max (3 proposé), service d'envoi d'emails (implique un nom de domaine dès le lancement).
+4. Fournir les valeurs de `politiques.md` encore `À VÉRIFIER` : frais et délais de livraison, frais de retour, identité légale, SIREN, médiateur, IDU.
+5. Confirmer que `knowledge/direction-design.md` et la modification de `docs/site-technique.md` viennent bien de Cowork.
+
+## 2026-11-12 11:27 · Synchro n°5 (compte rendu oublié)
+
+**Tâches faites** : installation de `architecte-web` et `developpeur-web` (+ tests), plateforme « site maison Astro + Cloudflare + Stripe » actée (`docs/site-technique.md`, `architecture.md`, `contraintes.md`, `ROADMAP.md`). Commit `786b76f` feat(agent): architecte-web + developpeur-web, plateforme site maison, poussé ; aucun agent lancé (règle permanente).
+
 ## 2026-11-12 11:26 · Synchro n°4
 
 **Tâches faites** : T16 à T18 (toutes `fait`). Aucun agent lancé (règle permanente).
