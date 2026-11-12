@@ -4,6 +4,7 @@ Tous les agents lisent ce dossier avant d'agir. Il sera rempli en phase 1.
 
 | Fichier | Contenu | Rempli par |
 |---------|---------|-----------|
+| `contraintes.md` | Budget, temps, marché, modèle, contenu | toi |
 | `niche.md` | Niche retenue, pourquoi, concurrents | analyste-marche → validé par toi |
 | `persona.md` | Client idéal : âge, problèmes, désirs, objections | analyste-marche |
 | `marque.md` | Nom, promesse, ton, couleurs, mots interdits | toi + orchestrateur |

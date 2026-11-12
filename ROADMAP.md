@@ -1,13 +1,14 @@
 # Feuille de route
 
-## Phase 0 : Fondations ✅ en cours
+## Phase 0 : Fondations ✅
 - [x] Architecture et organigramme (`docs/architecture.md`)
 - [x] Règles communes (`CLAUDE.md`) et gabarit d'agent
 - [x] Orchestrateur (commande `/orchestre`)
-- [ ] Dépôt GitHub créé et connecté à Graphify
+- [x] Dépôt GitHub créé
+- [ ] Dépôt connecté à Graphify
 
-## Phase 1 : Stratégie (définir QUOI vendre)
-- [ ] `analyste-marche` + test
+## Phase 1 : Stratégie (définir QUOI vendre) 🔄 en cours
+- [x] `analyste-marche` + test (à lancer et valider)
 - [ ] `sourcing-produits` + test
 - [ ] Remplir `knowledge/` avec la niche, la cible et la marque choisies
 
