@@ -24,4 +24,5 @@ knowledge/        marque, niche, persona, politiques
 outputs/          livrables produits par les agents
 tests/scenarios/  un scénario de test par agent
 docs/             architecture, gabarits
+coordination/     échanges entre Claude Cowork et Claude Code (/cowork)
 ```

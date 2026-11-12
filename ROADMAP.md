@@ -9,8 +9,10 @@
 
 ## Phase 1 : Stratégie (définir QUOI vendre) 🔄 en cours
 - [x] `analyste-marche` v1.1 + test (validé : 3 études, niche choisie)
-- [x] `sourcing-produits` + test (à lancer et valider)
+- [x] `sourcing-produits` + test, v1.3 (UE, 14 j, marge 10 €, stock 100, note 4,5/5) : aucun produit validé, piste revendeur officiel en cours
 - [x] `knowledge/niche.md` : maquettes en bois pour adultes
+- [ ] Réponse des fournisseurs officiels (remise revendeur, dropshipping, photos, responsable UE)
+- [ ] Statut micro-entreprise (obligatoire avant la première vente et pour ouvrir un compte revendeur)
 - [ ] `knowledge/persona.md`, `marque.md`, `prix-et-marges.md`
 
 ## Phase 2 : Contrôle qualité
