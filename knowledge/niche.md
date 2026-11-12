@@ -15,9 +15,11 @@ Kits de maquettes en bois à assembler pour adultes : maquettes mécaniques (mé
 - Éviter en titre principal : « puzzle 3D » (faible volume de recherche).
 
 ## Garde-fous
-- **Aucune copie** de modèles de marques (Rokr / Robotime, Ugears, etc.) ni aucun nom de marque dans nos textes.
+- **Aucune copie** de modèles de marques (Rokr / Robotime, Ugears, etc.).
+- **Produits de marque authentiques autorisés** s'ils sont achetés via un canal officiel (fabricant ou distributeur agréé). On peut alors citer la marque pour décrire le produit, sans jamais laisser croire que la boutique est la marque ou son partenaire officiel (décision du 2026-11-12).
+- Pour les produits génériques : aucun nom de marque tierce dans nos textes.
 - **Produits pour adultes, 14 ans et plus.** Un produit marqué moins de 14 ans relève de la réglementation jouets : exclu.
-- De préférence **sans électronique** (pas de LED à piles). Si LED il y a : marquage CE vérifié obligatoire.
+- **Sans électronique au lancement** (pas de LED, musique, moteur ni pile) : décision du 2026-11-12. À réévaluer plus tard (marquage CE + filière de recyclage DEEE).
 - Chaque produit doit avoir un **responsable établi dans l'UE** (règlement GPSR).
 
 ## Calendrier

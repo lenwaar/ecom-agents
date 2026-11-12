@@ -16,7 +16,7 @@
 - [ ] `knowledge/persona.md`, `marque.md`, `prix-et-marges.md`
 
 ## Phase 2 : Contrôle qualité
-- [ ] `conformite-qa` + test (avant tout agent qui produit du contenu public)
+- [x] `conformite-qa` + test (à lancer et valider)
 
 ## Phase 3 : Boutique
 - [ ] Choix de la plateforme gratuite

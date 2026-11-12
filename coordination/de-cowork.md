@@ -2,19 +2,33 @@
 
 Statuts : `à faire` · `fait` · `bloqué (raison)`
 
-## T1 · Mettre en place la coordination · `fait`
-- Copie `coordination/cowork-command.md` vers `.claude/commands/cowork.md` (Cowork ne peut pas écrire dans `.claude/`), puis supprime `coordination/cowork-command.md`.
-- Désormais, toute modification d'un fichier dans `.claude/` demandée par Cowork se fera via une tâche ici, avec le contenu exact.
-- Ajoute une ligne dans `README.md` (section Structure) : `coordination/     échanges entre Claude Cowork et Claude Code (/cowork)`.
+## Synchro n°1 : T1 à T4 · `fait` (voir vers-cowork.md)
 
-## T2 · Enregistrer les rapports · `fait` (déjà commité : 0c9188e)
-- Vérifie que `outputs/2026-11-12-sourcing-produits-maquettes-bois-v2.md` est commité ; sinon, ajoute-le.
+---
 
-## T3 · Mettre à jour la feuille de route · `fait`
-Dans `ROADMAP.md`, phase 1 :
-- coche `sourcing-produits` avec la mention : `v1.3 (UE, 14 j, marge 10 €, stock 100, note 4,5/5) : aucun produit validé, piste revendeur officiel en cours`
-- ajoute : `- [ ] Réponse des fournisseurs officiels (remise revendeur, dropshipping, photos, responsable UE)`
-- ajoute : `- [ ] Statut micro-entreprise (obligatoire avant la première vente et pour ouvrir un compte revendeur)`
+## Synchro n°2 (2026-11-12)
 
-## T4 · Commit et push · `fait`
-Commit `chore(coordination): mise en place de /cowork + feuille de route`, puis push.
+### T5 · Installer l'agent conformite-qa · `fait`
+- Copie `coordination/a-installer/conformite-qa.md` vers `.claude/agents/conformite-qa.md` (copie identique), puis supprime le dossier `coordination/a-installer/`.
+- Le scénario de test `tests/scenarios/conformite-qa.md` est déjà en place (écrit par Cowork).
+
+### T6 · Prendre en compte les décisions de l'humain · `fait`
+`knowledge/niche.md` a été mis à jour par Cowork (rien à modifier, juste à commiter) :
+- produits de marque **authentiques** autorisés via canal officiel, la marque peut être citée pour décrire le produit ;
+- **aucune électronique** au lancement.
+
+Dans `ROADMAP.md`, phase 2 : coche `conformite-qa` avec la mention `+ test (à lancer et valider)`.
+
+### T7 · Commit et push · `fait`
+Commit `feat(agent): conformite-qa + décisions marques et électronique`, puis push.
+
+### T8 · Lancer conformite-qa, test 1 (mode dossier) · `à faire`
+Lance l'agent avec exactement la demande du test 1 de `tests/scenarios/conformite-qa.md`.
+
+### T9 · Lancer conformite-qa, test 2 (mode audit) · `à faire`
+Une fois T8 terminé, lance l'agent avec la demande du test 2.
+
+### T10 · Rendre compte · `à faire`
+- Commit `docs(outputs): conformite-qa dossier lancement légal + audit sourcing v2`, puis push.
+- Dans `vers-cowork.md` : résumé des deux rapports et les 🔔 ACTION HUMAINE.
+- Ne coche pas toi-même la grille de test : Cowork vérifiera les rapports.
