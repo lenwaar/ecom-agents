@@ -32,8 +32,12 @@ Si une page est inaccessible : ne devine pas, mets l'URL dans « Vérifications 
 - **Jouet** : âge indiqué inférieur à 14 ans, ou âge absent avec un visuel enfant.
 - **Électronique sans CE vérifiable** (LED à piles, moteurs).
 - **Vendeur peu fiable** : note inférieure à 4,6/5, moins d'un an d'ancienneté, ou moins de 100 ventes. Ces seuils sont à adapter si la niche est petite, en le signalant.
+- **Électronique** : LED, musique, moteur, pile ou batterie (décision de `knowledge/niche.md`).
+- **Âge 14+ non prouvé** : il faut une photo de la boîte ou de la notice montrant « 14+ » (ou plus). « Adultes et adolescents » ne suffit pas. Un produit présenté comme jeu pour enfants par les grands revendeurs est signalé.
+- **Copie** : forme, mécanisme ou décor très proche d'un modèle de marque connue → éliminé. Joins la comparaison (lien du modèle de marque).
+- **Produit de marque hors canal officiel** : un produit de marque n'est retenu que s'il est acheté au fabricant ou à un distributeur agréé (prouvé), jamais à un vendeur de marketplace.
 - **Pays d'expédition** non confirmé.
-- **Délai** total de plus de 14 jours vers la France (prends le délai le plus long annoncé).
+- **Délai** total de plus de 14 jours vers la France : relève le délai **maximum affiché sur l'annonce elle-même**, pas une source tierce.
 - **Marge nette** inférieure à 10 € : éliminatoire, aucune exception.
 - **Stock** inférieur à 100 unités (stock non affiché : `À VÉRIFIER`, à confirmer avant validation).
 - **Note du produit** inférieure à 4,5/5 ou moins de 20 avis produit.
@@ -45,9 +49,11 @@ Si une page est inaccessible : ne devine pas, mets l'URL dans « Vérifications 
 |---|---|
 | Prix d'achat | Préciser HT ou TTC. Hors UE : TVA à l'import comprise (régime IOSS sous 150 €), vérifie qu'elle est incluse au paiement |
 | Livraison | Tarif réel vers la France |
-| Taxes import | Si hors UE : 3 € de droit de douane + 2 € de frais de traitement par colis |
+| Taxes import | Si hors UE : 3 € de droit de douane (envois ≤ 150 €) + 2 € de frais de traitement, **par catégorie d'article** dans le colis (pas par colis) |
 | Frais de paiement | Commission de la plateforme de paiement : `À VÉRIFIER` tant que la plateforme n'est pas choisie, hypothèse de 3 % du prix de vente + 0,30 € |
 | Provision SAV / casse | 5 % du prix de vente |
+| Cotisations micro-entreprise | 12,3 % du prix de vente (13,3 % avec versement libératoire) : taux de `knowledge/prix-et-marges.md` |
+| Éco-participation REP jouets | Par unité, barème de l'éco-organisme : `À VÉRIFIER` tant que non relevé (s'applique quand la boutique est le premier metteur sur le marché français) |
 | **Coût de revient** | Somme des lignes ci-dessus |
 | Prix de vente conseillé | Basé sur les prix concurrents relevés et datés, arrondi psychologique (29,90 €, 39,90 €…) |
 | **Coefficient** | Prix de vente ÷ (prix fournisseur + livraison) |
@@ -68,8 +74,12 @@ Le tableau ci-dessus correspond à l'**option A (dropshipping avec stock UE)**. 
 | Envoi au client | Colissimo ou Mondial Relay depuis Toulouse, tarif réel daté selon poids et dimensions du colis |
 | Frais de paiement | Même hypothèse que l'option A |
 | Provision SAV / casse | 5 % du prix de vente |
+| Cotisations micro-entreprise | 12,3 % du prix de vente (voir `knowledge/prix-et-marges.md`) |
+| Éco-participation REP jouets | Par unité : `À VÉRIFIER` (option B : la boutique est le premier metteur sur le marché français) |
 | **Coût de revient** | Somme des lignes ci-dessus |
 | **Marge nette par commande** | Prix de vente − coût de revient |
+
+Les **coûts fixes annuels** (adhésions recyclage, médiateur, etc.) ne sont pas dans la marge par commande : rappelle seulement le nombre de ventes nécessaires pour les couvrir, avec la formule de `knowledge/prix-et-marges.md`.
 
 Indique aussi la **mise de départ totale** de la commande de stock (unités × prix d'achat + frais de port + emballages) : elle doit tenir dans **500 € maximum**, échantillons compris (voir `knowledge/contraintes.md`).
 
@@ -136,4 +146,7 @@ Sections :
 ## Interdits
 - Commander, payer ou contacter un fournisseur sans l'accord de l'humain.
 - Retenir un produit dont l'originalité est douteuse.
-- Recopier les photos ou textes d'un vendeur dans nos livrables publics.
+- Recopier les photos ou textes d'un vendeur dans nos livrables publics. Seul le titulaire des droits (la marque ou le photographe) peut autoriser l'usage de ses photos : ne demande jamais cette autorisation à un simple revendeur.
+- Écrire « authentique » sans preuve du canal officiel : écris « présenté comme authentique par le vendeur, non vérifié ».
+- Reprendre sur la boutique des notes ou avis d'une marketplace : seuls nos propres avis clients pourront être affichés.
+- Garder un produit avec électronique, même « si le CE est vérifié ».
