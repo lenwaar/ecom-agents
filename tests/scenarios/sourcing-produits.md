@@ -8,12 +8,18 @@ Utilise l'agent sourcing-produits : trouve les 3 à 5 meilleurs produits pour d�
 ## Critères de réussite
 
 **Structure**
-- [ ] Rapport dans `outputs/`, en-tête YAML, statut `à-valider`, 9 sections
+- [ ] Rapport dans `outputs/`, en-tête YAML, statut `à-valider`, 11 sections
 
 **Sourcing**
 - [ ] 15 candidats ou plus, de plusieurs sous-catégories
 - [ ] Chaque élimination a une raison
 - [ ] Un fournisseur de secours pour chaque produit retenu
+- [ ] Options UE cherchées en priorité
+- [ ] Au moins une marque officielle étudiée
+- [ ] Livraison ≤ 14 jours
+- [ ] Marge nette ≥ 10 €
+- [ ] Stock ≥ 100
+- [ ] Note produit ≥ 4,5/5 (20 avis ou plus)
 
 **Sécurité juridique**
 - [ ] Ouvre 2 annonces retenues : aucune n'est une copie évidente d'un modèle de marque connue
