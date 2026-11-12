@@ -58,7 +58,24 @@ Règles par défaut :
 - Marge nette d'au moins 10 € par commande.
 - Prix de vente entre 25 et 60 €.
 
-La marge nette ≥ 10 € est une règle stricte. Le coefficient et la fourchette de prix restent indicatifs.
+Le tableau ci-dessus correspond à l'**option A (dropshipping avec stock UE)**. Pour chaque survivant, fais aussi le calcul de l'**option B (stock léger chez l'humain**, 10 à 15 unités achetées à un fournisseur officiel, expédiées par l'humain depuis Toulouse) :
+
+| Ligne (option B) | Règle |
+|---|---|
+| Prix d'achat revendeur | Prix revendeur du fournisseur officiel (préciser HT ou TTC) ; remise inconnue : `À VÉRIFIER` |
+| Part de la livraison fournisseur | Frais de port de la commande de stock ÷ nombre d'unités commandées (ex. 60 € ÷ 12 unités = 5 €) |
+| Emballage | Carton, calage, étiquette : `À VÉRIFIER` tant qu'aucun tarif n'est relevé |
+| Envoi au client | Colissimo ou Mondial Relay depuis Toulouse, tarif réel daté selon poids et dimensions du colis |
+| Frais de paiement | Même hypothèse que l'option A |
+| Provision SAV / casse | 5 % du prix de vente |
+| **Coût de revient** | Somme des lignes ci-dessus |
+| **Marge nette par commande** | Prix de vente − coût de revient |
+
+Indique aussi la **mise de départ totale** de la commande de stock (unités × prix d'achat + frais de port + emballages) : elle doit tenir dans **500 € maximum**, échantillons compris (voir `knowledge/contraintes.md`).
+
+Compare les deux options pour chaque produit et dis laquelle donne la meilleure marge ; l'option B est privilégiée si elle donne une meilleure marge.
+
+La marge nette ≥ 10 € et le délai ≤ 14 jours (de la commande à la réception) sont des règles strictes qui s'appliquent aux deux options. Le coefficient et la fourchette de prix restent indicatifs.
 
 ### 4. Évaluer la qualité sans échantillon (budget de 0 €)
 - Lis les avis avec photos et vidéos et résume les défauts récurrents.
