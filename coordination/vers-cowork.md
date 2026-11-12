@@ -1,5 +1,43 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-12 11:15 · Synchro n°2
+
+**Tâches faites** : T5 à T10 (toutes `fait`).
+- T5 : `coordination/a-installer/conformite-qa.md` copié vers `.claude/agents/conformite-qa.md` (copie identique vérifiée), dossier `a-installer/` supprimé.
+- T6 : `knowledge/niche.md` (tes modifications) et `tests/scenarios/conformite-qa.md` commités tels quels ; `ROADMAP.md` phase 2 : `conformite-qa` coché « + test (à lancer et valider) ».
+- T7 : commit `7f2c968` feat(agent): conformite-qa + décisions marques et électronique, poussé.
+- T8 : test 1 lancé avec la demande exacte. ⚠️ **Exécuté par l'agent généraliste** qui suivait `.claude/agents/conformite-qa.md` à la lettre : l'agent, installé en cours de session, n'était pas encore chargé. Résultat proche mais pas un test strict de l'agent : à relancer si tu veux une validation stricte.
+- T9 : test 2 lancé avec la demande exacte, **par le vrai agent `conformite-qa`** (chargé entre-temps). Rapport audité vérifié intact (`git diff` vide).
+- T10 : commit `d645a53` docs(outputs): conformite-qa dossier lancement légal + audit sourcing v2, poussé. Grille de test non cochée.
+
+**Fichiers modifiés** : `.claude/agents/conformite-qa.md` (nouveau), `knowledge/niche.md`, `tests/scenarios/conformite-qa.md`, `ROADMAP.md`, `coordination/`, 2 rapports dans `outputs/`.
+
+**Rapport 1 (dossier)** : `outputs/2026-11-12-conformite-qa-dossier-vente-legale-maquettes-bois.md`
+- Micro-entreprise de vente de marchandises : inscription gratuite (formalites.entreprises.gouv.fr), cotisations 12,3 % du CA (13,3 % avec versement libératoire), plafond 203 100 €, formulaire CFE 1447-C-SD avant le 31/12.
+- TVA : franchise en base 85 000 € (seuil majoré 93 500 €) ; le seuil unique de 25 000 € a été abandonné.
+- Pages : mentions légales, CGV, confidentialité, cookies (« Tout refuser » aussi visible), rétractation avec **bouton en ligne obligatoire depuis le 19/06/2026**, médiateur ; retirer le lien vers la plateforme européenne de litiges (fermée).
+- GPSR : fabricant, responsable UE, photo, référence, avertissements en français sur chaque fiche. **Recyclage : les maquettes relèvent de la filière jouets (R543-320) même en 14+** → 2 adhésions payantes (Ecomaison + Citeo/Léko), IDU, Triman.
+- Limites : articles GPSR cités d'après extraits (EUR-Lex illisible), coût Citeo (110 € HT/an), Ecomaison et médiateur `À VÉRIFIER`. Proposition de `knowledge/politiques.md` en section 5.
+
+**Rapport 2 (audit)** : `outputs/2026-11-12-conformite-qa-audit-sourcing-maquettes-bois-v2.md`, verdict **BLOQUANT** (2 ⛔, 11 ⚠️, 5 ✅, 4 sans objet).
+- ⛔ n°1, 3, 4 éliminés : électronique (contraire au nouveau `niche.md`) et canal non officiel (vendeurs AliExpress, épuisement des droits L713-4 CPI non prouvé).
+- Reste le circuit à billes n°2 sous 4 conditions : preuve écrite 14+, positionnement adulte, infos GPSR, absence de copie.
+- **Marge** : la formule oublie les cotisations micro (12,3 %) et l'éco-participation. Avec cotisations, le n°2 à 26,90 € tombe à 8,95 € (recompté : 12,26 − 3,31) → prix minimal 28,90 € (fournisseur principal), 29,90 € (secours).
+- Autres ⚠️ : taxes d'import par catégorie d'article et non par colis ; règle du prix barré à réécrire (prix le plus bas des 30 jours, L112-1-1) ; photos de marque non autorisables par un vendeur AliExpress ; mention « authentique » non prouvée ; brouillon A à corriger (statut de revendeur agréé, responsable UE, recyclage, modèles sans électronique uniquement).
+
+**Remarques pour Cowork** :
+- L'agent `sourcing-produits` ne connaît ni les cotisations micro ni l'éco-participation dans sa formule de marge, ni la règle « taxes par catégorie d'article » : correction de l'agent à prévoir (via une tâche ici, puisque `.claude/` passe par moi).
+- La section 3 de la grille d'audit dit « Aucune électronique (décision de `niche.md`) » : cohérent.
+
+**🔔 ACTION HUMAINE**
+1. Décider : demander une **v3 à `sourcing-produits`** avec les corrections de l'audit (après correction de l'agent par Cowork), puis un nouvel audit.
+2. Décider : envoyer ou non le **brouillon A corrigé** à Robotime Europe (seule piste « marque » compatible avec `niche.md`). Rien n'a été envoyé.
+3. Choisir **option A ou B** (dropshipping ou stock léger) : ça décide qui adhère aux filières de recyclage et ton rôle GPSR (distributeur ou importateur).
+4. Fixer la **date de création de la micro-entreprise** (avant toute vente, idéalement avant juin 2027) ; décider versement libératoire, ACRE, non-publication de l'adresse.
+5. Prévoir dans le budget de 150 à 500 € : adhésion emballages (environ 110 € HT/an, `À VÉRIFIER`), Ecomaison, médiateur.
+6. Rendez-vous **expert-comptable / CCI / Urssaf** et questions à un **juriste** (revente de marque, copie, statut importateur, risque de requalification en jouet) et aux **éco-organismes** (qui doit adhérer).
+7. Valider la proposition de `knowledge/politiques.md` (section 5 du dossier).
+
 ## 2026-11-12 10:55 · Synchro n°1
 
 **Tâches faites** : T1, T2, T3, T4 (toutes `fait`).

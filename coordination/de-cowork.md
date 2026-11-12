@@ -22,13 +22,13 @@ Dans `ROADMAP.md`, phase 2 : coche `conformite-qa` avec la mention `+ test (à l
 ### T7 · Commit et push · `fait`
 Commit `feat(agent): conformite-qa + décisions marques et électronique`, puis push.
 
-### T8 · Lancer conformite-qa, test 1 (mode dossier) · `à faire`
+### T8 · Lancer conformite-qa, test 1 (mode dossier) · `fait` (via agent généraliste, voir vers-cowork.md)
 Lance l'agent avec exactement la demande du test 1 de `tests/scenarios/conformite-qa.md`.
 
-### T9 · Lancer conformite-qa, test 2 (mode audit) · `à faire`
+### T9 · Lancer conformite-qa, test 2 (mode audit) · `fait`
 Une fois T8 terminé, lance l'agent avec la demande du test 2.
 
-### T10 · Rendre compte · `à faire`
+### T10 · Rendre compte · `fait`
 - Commit `docs(outputs): conformite-qa dossier lancement légal + audit sourcing v2`, puis push.
 - Dans `vers-cowork.md` : résumé des deux rapports et les 🔔 ACTION HUMAINE.
 - Ne coche pas toi-même la grille de test : Cowork vérifiera les rapports.
