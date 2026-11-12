@@ -17,6 +17,6 @@ Ces contraintes s'appliquent à tous les agents. Seul l'humain les modifie.
 | Avis produit | Note de 4,5/5 minimum sur le produit lui-même (pas seulement le vendeur), avec au moins 20 avis |
 | Échantillons | Achetés au lancement, inclus dans le budget de 150 à 500 € |
 | Temps disponible | Plus de 10 h par semaine, en parallèle des études |
-| Plateforme boutique | Gratuite, à choisir en phase 3 |
+| Plateforme boutique | **Site maison** (Astro) hébergé gratuitement sur Cloudflare + paiement **Stripe** (décision du 2026-11-12) : voir `docs/site-technique.md` |
 | Niche | **Validée** : maquettes en bois à assembler pour adultes, voir `niche.md` |
 | Niches écartées | Chat d'appartement (pas de chat), padel, street fishing (pas de pratique ni d'accès à un terrain), journaling (tendance en baisse) ; crochet gardé en plan B |

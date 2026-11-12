@@ -21,8 +21,10 @@
 - [x] `conformite-qa` + test (à lancer et valider)
 
 ## Phase 3 : Boutique
-- [ ] Choix de la plateforme gratuite
-- [ ] `redacteur-catalogue`, `architecte-web`, `adaptateur-plateforme`
+- [x] Choix de la plateforme gratuite : site maison Astro + Cloudflare + Stripe
+- [x] architecte-web + test (à lancer)
+- [x] developpeur-web + test (à lancer après architecte-web)
+- [ ] redacteur-catalogue (quand les produits seront choisis)
 
 ## Phase 4 : Marketing
 - [ ] `createur-contenu`, `crm-email`, `media-acquisition`

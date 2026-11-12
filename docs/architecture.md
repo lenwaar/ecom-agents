@@ -3,7 +3,7 @@
 ## Principes
 
 1. **Un orchestrateur, des spécialistes.** Seul l'orchestrateur parle à l'humain et distribue le travail. Chaque spécialiste a UN métier.
-2. **Indépendant de la plateforme.** Les agents produisent des livrables standardisés (fiches produits JSON/Markdown, pages, campagnes). Un agent « adaptateur » les pousse ensuite vers la plateforme choisie. Changer de plateforme = changer l'adaptateur, pas toute l'équipe.
+2. **Indépendant de la plateforme.** Les agents produisent des livrables standardisés (fiches produits JSON/Markdown, pages, campagnes). La plateforme choisie est un site maison (voir `docs/site-technique.md`) : `developpeur-web` transforme ces livrables en pages.
 3. **Une source de vérité partagée : `knowledge/`.** Marque, niche, cible, ton, politiques, prix. Tous les agents la lisent avant d'agir ; seuls l'orchestrateur et l'humain la modifient.
 4. **Rien ne part en ligne sans validation.** Tout ce qui est public (page, pub, mail client, prix) passe par l'agent Conformité-QA puis par l'humain.
 5. **Chaque agent est testé.** Un scénario dans `tests/scenarios/` décrit une demande type et les critères d'un bon livrable.
@@ -25,7 +25,7 @@ marche         catalogue       contenu         commandes           performance
 sourcing-      architecte-     media-          service-            conformite-qa
 produits       web             acquisition     client
                                crm-email
-                               (+ adaptateur-plateforme, branché en phase 3)
+                               (+ developpeur-web, pôle Boutique)
 ```
 
 | # | Agent | Mission | Livrables |
@@ -34,7 +34,8 @@ produits       web             acquisition     client
 | 1 | `analyste-marche` | Niches, tendances, concurrents, persona client | Rapport de niche noté, fiche persona |
 | 2 | `sourcing-produits` | Trouver produits et fournisseurs, calculer marges, évaluer fiabilité et délais | Fiche produit candidat + calcul de marge |
 | 3 | `redacteur-catalogue` | Fiches produits qui convertissent + SEO | Titre, description, bénéfices, FAQ, balises SEO |
-| 4 | `architecte-web` | Structure de la boutique, pages, parcours d'achat, optimisation de conversion | Plan du site, maquettes texte, pages légales mises en forme |
+| 4 | `architecte-web` | Structure de la boutique, pages, parcours d'achat, optimisation de conversion | Plan du site, spécifications des pages, identité visuelle |
+| 4b | `developpeur-web` | Code du site maison (Astro + Stripe), tests, préparation du déploiement | Code dans `site/`, rapport de livraison |
 | 5 | `createur-contenu` | Contenu organique TikTok / Instagram / Pinterest / Shorts (sans visage) | Scripts vidéo, légendes, calendrier éditorial |
 | 6 | `media-acquisition` | Publicité payante (Meta, TikTok, Google) quand le budget existera | Plans de campagne, ciblages, variantes d'annonces |
 | 7 | `crm-email` | Fidélisation : emails, segmentation, relances panier | Séquences email, segments |
@@ -48,7 +49,7 @@ produits       web             acquisition     client
 ```
 analyste-marche → sourcing-produits → redacteur-catalogue → conformite-qa
       → architecte-web (mise en page) → createur-contenu (lancement)
-      → [toi : validation] → adaptateur-plateforme (mise en ligne)
+      → [toi : validation] → developpeur-web (mise en ligne)
       → analyste-performance (suivi J+7)
 ```
 
