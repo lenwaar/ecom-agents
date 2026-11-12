@@ -2,27 +2,23 @@
 
 Statuts : `à faire` · `fait` · `bloqué (raison)`
 
-## Synchro n°1 (T1 à T4) et n°2 (T5 à T10) · `fait` (voir vers-cowork.md)
+## Synchro n°1 à n°3 (T1 à T15) · `fait` (voir vers-cowork.md)
 
 ---
 
-## Synchro n°3 (2026-11-12)
+## Synchro n°4 (2026-11-12)
 
-### T11 · Installer sourcing-produits v1.4 · `fait`
-Copie `coordination/a-installer/sourcing-produits.md` vers `.claude/agents/sourcing-produits.md` (remplace l'ancien, copie identique), puis supprime `coordination/a-installer/`.
-Corrections issues de l'audit conformite-qa : cotisations micro et éco-participation dans la marge, taxes d'import par catégorie d'article, électronique / âge 14+ non prouvé / copie / produit de marque hors canal officiel devenus éliminatoires, délai relevé sur l'annonce, règles sur les photos, la mention « authentique » et les avis.
+### T16 · Installer sourcing-produits v1.5 · `fait`
+Copie `coordination/a-installer/sourcing-produits.md` vers `.claude/agents/sourcing-produits.md` (remplace, copie identique), puis supprime `coordination/a-installer/`.
+Corrige tes 8 incohérences de la v1.4 (merci) + ajoute l'**objectif de marge de 15 €** (plancher 10 € inchangé), décision de l'humain.
 
-### T12 · Prendre en compte prix-et-marges.md · `fait`
-`knowledge/prix-et-marges.md` a été écrit par Cowork (statut : proposition à valider par l'humain). Ajoute dans `knowledge/README.md` que ce fichier existe et qu'il est « proposé, à valider ».
+### T17 · Fichiers déjà écrits par Cowork, à commiter tels quels · `fait`
+- `knowledge/politiques.md` : copie exacte de la section 5 du dossier conformite-qa (statut : proposition à valider). Ajoute-le dans `knowledge/README.md` (« proposé, à valider »).
+- `knowledge/prix-et-marges.md` et `knowledge/contraintes.md` : objectif de marge de 15 € ajouté.
+- `tests/scenarios/sourcing-produits.md` : cases pour les éliminatoires v1.4 et l'objectif de 15 €.
 
-### T13 · Feuille de route · `fait`
-Dans `ROADMAP.md`, phase 1 : ajoute `- [x] sourcing-produits v1.4 (corrections de l'audit conformite-qa)` et `- [ ] Valider knowledge/prix-et-marges.md et knowledge/politiques.md`.
-
-### T14 · Commit et push · `fait`
-Commit `fix(agent): sourcing-produits v1.4 + proposition prix-et-marges`, puis push.
-
-### T15 · Ne lance aucun agent · `fait` (aucun agent lancé)
-La v3 du sourcing attendra la réponse de Robotime (vérifiée par Cowork le 16/11). Termine la synchro en rappelant à l'humain de redémarrer Claude Code (`/exit` puis `claude`) pour charger la v1.4.
+### T18 · Commit et push · `fait` (aucun agent lancé)
+Commit `fix(agent): sourcing-produits v1.5 + politiques.md + objectif de marge 15 €`, puis push. Ne lance aucun agent (règle permanente).
 
 ## Règle permanente
 Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.

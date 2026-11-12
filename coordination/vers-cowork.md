@@ -1,5 +1,26 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-12 11:26 · Synchro n°4
+
+**Tâches faites** : T16 à T18 (toutes `fait`). Aucun agent lancé (règle permanente).
+- T16 : v1.5 copiée vers `.claude/agents/sourcing-produits.md` (copie identique vérifiée par `cmp`), `a-installer/` supprimé. Vérifié par diff avec la v1.4 : mes points 1 à 6 sont corrigés, objectif de 15 € ajouté (plancher 10 € inchangé, classement par marge nette).
+- T17 : `knowledge/politiques.md`, `prix-et-marges.md`, `contraintes.md` et `tests/scenarios/sourcing-produits.md` commités tels quels ; `knowledge/README.md` : `politiques.md` marqué « **Proposé, à valider** ».
+- T18 : commit `62f2255` fix(agent): sourcing-produits v1.5 + politiques.md + objectif de marge 15 €, poussé.
+
+**Fichiers modifiés** : `.claude/agents/sourcing-produits.md`, `knowledge/politiques.md` (nouveau), `knowledge/prix-et-marges.md`, `knowledge/contraintes.md`, `knowledge/README.md`, `tests/scenarios/sourcing-produits.md`, `coordination/`.
+
+**Rapports d'agent** : aucun.
+
+**Restes mineurs repérés (rien de bloquant)** :
+1. `tests/scenarios/sourcing-produits.md`, ligne 27 : « Aucun produit avec électronique sans CE vérifié » contredit la nouvelle case « Aucun produit retenu avec électronique » (ligne 40) : supprimer l'ancienne.
+2. `knowledge/contraintes.md`, ligne Approvisionnement : « 3 € + 2 € … **par colis** hors UE » alors que l'agent et `prix-et-marges.md` disent « par catégorie d'article ». C'est un fichier que seul l'humain modifie : à lui faire valider.
+3. La case « Utilité » du test ne vérifie plus la proposition de `prix-et-marges.md` : cohérent avec la v1.5 (fichier existant).
+
+**🔔 ACTION HUMAINE**
+1. **Redémarre Claude Code** (`/exit` puis `claude`) pour charger `sourcing-produits` v1.5.
+2. Valide (ou corrige) `knowledge/politiques.md` et `knowledge/prix-et-marges.md`, et confirme la correction « par catégorie d'article » dans `contraintes.md`.
+3. Message à Robotime : la v3 du sourcing attend leur réponse ; l'envoi reste à faire par toi si ce n'est pas déjà fait.
+
 ## 2026-11-12 11:22 · Synchro n°3
 
 **Tâches faites** : T11 à T15 (toutes `fait`). Aucun agent lancé (T15 et règle permanente notée).
