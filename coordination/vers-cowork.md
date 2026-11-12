@@ -1,5 +1,40 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-12 18:43 · Synchro n°7 : identité Laiton, conception v2, audit
+
+**Tâches faites** : T26 à T30 (toutes `fait`).
+- T26 : `redacteur-catalogue` et `studio-visuel` copiés dans `.claude/agents/` (copies identiques vérifiées par `cmp`), `a-installer/` supprimé. **Non lancés** (règle permanente).
+- T27 : `knowledge/marque.md`, `knowledge/catalogue-demo.md`, `knowledge/direction-design.md` v2, `docs/site-technique.md`, `docs/reference/prototype-accueil.html`, les 2 scénarios de test commités tels quels. La ligne « Gros livrables » ajoutée à `CLAUDE.md` (sans doute par toi) est commitée aussi.
+- T28 : `architecte-web` lancé avec la demande exacte. 1er essai bloqué au moment d'écrire (aucun fichier), relancé avec la consigne d'écrire en plusieurs fois. L'agent n'a pas l'outil Edit (seulement Write) : **v2 livrée en deux fichiers** qui se renvoient l'un à l'autre.
+- T29 : `conformite-qa` en mode audit sur les deux fichiers. Même blocage (lecture des ~110 Ko), relancé avec lecture par tranches ; rapport aussi en deux fichiers. Fichiers audités non modifiés (horodatages 14:27 / 14:30, audit à 18:38-18:41).
+- T30 : commit `0295921` feat: agents redacteur-catalogue et studio-visuel, conception v2, identité Laiton, poussé.
+
+**Rapport 1 · architecte-web v2** : `outputs/2026-11-12-architecte-web-conception-boutique-v2.md` (§1-4) + `…-v2-partie-2.md` (§5-10)
+1. Piste C « Laiton » seule, version cinématique ; contrastes recalculés : le laiton `#C8A15A` (2,3:1) est interdit comme texte sur fond clair.
+2. Accueil en 11 sections, chaque animation spécifiée (contenu, déclencheur, durée, mobile, sans animation, sans JS) ; questionnaire sans cookie ni stockage, avec 27 pages statiques en repli.
+3. Fiche produit : galerie 6 vues + zoom, vue 3D chargée au clic seulement, bandeau « Produit de démonstration » avec achat désactivé ; pages de collection avec héros animé puis grille claire filtrable.
+4. Les 21 corrections de l'audit v1 sont tracées une par une (§6.0 partie 2).
+5. Panier moyen : livraison fixe par commande, articles facultatifs Stripe jamais pré-ajoutés, lots au prix réel sans prix barré ; seuil de livraison offerte **impossible avec les Payment Links** (phase 2), formule seuil ≥ (15,30 + L + E + R) ÷ 0,397. Propose (sans appliquer) des modifs de `site-technique.md`, `marque.md`, `direction-design.md` (GSAP/Three.js servis localement, retirer Lenis, gris plus foncé).
+
+**Sections animées de l'accueil** : 1. héros engrenages (parallaxe au pointeur) · 2. récit épinglé « Ouvrir, Assembler, Tourner » · 3. « De la planche à l'objet » (comparateur glissant, doigt et clavier) · 4. « Dans la boîte » (vue éclatée qui se rassemble) · 5. Collections (4 grandes cartes animées au survol) · 6. Les maquettes du moment · 7. « Trouver ma maquette » (3 questions) · 8. échelle de difficulté · 9. Offrir (date limite de Noël fixe, jamais de compte à rebours) · 10. L'atelier + lettre d'information à double confirmation · 11. FAQ et réassurance.
+
+**Rapport 2 · conformite-qa audit v2** : `outputs/2026-11-12-conformite-qa-audit-conception-boutique-v2.md` + `…-v2-partie-2.md` · **verdict : À CORRIGER** (aucun point bloquant)
+1. Les 21 corrections v1 sont bien intégrées (vérifiées dans le texte), aucune régression.
+2. Nouveautés v2 : 11 conformes, 20 à corriger dont 5 prioritaires : accroches globales fausses pour certains produits (N2) ; date limite de Noël sur site statique + risque « condition essentielle » (N5) ; règle V15 mode démo (rien en vente si `mode_demo`) (N17) ; légende de la 3D « indicatif » insuffisante, bannir « non contractuel » (N19) ; articles facultatifs Stripe sans infos GPSR (N24).
+3. Panier moyen : recommande **aucun article facultatif au lancement** ; lots : « achetées séparément » = somme des prix les plus bas sur 30 jours (règle V14 bis).
+4. Points pro : n° 24, 28, 30 et l'article 9 des CGV tranchés par texte officiel ; restent pour un juriste n° 20, 21, 23, 26, pour un expert-comptable n° 29.
+5. Limite : quota de recherche web atteint, plusieurs sources marquées « à reconfirmer » (CNIL, LCEN, L121-2, L221-23/24, directive 2024/825).
+
+**Remarques pour toi (Cowork)**
+- Les agents `architecte-web` et `conformite-qa` n'ont pas l'outil `Edit` : la règle « Gros livrables » de `CLAUDE.md` ne peut pas s'appliquer par ajout, d'où les livrables en deux fichiers. À corriger dans leur frontmatter si tu veux un fichier unique (modifier un agent = redémarrage).
+- Deux blocages de 10 min cette synchro (écriture d'un très gros fichier, lecture de ~110 Ko d'un coup) : prévoir dans les demandes « lire par tranches ».
+
+**🔔 ACTION HUMAINE**
+1. **Redémarre Claude Code** (`/exit` puis `claude`) pour charger `redacteur-catalogue` et `studio-visuel` avant la synchro n°8.
+2. Décisions de la v2 (section 9, partie 2) : mode démonstration (aperçu protégé par accès, produits démo retirés à l'ouverture) ; vue 3D sur la fiche (écart à `direction-design.md`) ; rangement du Moulin à vent et contenu « Idées cadeaux » ; lettre d'information dès l'ouverture ou non ; articles facultatifs et lots (l'audit recommande aucun article facultatif au lancement).
+3. Toujours en attente depuis la synchro n°6 : Cloudflare Web Analytics, Apple Pay / Google Pay / Link, politique « pièce cassée au montage », et les valeurs `À VÉRIFIER` de `politiques.md` (identité, SIREN, médiateur, IDU, frais et délais de livraison, frais de retour). Rien n'est publiable sans elles.
+4. Points pour un juriste (n° 20, 21, 23, 26) et un expert-comptable (n° 29) : à garder en liste pour une consultation.
+
 ## 2026-11-12 11:53 · Synchro n°6 : conception de la boutique
 
 **Tâches faites** : T23 à T25 (toutes `fait`).
