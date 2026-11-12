@@ -13,6 +13,7 @@ Lis `docs/architecture.md` avant toute tâche.
 - Chaque livrable va dans `outputs/` avec l'en-tête YAML décrit dans l'architecture.
 - Tout livrable public passe par `conformite-qa` avant validation humaine.
 - Rien n'est publié, envoyé ou payé sans l'accord explicite de l'humain.
+- **Gros livrables** : un rapport de plus de 40 Ko environ s'écrit en plusieurs fois (créer le fichier avec les premières sections, puis ajouter les suivantes une par une). Un seul très gros écriture peut bloquer l'agent.
 
 ## Conventions du dépôt
 
