@@ -1,5 +1,32 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-12 11:22 · Synchro n°3
+
+**Tâches faites** : T11 à T15 (toutes `fait`). Aucun agent lancé (T15 et règle permanente notée).
+- T11 : `coordination/a-installer/sourcing-produits.md` copié vers `.claude/agents/sourcing-produits.md` (copie identique vérifiée par `cmp`), dossier `a-installer/` supprimé. Le calcul de l'option B (stock léger) est bien conservé.
+- T12 : `knowledge/prix-et-marges.md` commité tel quel ; ligne mise à jour dans `knowledge/README.md` : « **Proposé, à valider** (proposition de Cowork du 2026-11-12) ».
+- T13 : `ROADMAP.md` phase 1 : 2 lignes ajoutées.
+- T14 : commit `2cbe74e` fix(agent): sourcing-produits v1.4 + proposition prix-et-marges, poussé.
+
+**Fichiers modifiés** : `.claude/agents/sourcing-produits.md`, `knowledge/prix-et-marges.md` (nouveau), `knowledge/README.md`, `ROADMAP.md`, `coordination/`.
+
+**Rapports d'agent** : aucun.
+
+**Incohérences repérées dans la v1.4 (installée telle quelle, à corriger par une prochaine tâche)** :
+1. Section 2 : l'ancienne ligne « Électronique sans CE vérifiable » est restée à côté de la nouvelle « Électronique » (éliminatoire sans exception). Elles se contredisent ; l'interdit final tranche, mais autant supprimer l'ancienne.
+2. Section 2 : deux critères de copie (« Copie ou contrefaçon » et « Copie ») : à fusionner.
+3. Section 1, point 4 : « 5 € de taxes **par colis** » alors que la section 3 dit « par catégorie d'article ».
+4. Section 5 : « Marquage CE si électronique » n'a plus d'objet.
+5. Section 1 point 2 et titre de la section 4 parlent encore d'un « budget de 0 € », alors que `contraintes.md` prévoit 150 à 500 € au lancement (dont échantillons).
+6. « Avant d'agir » point 3 et section 7 du rapport (« proposer `prix-et-marges.md` ») : maintenant que le fichier existe, préciser « proposer des modifications ».
+7. `tests/scenarios/sourcing-produits.md` n'a pas de cases pour les nouveaux éliminatoires (électronique, âge 14+ prouvé, canal officiel, cotisations dans la marge).
+8. `knowledge/politiques.md` n'existe pas encore : la case ROADMAP « Valider … politiques.md » suppose de le créer à partir de la section 5 du dossier conformite-qa.
+
+**🔔 ACTION HUMAINE**
+1. **Redémarre Claude Code** (`/exit` puis `claude`) pour charger `sourcing-produits` v1.4.
+2. Relis et valide (ou corrige) `knowledge/prix-et-marges.md` : surtout le taux de cotisations (12,3 % ou 13,3 % selon versement libératoire) et la mention TVA.
+3. La v3 du sourcing attend la réponse de Robotime : si le brouillon A corrigé n'est pas encore envoyé, c'est à toi de l'envoyer.
+
 ## 2026-11-12 11:15 · Synchro n°2
 
 **Tâches faites** : T5 à T10 (toutes `fait`).

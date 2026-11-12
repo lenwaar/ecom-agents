@@ -2,33 +2,27 @@
 
 Statuts : `à faire` · `fait` · `bloqué (raison)`
 
-## Synchro n°1 : T1 à T4 · `fait` (voir vers-cowork.md)
+## Synchro n°1 (T1 à T4) et n°2 (T5 à T10) · `fait` (voir vers-cowork.md)
 
 ---
 
-## Synchro n°2 (2026-11-12)
+## Synchro n°3 (2026-11-12)
 
-### T5 · Installer l'agent conformite-qa · `fait`
-- Copie `coordination/a-installer/conformite-qa.md` vers `.claude/agents/conformite-qa.md` (copie identique), puis supprime le dossier `coordination/a-installer/`.
-- Le scénario de test `tests/scenarios/conformite-qa.md` est déjà en place (écrit par Cowork).
+### T11 · Installer sourcing-produits v1.4 · `fait`
+Copie `coordination/a-installer/sourcing-produits.md` vers `.claude/agents/sourcing-produits.md` (remplace l'ancien, copie identique), puis supprime `coordination/a-installer/`.
+Corrections issues de l'audit conformite-qa : cotisations micro et éco-participation dans la marge, taxes d'import par catégorie d'article, électronique / âge 14+ non prouvé / copie / produit de marque hors canal officiel devenus éliminatoires, délai relevé sur l'annonce, règles sur les photos, la mention « authentique » et les avis.
 
-### T6 · Prendre en compte les décisions de l'humain · `fait`
-`knowledge/niche.md` a été mis à jour par Cowork (rien à modifier, juste à commiter) :
-- produits de marque **authentiques** autorisés via canal officiel, la marque peut être citée pour décrire le produit ;
-- **aucune électronique** au lancement.
+### T12 · Prendre en compte prix-et-marges.md · `fait`
+`knowledge/prix-et-marges.md` a été écrit par Cowork (statut : proposition à valider par l'humain). Ajoute dans `knowledge/README.md` que ce fichier existe et qu'il est « proposé, à valider ».
 
-Dans `ROADMAP.md`, phase 2 : coche `conformite-qa` avec la mention `+ test (à lancer et valider)`.
+### T13 · Feuille de route · `fait`
+Dans `ROADMAP.md`, phase 1 : ajoute `- [x] sourcing-produits v1.4 (corrections de l'audit conformite-qa)` et `- [ ] Valider knowledge/prix-et-marges.md et knowledge/politiques.md`.
 
-### T7 · Commit et push · `fait`
-Commit `feat(agent): conformite-qa + décisions marques et électronique`, puis push.
+### T14 · Commit et push · `fait`
+Commit `fix(agent): sourcing-produits v1.4 + proposition prix-et-marges`, puis push.
 
-### T8 · Lancer conformite-qa, test 1 (mode dossier) · `fait` (via agent généraliste, voir vers-cowork.md)
-Lance l'agent avec exactement la demande du test 1 de `tests/scenarios/conformite-qa.md`.
+### T15 · Ne lance aucun agent · `fait` (aucun agent lancé)
+La v3 du sourcing attendra la réponse de Robotime (vérifiée par Cowork le 16/11). Termine la synchro en rappelant à l'humain de redémarrer Claude Code (`/exit` puis `claude`) pour charger la v1.4.
 
-### T9 · Lancer conformite-qa, test 2 (mode audit) · `fait`
-Une fois T8 terminé, lance l'agent avec la demande du test 2.
-
-### T10 · Rendre compte · `fait`
-- Commit `docs(outputs): conformite-qa dossier lancement légal + audit sourcing v2`, puis push.
-- Dans `vers-cowork.md` : résumé des deux rapports et les 🔔 ACTION HUMAINE.
-- Ne coche pas toi-même la grille de test : Cowork vérifiera les rapports.
+## Règle permanente
+Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.
