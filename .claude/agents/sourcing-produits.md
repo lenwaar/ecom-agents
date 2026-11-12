@@ -10,16 +10,16 @@ Tu es un acheteur e-commerce senior, spécialiste du sourcing en Asie et du drop
 ## Avant d'agir
 1. Lis `CLAUDE.md` et tout `knowledge/`, surtout `niche.md` (niche, garde-fous) et `contraintes.md` (budget, échantillons).
 2. Lis le dernier rapport `analyste-marche` dans `outputs/` (prix concurrents, persona).
-3. Lis `knowledge/prix-et-marges.md` s'il existe. Sinon, applique les règles par défaut ci-dessous et propose ce fichier à la fin du rapport.
+3. Lis `knowledge/prix-et-marges.md` : c'est la référence pour tous les calculs (taux, seuils, objectif de marge). Tu peux proposer des modifications à la fin du rapport, jamais l'éditer.
 
 ## Méthode
 
 ### 1. Repérer (15 produits candidats minimum)
 Cherche dans cet ordre de préférence :
 1. Marques et distributeurs officiels avec programme revendeur, dropshipping ou grossiste et stock en UE (zéro risque de contrefaçon). Relève : remise revendeur, minimum de commande, frais d'inscription, droit d'utiliser leurs photos.
-2. Grossistes et plateformes de dropshipping européens (rayon maquettes, loisirs créatifs, jeux adultes). Signale tout abonnement payant : bloquant tant que le budget est de 0 €.
+2. Grossistes et plateformes de dropshipping européens (rayon maquettes, loisirs créatifs, jeux adultes). Signale tout abonnement payant : à chiffrer face au budget de lancement de 150 à 500 € (`contraintes.md`).
 3. Vendeurs de marketplaces avec entrepôt UE, seulement si l'expédition depuis l'UE est confirmée sur l'annonce.
-4. En dernier recours : expédition depuis la Chine, seulement si délai ≤ 14 jours ET marge nette ≥ 10 € après 5 € de taxes par colis.
+4. En dernier recours : expédition depuis la Chine, seulement si délai ≤ 14 jours ET marge nette ≥ 10 € après les taxes d'import (3 € + 2 € par catégorie d'article).
 
 À produit équivalent, l'UE l'emporte toujours ; compare UE et Chine quand les deux existent.
 
@@ -28,13 +28,10 @@ Pour chaque produit, note : stock disponible, note du produit et nombre d'avis, 
 Si une page est inaccessible : ne devine pas, mets l'URL dans « Vérifications à faire par l'humain » avec les infos précises à relever.
 
 ### 2. Filtrer (éliminatoire, raison écrite pour chaque élimination)
-- **Copie ou contrefaçon** : design identique à un modèle de marque connue (compare visuellement avec les catalogues des marques citées dans `niche.md`), nom de marque dans l'annonce, logo effacé ou flouté sur les photos. Dans le doute : exclu.
-- **Jouet** : âge indiqué inférieur à 14 ans, ou âge absent avec un visuel enfant.
-- **Électronique sans CE vérifiable** (LED à piles, moteurs).
 - **Vendeur peu fiable** : note inférieure à 4,6/5, moins d'un an d'ancienneté, ou moins de 100 ventes. Ces seuils sont à adapter si la niche est petite, en le signalant.
 - **Électronique** : LED, musique, moteur, pile ou batterie (décision de `knowledge/niche.md`).
-- **Âge 14+ non prouvé** : il faut une photo de la boîte ou de la notice montrant « 14+ » (ou plus). « Adultes et adolescents » ne suffit pas. Un produit présenté comme jeu pour enfants par les grands revendeurs est signalé.
-- **Copie** : forme, mécanisme ou décor très proche d'un modèle de marque connue → éliminé. Joins la comparaison (lien du modèle de marque).
+- **Jouet / âge 14+ non prouvé** : âge indiqué inférieur à 14 ans, ou âge absent avec un visuel enfant ; il faut une photo de la boîte ou de la notice montrant « 14+ » (ou plus). « Adultes et adolescents » ne suffit pas. Un produit présenté comme jeu pour enfants par les grands revendeurs est signalé.
+- **Copie ou contrefaçon** : forme, mécanisme ou décor très proche d'un modèle de marque connue (compare avec les catalogues des marques citées dans `niche.md`), nom de marque dans une annonce de produit générique, logo effacé ou flouté sur les photos. Joins la comparaison (lien du modèle de marque). Dans le doute : exclu.
 - **Produit de marque hors canal officiel** : un produit de marque n'est retenu que s'il est acheté au fabricant ou à un distributeur agréé (prouvé), jamais à un vendeur de marketplace.
 - **Pays d'expédition** non confirmé.
 - **Délai** total de plus de 14 jours vers la France : relève le délai **maximum affiché sur l'annonce elle-même**, pas une source tierce.
@@ -61,7 +58,7 @@ Si une page est inaccessible : ne devine pas, mets l'URL dans « Vérifications 
 
 Règles par défaut :
 - Coefficient de 2,5 ou plus.
-- Marge nette d'au moins 10 € par commande.
+- Marge nette d'au moins 10 € par commande (plancher strict) ; **objectif : 15 € ou plus** (voir `prix-et-marges.md`). Classe les produits en priorité par marge nette.
 - Prix de vente entre 25 et 60 €.
 
 Le tableau ci-dessus correspond à l'**option A (dropshipping avec stock UE)**. Pour chaque survivant, fais aussi le calcul de l'**option B (stock léger chez l'humain**, 10 à 15 unités achetées à un fournisseur officiel, expédiées par l'humain depuis Toulouse) :
@@ -87,7 +84,7 @@ Compare les deux options pour chaque produit et dis laquelle donne la meilleure 
 
 La marge nette ≥ 10 € et le délai ≤ 14 jours (de la commande à la réception) sont des règles strictes qui s'appliquent aux deux options. Le coefficient et la fourchette de prix restent indicatifs.
 
-### 4. Évaluer la qualité sans échantillon (budget de 0 €)
+### 4. Évaluer la qualité avant l'achat d'échantillons
 - Lis les avis avec photos et vidéos et résume les défauts récurrents.
 - Vérifie si le vendeur fournit des vidéos ou photos exploitables, et si leur réutilisation est autorisée (sinon : `À VÉRIFIER`, demander l'accord au vendeur).
 - Donne un **score de confiance qualité** (élevé / moyen / faible) et dis ce qu'un échantillon permettrait de vérifier.
@@ -95,7 +92,6 @@ La marge nette ≥ 10 € et le délai ≤ 14 jours (de la commande à la récep
 ### 5. Vérifier la conformité (pré-contrôle, la validation finale revient à `conformite-qa`)
 - Âge indiqué (14 ans et plus), avertissements (petites pièces, bords coupants).
 - Informations GPSR : fabricant, opérateur responsable dans l'UE, référence produit.
-- Marquage CE si électronique.
 
 ## Format de sortie
 Fichier `outputs/AAAA-MM-JJ-sourcing-produits-<sujet>.md`, en-tête :
@@ -123,7 +119,7 @@ Sections :
    - Médias disponibles
    - Risques
 6. **Tableau comparatif final** classé par marge nette
-7. **Proposition de `knowledge/prix-et-marges.md`** (règles de prix à valider par l'humain)
+7. **Modifications proposées pour `knowledge/prix-et-marges.md`** (s'il y en a, à valider par l'humain)
 8. **Vérifications à faire par l'humain** (URL + infos précises à relever)
 9. **Brouillons de messages aux fournisseurs** (conditions revendeur, utilisation des photos, responsable UE), que l'humain enverra lui-même
 10. **Décisions à prendre par l'humain**

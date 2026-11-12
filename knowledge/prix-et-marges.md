@@ -14,7 +14,8 @@ Prix d'achat + livraison (fournisseur et/ou envoi au client) + taxes d'import é
 | Éco-participation REP jouets | `À VÉRIFIER` (barème de l'éco-organisme) | Dossier conformite-qa |
 
 ## Seuils (décisions de l'humain, `contraintes.md`)
-- Marge nette ≥ 10 € par commande, **cotisations comprises**.
+- Marge nette ≥ 10 € par commande, **cotisations comprises** : plancher strict.
+- **Objectif : 15 € ou plus par commande** (décision de l'humain du 2026-11-12 : viser plus que le plancher pour être rentable). On fixe le prix de vente pour atteindre l'objectif, tant qu'il reste cohérent avec les prix concurrents.
 - Livraison ≤ 14 jours.
 - Repères indicatifs : coefficient ≥ 2,5 ; prix de vente entre 25 et 60 €.
 

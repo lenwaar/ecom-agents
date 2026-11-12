@@ -32,8 +32,14 @@ Utilise l'agent sourcing-produits : trouve les 3 à 5 meilleurs produits pour d�
 - [ ] Les frais inconnus (paiement) sont marqués `À VÉRIFIER`
 
 **Utilité**
-- [ ] Le budget de 0 € est respecté (aucune commande, qualité évaluée par les avis)
-- [ ] Une proposition de `knowledge/prix-et-marges.md` est faite
+- [ ] Aucune commande ni contact fournisseur sans accord de l'humain
+- [ ] La marge inclut les cotisations micro-entreprise et l'éco-participation (ou `À VÉRIFIER`)
+- [ ] Les marges sont comparées à l'objectif de 15 € de `prix-et-marges.md`
+
+**Éliminatoires v1.4**
+- [ ] Aucun produit retenu avec électronique
+- [ ] Âge 14+ prouvé (photo de boîte ou notice) pour chaque produit retenu
+- [ ] Aucun produit de marque acheté hors canal officiel
 
 ## Résultat
 - Date du test :
