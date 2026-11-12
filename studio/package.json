@@ -1,0 +1,19 @@
+{
+  "name": "rouage-laiton-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Atelier de rendus 3D de démonstration (Three.js + Playwright + sharp)",
+  "type": "module",
+  "scripts": {
+    "postinstall": "playwright install chromium",
+    "render": "node render.js",
+    "render:produit": "node render.js --only",
+    "planche": "node contact.js",
+    "preview": "node server.js"
+  },
+  "dependencies": {
+    "playwright": "1.65.0",
+    "sharp": "0.35.5",
+    "three": "0.187.0"
+  }
+}

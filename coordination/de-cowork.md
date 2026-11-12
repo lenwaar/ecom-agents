@@ -18,7 +18,7 @@ Spécification de référence pour tout le site : `outputs/2026-11-12-architecte
 Lance `redacteur-catalogue` avec la demande de `tests/scenarios/redacteur-catalogue.md`.
 Commit `feat(catalogue): 10 fiches produits de démonstration`.
 
-### T32 · Visuels 3D des produits · `à faire`
+### T32 · Visuels 3D des produits · `fait`
 Lance `studio-visuel` avec la demande de `tests/scenarios/studio-visuel.md`.
 Si c'est trop long en une fois : d'abord l'atelier (`studio/lib/`, matériaux, éclairage, script de rendu) + 2 produits, montre la planche contact dans le compte rendu, puis les 8 autres.
 Commit `feat(studio): visuels 3D des produits de démonstration`.

@@ -1,5 +1,10 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-12 · Synchro n°8 : en cours (suivi en direct)
+
+- T31 `fait` (commit `5e8fa87`) : `redacteur-catalogue` a écrit les 10 fiches (`site/src/content/produits/`, `demo: true`, sans lien de paiement) + rapport `outputs/2026-11-12-redacteur-catalogue-fiches-demo.md`. Format du §5.4 de la spec v2 (pas celui de `site-technique.md`) ; champ `accroche` ajouté ; beaucoup de `À VÉRIFIER` dans des champs numériques/booléens : le schéma de `developpeur-web` doit les accepter pour les démos.
+- T32 `fait` : `studio/` (Three.js + Playwright + sharp, `npm run render`) a produit 60 vues produits (6 × 10) + 3 ambiances (`bureau-nuit`, `comparateur-planches`/`-monte`), WebP 1600 et 800 px, 126 fichiers, 5,7 Mo dans `site/public/`. Corrigé en fin de tâche : vue `boite` de la boîte à musique (manquait), `detail` du moulin (gros plan flou sans sujet → transmission sous le socle), cadrage du comparateur (planches hors champ). Planche contact : `outputs/planches/2026-11-12-studio-visuel-planche-contact.jpg` ; rapport `outputs/2026-11-12-studio-visuel-rendus-demo.md`. Rendus de démonstration seulement, à ne jamais utiliser pour vendre un produit réel.
+
 ## 2026-11-12 18:43 · Synchro n°7 : identité Laiton, conception v2, audit
 
 **Tâches faites** : T26 à T30 (toutes `fait`).
