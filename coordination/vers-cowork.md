@@ -1,10 +1,30 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
-## 2026-11-13 · Synchro n°13 (T52 à T55) : en cours
+## 2026-11-13 · Synchro n°13 (T52 à T55) : terminée
+
+**Ordre suivi** : T52, T53, T54, T55. **Commits poussés** : `chore(coordination): journal v2 (jsonl ignoré) et copie de la synchro n°13`, `feat(qg): studio en direct`, `chore(coordination): synchro n°13 terminée (première vidéo, contrôle BLOQUANT)`. Vérificateur `py tools/verifier_livrables.py` : 0 erreur, 1 avertissement connu.
+
+**Rapports produits**
+- `outputs/2026-11-13-developpeur-web-studio-en-direct.md` (à-valider) : `qg/studio/` branché sur le journal JSONL, `outputs/` (bouton Valider qui ne change que le statut) et `medias/`, `npm test` 10/10, captures dans `outputs/qg/`. Écarts : Cowork reste au repos en direct (aucun événement de Cowork dans le journal) ; barre de progression sans pourcentage ; `SubagentStop` arrive sans nom d'agent, donc le studio arrête le dernier agent lancé (erreur possible si plusieurs agents en parallèle : à corriger dans `tools/journal_claude.py`, que je n'ai pas touché) ; champ ajouté `date_validation` (car `date` existe déjà).
+- `outputs/2026-11-13-studio-video-de-la-planche-a-l-objet.md` (à-valider) : 2 vidéos de 20 s en 9:16 (v1 sous-titres, v2 voix Piper siwis), grille §5 cochée, 6 effets réutilisables, texte de voix adapté (« ce qu'il y a dans la boîte » au lieu de « ce que vous recevez », appel final « Suivez l'atelier »). Modèle faster-whisper large-v3 (environ 3 Go) dans `studio/video/.cache/hf/`, hors Git.
+- `outputs/2026-11-13-conformite-qa-videos-planche-a-objet.md` · **verdict BLOQUANT** pour une publication en l'état : A1 ⛔ nom « Rouage & Laiton » non vérifié (INPI, domaine, comptes) ; A2 « Produit de démonstration, non vendu » seulement à la fin (à mettre dans les légendes et la pastille) ; A3 « Suivez l'atelier » laisse croire à une fabrication maison (à remplacer, nouveau rendu des 2 vidéos) ; A4 mélodie à présenter comme originale de synthèse ; A5 « laiton » à ne pas réutiliser sur un vrai produit sans preuve ; A6-A7 crédits courts et légende v1 corrigés au §2.3. Licences siwis et hifi_tts_92 (CC BY 4.0) vérifiées sur les sources officielles : crédit complet exact.
+
+**Remarques pour toi (Cowork)**
+- Je n'ai appliqué aucune correction de conformité : la synchro ne le demandait pas. A3 demande un nouveau rendu par `studio-video` (synchro suivante).
+- Le studio en direct a bien suivi `studio-video` pendant T54.
+
+**🔔 ACTION HUMAINE**
+1. Écouter `medias/de-la-planche-a-l-objet-9x16-voix.mp4` : la voix Piper suffit-elle (sinon ElevenLabs Starter, 6 $ HT/mois) ? Le mot « plus » est-il net ? Le niveau de la mélodie convient-il ?
+2. Valider le texte adapté de la voix et choisir l'appel final qui remplace « Suivez l'atelier » (« Suivez la suite » ou « Suivez-nous »).
+3. Vérifier le nom « Rouage & Laiton » (data.inpi.fr, TMview classes 28 et 35, domaine, noms de compte) : c'est le seul point bloquant avant toute publication.
+4. Décider si une vidéo de produit de démonstration non vendu peut être publiée.
+5. Ouvrir le studio en direct : `cd qg/studio` puis `npm start`, et aller sur http://127.0.0.1:4178/. Il y a 18 livrables `à-valider` à passer en revue (le bouton Valider ne change que leur statut).
 
 ### Suivi en direct
 - T52 `fait` : `coordination/journal-direct.jsonl` ajouté au `.gitignore` ; les hooks le remplissent (vérifié : une ligne JSON par demande et par outil, à côté de `journal-direct.md`). Commit `chore(coordination): journal v2 (jsonl ignoré)`.
 - T53 `fait` (developpeur-web) : `qg/studio/` (Node seul, 127.0.0.1:4178, SSE sur le journal JSONL, polices locales, mode simulation gardé). Bouton Valider : seulement `statut` → `validé` + `valide_par: humain` + `date_validation` (le champ `date` existait déjà) ; chemins hors `outputs/` refusés. `npm test` : 10/10 (Théo au travail puis au repos, validation sur faux livrable). Captures `outputs/qg/`, rapport `outputs/2026-11-13-developpeur-web-studio-en-direct.md`. Lancement : `cd qg/studio` puis `npm start`, ouvrir http://127.0.0.1:4178/. Commit `feat(qg): studio en direct`.
+- T54 `fait` (studio-video, suivi dans le studio en direct) : `medias/de-la-planche-a-l-objet-9x16.mp4` (20,0 s, 1080×1920, 30 i/s, 8,6 Mo, sous-titres, mélodie et bruitages faits par le code) et `medias/de-la-planche-a-l-objet-9x16-voix.mp4` (voix Piper siwis, sous-titres mot à mot faster-whisper large-v3, musique 15 dB sous la voix, 8,7 Mo). Images clés dans `medias/apercus/de-la-planche-a-l-objet/`, 6 effets réutilisables dans `studio/video/effets/`, crédits siwis + voix de base hifi_tts_92 (CC BY 4.0) et Piper (GPL, outil) dans `medias/licences.md`. Aucune musique tierce. Rapport `outputs/2026-11-13-studio-video-de-la-planche-a-l-objet.md`.
+- T55 `fait` (conformite-qa) : verdict BLOQUANT (nom de marque non vérifié) et 6 points à corriger, voir plus haut. Vérificateur 0 erreur, commit et push.
 
 ## 2026-11-13 · Synchro n°12 (T48 à T51) : terminée
 

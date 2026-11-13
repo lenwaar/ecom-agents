@@ -1,0 +1,242 @@
+[
+ {
+  "mot": "De",
+  "debut": 0.28,
+  "fin": 0.48,
+  "page": false
+ },
+ {
+  "mot": "la",
+  "debut": 0.48,
+  "fin": 0.58,
+  "page": false
+ },
+ {
+  "mot": "planche…",
+  "debut": 0.58,
+  "fin": 1.02,
+  "page": false
+ },
+ {
+  "mot": "à",
+  "debut": 1.02,
+  "fin": 1.08,
+  "page": false
+ },
+ {
+  "mot": "l'objet.",
+  "debut": 1.08,
+  "fin": 1.5,
+  "page": false
+ },
+ {
+  "mot": "Ça,",
+  "debut": 2.33,
+  "fin": 2.54,
+  "page": true
+ },
+ {
+  "mot": "c'est",
+  "debut": 2.74,
+  "fin": 3.32,
+  "page": false
+ },
+ {
+  "mot": "ce",
+  "debut": 3.32,
+  "fin": 3.4,
+  "page": false
+ },
+ {
+  "mot": "qu'il",
+  "debut": 3.4,
+  "fin": 3.48,
+  "page": false
+ },
+ {
+  "mot": "y",
+  "debut": 3.48,
+  "fin": 3.52,
+  "page": false
+ },
+ {
+  "mot": "a",
+  "debut": 3.52,
+  "fin": 3.6,
+  "page": false
+ },
+ {
+  "mot": "dans",
+  "debut": 3.6,
+  "fin": 3.68,
+  "page": true
+ },
+ {
+  "mot": "la",
+  "debut": 3.68,
+  "fin": 3.76,
+  "page": false
+ },
+ {
+  "mot": "boîte.",
+  "debut": 3.76,
+  "fin": 4.16,
+  "page": false
+ },
+ {
+  "mot": "Une",
+  "debut": 4.98,
+  "fin": 5.18,
+  "page": true
+ },
+ {
+  "mot": "boîte",
+  "debut": 5.18,
+  "fin": 5.52,
+  "page": false
+ },
+ {
+  "mot": "à",
+  "debut": 5.52,
+  "fin": 5.52,
+  "page": false
+ },
+ {
+  "mot": "musique,",
+  "debut": 5.52,
+  "fin": 5.8,
+  "page": false
+ },
+ {
+  "mot": "à",
+  "debut": 5.8,
+  "fin": 6.22,
+  "page": true
+ },
+ {
+  "mot": "manivelle.",
+  "debut": 6.22,
+  "fin": 6.82,
+  "page": false
+ },
+ {
+  "mot": "Un",
+  "debut": 8.33,
+  "fin": 8.46,
+  "page": true
+ },
+ {
+  "mot": "écran",
+  "debut": 8.46,
+  "fin": 8.84,
+  "page": false
+ },
+ {
+  "mot": "de",
+  "debut": 8.84,
+  "fin": 8.9,
+  "page": false
+ },
+ {
+  "mot": "plus ?",
+  "debut": 8.9,
+  "fin": 9.44,
+  "page": false
+ },
+ {
+  "mot": "Non.",
+  "debut": 9.44,
+  "fin": 9.98,
+  "page": true
+ },
+ {
+  "mot": "Un",
+  "debut": 11.13,
+  "fin": 11.3,
+  "page": true
+ },
+ {
+  "mot": "objet",
+  "debut": 11.3,
+  "fin": 11.64,
+  "page": false
+ },
+ {
+  "mot": "à",
+  "debut": 11.64,
+  "fin": 11.82,
+  "page": false
+ },
+ {
+  "mot": "construire.",
+  "debut": 11.82,
+  "fin": 12.44,
+  "page": false
+ },
+ {
+  "mot": "Éteignez",
+  "debut": 13.73,
+  "fin": 14.28,
+  "page": true
+ },
+ {
+  "mot": "les",
+  "debut": 14.28,
+  "fin": 14.36,
+  "page": false
+ },
+ {
+  "mot": "lumières…",
+  "debut": 14.36,
+  "fin": 14.72,
+  "page": false
+ },
+ {
+  "mot": "et",
+  "debut": 14.72,
+  "fin": 14.78,
+  "page": true
+ },
+ {
+  "mot": "laissez",
+  "debut": 14.78,
+  "fin": 15.1,
+  "page": false
+ },
+ {
+  "mot": "briller",
+  "debut": 15.1,
+  "fin": 15.48,
+  "page": false
+ },
+ {
+  "mot": "le",
+  "debut": 15.48,
+  "fin": 15.56,
+  "page": true
+ },
+ {
+  "mot": "laiton.",
+  "debut": 15.56,
+  "fin": 15.9,
+  "page": false
+ },
+ {
+  "mot": "Rouage",
+  "debut": 17.18,
+  "fin": 17.62,
+  "page": true
+ },
+ {
+  "mot": "et",
+  "debut": 17.62,
+  "fin": 17.7,
+  "page": false
+ },
+ {
+  "mot": "Laiton.",
+  "debut": 17.7,
+  "fin": 18.04,
+  "page": false
+ }
+]

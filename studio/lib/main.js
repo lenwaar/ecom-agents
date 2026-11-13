@@ -65,6 +65,22 @@ async function run() {
       const c = bb.getCenter(new THREE.Vector3());
       cam = { aperture: S.aperture ?? f.distance * 0.012, focus: camera.position.distanceTo(c) };
       samples = 200;
+    } else if (view === 'orbite') {
+      // Plan d'orbite pour la vidéo (studio-video, effet orbite-produit) : lumière fixe, caméra qui tourne,
+      // distance constante (sphère englobante) pour éviter tout « pompage » du cadrage d'une image à l'autre.
+      // URL : viewer.html?scene=<slug>&view=orbite&az=10&el=18&rigaz=35&zoom=1&w=1080&h=1920
+      const root = P.root; scene.add(root);
+      const bb = new THREE.Box3().setFromObject(root);
+      const az = +(q.get('az') ?? 35), el = +(q.get('el') ?? 20), rigAz = +(q.get('rigaz') ?? 35), zoom = +(q.get('zoom') ?? 1);
+      rig = studioRig(studio.renderer, scene, bb, { az: rigAz, wall: P.wall });
+      const sph = bb.getBoundingSphere(new THREE.Sphere());
+      const halfV = THREE.MathUtils.degToRad(camera.fov) / 2;
+      const halfH = Math.atan(Math.tan(halfV) * camera.aspect);
+      const dist = (sph.radius / Math.sin(Math.min(halfV, halfH))) / zoom;
+      const target = sph.center.clone(); target.y += +(q.get('dy') ?? 0);
+      camera.position.copy(target).addScaledVector(dirFromAngles(az, el), dist);
+      camera.up.set(0, 1, 0); camera.lookAt(target);
+      camera.near = dist / 20; camera.far = dist * 40; camera.updateProjectionMatrix();
     } else {
       const root = P.root; scene.add(root);
       const bb = new THREE.Box3().setFromObject(root);

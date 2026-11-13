@@ -133,10 +133,10 @@ Dans l'ordre, une ligne dans `vers-cowork.md` après chaque tâche, `py` au lieu
 ### T53 · Studio en direct · `fait`
 Lance `developpeur-web` sur `docs/studio/BRIEF-STUDIO-DIRECT.md`, étapes 1 à 3, en partant de `docs/reference/studio-en-direct.html`. Commit `feat(qg): studio en direct`. Dis à l'humain la commande pour l'ouvrir.
 
-### T54 · Première vidéo · `à faire`
+### T54 · Première vidéo · `fait`
 Lance `studio-video` avec la demande de `tests/scenarios/studio-video.md` (« De la planche à l'objet », 20 s, 9:16, sous-titres seulement), puis une 2e version avec la voix Piper `fr_FR-siwis-medium` (texte tiré de `medias/voix-off-promo-v2.md`, crédits notés dans `medias/licences.md`). Le studio en direct doit montrer le travail pendant ce temps.
 
-### T55 · Contrôle et fin · `à faire`
+### T55 · Contrôle et fin · `fait`
 `conformite-qa` sur les 2 vidéos (mentions, droits, crédits Piper). Vérificateur à 0 erreur, commit, push, compte rendu avec 🔔 ACTION HUMAINE.
 
 ## Règle permanente
