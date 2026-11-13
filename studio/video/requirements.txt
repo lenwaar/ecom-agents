@@ -1,0 +1,7 @@
+# Outils Python du studio vidéo (installés avec : py -m pip install --user -r studio/video/requirements.txt)
+faster-whisper==1.2.1
+ctranslate2==4.9.0
+# PyAV 19 casse faster-whisper 1.2.1 (argument metadata_errors) : rester en 18.x
+av==18.1.0
+# Piper (OHF-Voice/piper1-gpl, GPL-3.0) : seules les voix fr_FR-siwis-medium et fr_FR-mls-medium sont autorisées (CC BY 4.0, crédit obligatoire)
+piper-tts==1.8.0

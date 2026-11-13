@@ -6,3 +6,13 @@ __pycache__/
 
 # Journal en direct de Claude Code (lu par Cowork sur le PC)
 coordination/journal-direct.md
+
+# Studio vidéo (synchro n°12)
+studio/video/.cache/
+studio/video/_vendor/
+studio/video/node_modules/
+*.wav
+# Les MP4 de plus de 20 Mo ne peuvent pas être filtrés par taille dans .gitignore : brouillons hors Git
+medias/brouillons/
+studio/video/**/renders/
+studio/video/**/.hyperframes/

@@ -16,3 +16,4 @@ Leçons tirées des synchros, à appliquer par **tous les agents et par Claude C
 | 10 | Les valeurs `À VÉRIFIER` d'un produit de démonstration sont **masquées** sur le site ; sur un vrai produit, elles **bloquent** la mise en ligne. | Fiches de démonstration (synchro n°8) |
 | 11 | Un rendu 3D ne remplace **jamais** la photo d'un produit réellement vendu ; mention « Rendus 3D de démonstration » visible. | Règles studio-visuel et vidéos |
 | 12 | Lancer `python tools/verifier_livrables.py` **avant chaque commit** : 0 erreur exigée. | Mis en place par Cowork |
+| 13 | La licence d'une voix Piper se vérifie sur **toute la chaîne d'entraînement** (voix de base comprise), pas seulement sur la ligne « License » de sa fiche ; seules `fr_FR-siwis-medium` et `fr_FR-mls-medium` sont autorisées en usage commercial (CC BY 4.0, crédit obligatoire). | Veille licences du studio vidéo (T49, synchro n°12) |

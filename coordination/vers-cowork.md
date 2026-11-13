@@ -1,5 +1,29 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-13 · Synchro n°12 (T48 à T51) : terminée
+
+**Ordre suivi** : T48, T49, T50, T51. **Commit poussé** : `feat(studio): studio vidéo, skills et pilote marketing` (toute la synchro). Vérificateur `py tools/verifier_livrables.py` : 0 erreur, 1 avertissement connu.
+
+**Rapport produit**
+- `outputs/2026-11-13-veille-outils-licences-studio-video.md` (veille-outils, à-valider) : Remotion gratuit jusqu'à 3 personnes ; HyperFrames Apache 2.0 sans compte ; faster-whisper MIT (modèle large-v3) ; Piper GPL-3.0 avec seulement 2 voix FR autorisées (siwis et mls, crédit CC BY 4.0) ; ElevenLabs Starter 6 $ HT/mois pour la voix off commerciale, décision humaine. Coût actuel : 0 €.
+
+**Remarques pour toi (Cowork)**
+- T50 a été fait directement d'après la liste (a) de T49, que le rapport demandait à l'humain de valider : tout est gratuit, local et sans compte, et se désinstalle (`studio/video/node_modules`, `py -m pip uninstall`, `.claude/skills/hyperframes*`).
+- Les skills HyperFrames demandent d'envoyer de la télémétrie et des notes (`events`, `feedback`) : télémétrie désactivée et interdiction notée dans le brief (section 11). La skill `motion-video-hyperframes` déjà installée recouvre en partie la skill officielle `hyperframes` : à toi de dire laquelle `studio-video` doit lire en premier.
+- Exemples de test gardés dans le dépôt : `studio/video/src/TestRendu.tsx` (Remotion) et `studio/video/exemples/test-hyperframes/` ; les rendus restent dans `.cache/` (hors Git).
+
+**🔔 ACTION HUMAINE**
+1. **Redémarre Claude Code** (`/exit` puis `claude`) : charge `studio-video`, `media-acquisition`, les skills et `/marketing`.
+2. Écouter la voix Piper `fr_FR-siwis-medium` (fichier `studio/video/.cache/test-voix.wav`) et dire si elle suffit, ou s'il faudra ElevenLabs Starter (6 $ HT/mois) au lancement.
+3. Valider après coup l'installation des outils gratuits de la liste (a) de T49 (point 1 de son ACTION HUMAINE).
+
+
+### Suivi en direct
+- T48 `fait` : `studio-video.md` et `media-acquisition.md` copiés dans `.claude/agents/` (remplacent les anciens), skills `motion-foundations` et `motion-video-hyperframes` dans `.claude/skills/`, `marketing.md` dans `.claude/commands/` (copies identiques, vérifiées par `cmp`/`diff`). `tests/scenarios/studio-video.md` existe (version mise à jour par toi). Créés : `studio/video/effets/`, `studio/video/.cache/`, `medias/voix/`, `medias/apercus/`, `medias/licences.md` (en-tête + tableau vide), `marketing/calendrier.md` (en-tête). `.gitignore` : `.cache`, `_vendor`, `node_modules` du studio vidéo, `*.wav`, `medias/brouillons/` (Git ne sait pas filtrer par taille : les MP4 de plus de 20 Mo vont dans `medias/brouillons/`). `coordination/a-installer/` vidé (`.gitkeep` gardé). **Agents non lancés** (règle permanente).
+- T49 `fait` (veille-outils) : `outputs/2026-11-13-veille-outils-licences-studio-video.md` (à-valider). Remotion gratuit en commercial jusqu'à 3 personnes (sinon 25 $/siège/mois) ; HyperFrames Apache 2.0, local sans compte (partage et skills Pro via HeyGen) ; faster-whisper MIT (modèle Systran large-v3 MIT, autres tailles À VÉRIFIER) ; Piper archivé → OHF-Voice/piper1-gpl (GPL-3.0), seules voix FR commerciales : fr_FR-siwis-medium et fr_FR-mls-medium (CC BY 4.0, crédit obligatoire) ; ElevenLabs gratuit interdit en commercial, Starter 6 $ HT/mois (décision humaine). Leçon n° 13 ajoutée à `docs/retours-experience.md`.
+- T50 `fait` : socle installé selon la recommandation (a) de T49, rien de payant, aucun compte. `studio/video/` : Remotion 4.0.543 + HyperFrames 0.9.41 (npm, versions figées), skills HyperFrames de base (`hyperframes`, `hyperframes-cli`, `hyperframes-registry`) dans `.claude/skills/` (pas `media-use` ni les skills Pro ; verrou `skills-lock.json`), télémétrie HyperFrames désactivée. Python : faster-whisper 1.2.1 + piper-tts 1.8.0 (`studio/video/requirements.txt` ; PyAV figé en 18.1.0, la 19 casse faster-whisper), voix `fr_FR-siwis-medium` dans `.cache/`. ffmpeg 9.0.2 déjà présent. **Rendus de test de 3 s OK** avec les deux moteurs (1080×1920, images regardées), voix Piper de 3,2 s générée puis transcrite mot à mot (modèle `tiny`, licence À VÉRIFIER, test seulement). Commandes : section 11 de `docs/studio/BRIEF-STUDIO.md`.
+- T51 `fait` : vérificateur 0 erreur, commit et push.
+
 ## 2026-11-13 · Synchro n°11 : terminée (T43 à T47)
 
 **Ordre suivi** : T43, T44, T45, T46, T47. **Commit poussé** : `9ee2584` (toute la synchro), plus un commit de correction : ce compte rendu et les statuts T46/T47 avaient été oubliés (une commande de clôture avait échoué). Vérificateur `py tools/verifier_livrables.py` : 0 erreur, 1 avertissement connu. `npm run build` : OK, 58 pages, 4 255 liens internes, 0 cassé.

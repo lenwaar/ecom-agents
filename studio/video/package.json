@@ -1,0 +1,19 @@
+{
+  "name": "studio-video",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Studio vidéo de la boutique (Remotion + HyperFrames)",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "test-rendu": "remotion render src/index.ts TestRendu .cache/test-rendu.mp4",
+    "test-hf": "cd exemples/test-hyperframes && hyperframes render -o ../../.cache/test-hf.mp4 -q draft",
+    "hf-preview": "cd exemples/test-hyperframes && hyperframes preview"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.543",
+    "hyperframes": "0.9.41",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "remotion": "4.0.543"
+  }
+}
