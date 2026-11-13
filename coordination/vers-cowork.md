@@ -1,5 +1,10 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-13 · Synchro n°13 (T52 à T55) : en cours
+
+### Suivi en direct
+- T52 `fait` : `coordination/journal-direct.jsonl` ajouté au `.gitignore` ; les hooks le remplissent (vérifié : une ligne JSON par demande et par outil, à côté de `journal-direct.md`). Commit `chore(coordination): journal v2 (jsonl ignoré)`.
+
 ## 2026-11-13 · Synchro n°12 (T48 à T51) : terminée
 
 **Ordre suivi** : T48, T49, T50, T51. **Commit poussé** : `feat(studio): studio vidéo, skills et pilote marketing` (toute la synchro). Vérificateur `py tools/verifier_livrables.py` : 0 erreur, 1 avertissement connu.

@@ -6,6 +6,7 @@ __pycache__/
 
 # Journal en direct de Claude Code (lu par Cowork sur le PC)
 coordination/journal-direct.md
+coordination/journal-direct.jsonl
 
 # Studio vidéo (synchro n°12)
 studio/video/.cache/

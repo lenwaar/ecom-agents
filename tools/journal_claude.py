@@ -2,7 +2,7 @@
 
 Appelé par les hooks de Claude Code (.claude/settings.json). Lit l'événement
 sur l'entrée standard et ajoute une ligne dans coordination/journal-direct.md.
-Ce fichier n'est pas commité (voir .gitignore) : Cowork le lit sur le PC.
+Ces fichiers ne sont pas commités (voir .gitignore) : Cowork et le tableau du studio les lisent sur le PC.
 Aucune donnée secrète n'est écrite : les contenus longs sont coupés.
 """
 import json
@@ -12,6 +12,7 @@ from datetime import datetime
 
 RACINE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 JOURNAL = os.path.join(RACINE, "coordination", "journal-direct.md")
+JSONL = os.path.join(RACINE, "coordination", "journal-direct.jsonl")  # lu par le tableau du studio
 MAX_LIGNES = 2000
 
 
@@ -78,6 +79,23 @@ def main():
         ligne = f"- {heure} · ATTEND L'HUMAIN · {court(ev.get('message', ''), 300)}"
     else:
         return
+
+    # Qui agit : l'agent (sous-agent) si Claude Code le précise, sinon la session principale.
+    qui = ev.get("agent_type") or ev.get("subagent_type") or ""
+    if nom_ev == "PostToolUse" and ev.get("tool_name") in ("Task", "Agent"):
+        cible = (ev.get("tool_input") or {}).get("subagent_type", "")
+    else:
+        cible = ""
+    if qui:
+        ligne = ligne.replace(" · ", f" · [{qui}] ", 1)
+    evenement = {"heure": heure, "type": nom_ev, "agent": qui, "outil": ev.get("tool_name", ""),
+                 "cible": cible, "texte": ligne.split(" · ", 1)[-1]}
+    os.makedirs(os.path.dirname(JSONL), exist_ok=True)
+    try:
+        with open(JSONL, "a", encoding="utf-8") as f:
+            f.write(json.dumps(evenement, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
 
     os.makedirs(os.path.dirname(JOURNAL), exist_ok=True)
     try:
