@@ -1,6 +1,8 @@
 ---
 agent: architecte-web
-statut: à-valider   # toujours cette valeur
+statut: validé   # toujours cette valeur
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-12
 version: 2, partie 2 (suite de outputs/2026-11-12-architecte-web-conception-boutique-v2.md)
 sources: [voir la partie 1 et la section 10 ci-dessous]

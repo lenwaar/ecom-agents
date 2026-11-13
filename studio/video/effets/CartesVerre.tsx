@@ -16,8 +16,9 @@ export const CartesVerre: React.FC<{
 }> = ({cartes, debut = 10, decalage = 10, haut = 400}) => {
 	const f = useCurrentFrame();
 	const {fps} = useVideoConfig();
-	const largeur = 300;
-	const ecart = 24;
+	// 3 cartes de 312 px + 2 écarts de 18 px = 972 px : marge de 54 px de chaque côté (rien n'est coupé)
+	const largeur = 312;
+	const ecart = 18;
 	const total = cartes.length * largeur + (cartes.length - 1) * ecart;
 	const x0 = (1080 - total) / 2;
 	return (
@@ -25,10 +26,13 @@ export const CartesVerre: React.FC<{
 			{cartes.map((c, i) => {
 				const s = spring({frame: f - debut - i * decalage, fps, config: {damping: 12, stiffness: 120, mass: 0.8}});
 				const flotte = Math.sin((f - i * 9) / 17) * 6;
-				// arc : la carte vient d'en bas et du côté, en tournant légèrement
-				const dx = (1 - s) * (i - (cartes.length - 1) / 2) * 90;
-				const dy = (1 - s) * 160 + flotte;
-				const rot = (1 - s) * (i % 2 ? 8 : -8);
+				// arc : la carte vient d'en bas et du côté, en tournant légèrement.
+				// Netteté : déplacements arrondis au pixel entier et rotation nulle dès que la carte est posée
+				// (une carte en verre tournée ou placée au demi-pixel est rendue floue par le navigateur).
+				const pose = s > 0.97;
+				const dx = pose ? 0 : Math.round((1 - s) * (i - (cartes.length - 1) / 2) * 90);
+				const dy = Math.round((pose ? 0 : (1 - s) * 160) + flotte);
+				const rot = pose ? 0 : (1 - s) * (i % 2 ? 8 : -8);
 				// reflet : un passage par cycle de 50 images, avec ralenti au départ et à l'arrivée (pas de balayage linéaire)
 				const cycle = (((f - debut - i * decalage) % 50) + 50) % 50;
 				const reflet = -300 + 900 * douce(Math.min(1, cycle / 32));
@@ -42,7 +46,7 @@ export const CartesVerre: React.FC<{
 							width: largeur,
 							height: 190,
 							opacity: Math.min(1, s * 1.4),
-							transform: `translate(${dx}px, ${dy}px) rotate(${rot}deg)`,
+							transform: rot ? `translate(${dx}px, ${dy}px) rotate(${rot}deg)` : `translate(${dx}px, ${dy}px)`,
 							borderRadius: 28,
 							background: 'linear-gradient(150deg, rgba(245,241,232,0.20), rgba(245,241,232,0.06))',
 							border: '1.5px solid rgba(245,241,232,0.35)',
@@ -53,12 +57,13 @@ export const CartesVerre: React.FC<{
 							display: 'flex',
 							flexDirection: 'column',
 							justifyContent: 'center',
-							padding: '0 28px',
+							padding: '0 24px',
+							boxSizing: 'border-box',
 						}}
 					>
 						<div style={{position: 'absolute', top: -40, left: reflet, width: 90, height: 300, transform: 'rotate(25deg)', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent)'}} />
-						<div style={{fontFamily: TEXTE, fontWeight: 500, fontSize: 30, color: C.texte2, letterSpacing: 1.5, textTransform: 'uppercase'}}>{c.titre}</div>
-						<div style={{fontFamily: TITRE, fontWeight: 500, fontSize: 62, color: C.laiton, lineHeight: 1.1, marginTop: 6}}>{c.valeur}</div>
+						<div style={{fontFamily: TEXTE, fontWeight: 500, fontSize: 26, color: C.texte, letterSpacing: 1, textTransform: 'uppercase', whiteSpace: 'nowrap'}}>{c.titre}</div>
+						<div style={{fontFamily: TITRE, fontWeight: 500, fontSize: 62, color: C.laiton, lineHeight: 1.1, marginTop: 6, whiteSpace: 'nowrap'}}>{c.valeur}</div>
 					</div>
 				);
 			})}

@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QG en direct</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Plan : l'étage du QG vu de face, une pièce par pôle (comme le studio), encadré par l'équipe filtrable à gauche et les validations et le journal à droite ; en bas, la synchro en cours. */
+:root {
+  --nuit: #070B14;
+  --panneau: #0F1626;
+  --panneau-2: #141D31;
+  --trait: rgba(200,161,90,.16);
+  --texte: #E9E4D8;
+  --doux: #8D93A6;
+  --laiton: #C8A15A;
+  --laiton-vif: #E8C06E;
+  --vert: #5BD69A;
+  --display: "Cormorant Garamond", Georgia, serif;
+  --ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: radial-gradient(1200px 600px at 50% -10%, #1A1530 0%, var(--nuit) 60%) fixed, var(--nuit); color: var(--texte); font-family: var(--ui); margin: 0; }
+.page { max-width: 1560px; margin: 0 auto; padding-block: 18px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
+.panneau { background: linear-gradient(180deg, var(--panneau-2), var(--panneau)); border: 1px solid var(--trait); border-radius: 16px; padding: 14px; min-width: 0; }
+.etiq { font: 600 10.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--doux); display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.etiq b { color: var(--laiton); font-weight: 600; }
+header.tete { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; justify-content: space-between; }
+header h1 { font: 600 30px/1 var(--display); margin: 0; }
+header h1 em { color: var(--laiton); }
+header p { margin: 4px 0 0; color: var(--doux); font-size: 13px; }
+.modes { display: flex; gap: 6px; background: var(--panneau); border: 1px solid var(--trait); border-radius: 12px; padding: 4px; }
+.modes button { border: 0; background: transparent; color: var(--doux); font: 600 12.5px/1 var(--ui); padding: 9px 12px; border-radius: 9px; cursor: pointer; }
+.modes button[aria-pressed="true"] { background: var(--laiton); color: #120E05; }
+button:focus-visible { outline: 2px solid var(--laiton-vif); outline-offset: 2px; }
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.kpi { padding: 12px 14px; }
+.kpi .etiq { margin: 0; }
+.kpi .v { font: 700 26px/1.1 var(--ui); font-variant-numeric: tabular-nums; margin-top: 6px; }
+.kpi .s { font: 400 11.5px/1.3 var(--mono); color: var(--doux); margin-top: 4px; }
+.corps { display: grid; grid-template-columns: 270px minmax(0, 1fr) 320px; gap: 14px; align-items: start; }
+.filtres { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 10px; }
+.filtres button { border: 1px solid var(--trait); background: transparent; color: var(--doux); font: 600 11px/1 var(--mono); padding: 6px 8px; border-radius: 7px; cursor: pointer; }
+.filtres button[aria-pressed="true"] { border-color: var(--laiton); color: var(--laiton-vif); background: rgba(200,161,90,.1); }
+.liste { max-height: 760px; overflow: auto; padding-right: 2px; }
+.membre { display: grid; grid-template-columns: 30px 1fr auto; gap: 9px; align-items: center; padding: 8px 9px; border-radius: 11px; border: 1px solid transparent; margin-bottom: 5px; background: rgba(255,255,255,.02); transition: border-color .3s, background .3s, opacity .3s; cursor: pointer; }
+.membre.actif { border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, transparent); box-shadow: 0 0 16px -6px var(--c); }
+.membre.attend { border-color: var(--laiton); }
+.membre.estompe { opacity: .3; }
+.pastille { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 22%, #0B1020); font: 700 11px var(--mono); color: var(--c); }
+.membre .n { font: 600 13px/1.2 var(--ui); display: flex; gap: 7px; align-items: baseline; flex-wrap: wrap; }
+.membre .n small { font: 400 10.5px var(--mono); color: var(--doux); }
+.membre .st { font: 400 11px/1.3 var(--mono); color: var(--doux); margin-top: 3px; }
+.membre.actif .st { color: var(--c); }
+.membre.attend .st { color: var(--laiton-vif); }
+.voyant { width: 8px; height: 8px; border-radius: 50%; background: #3A4155; }
+.membre.actif .voyant { background: var(--vert); box-shadow: 0 0 8px var(--vert); }
+.membre.attend .voyant { background: var(--laiton); box-shadow: 0 0 8px var(--laiton); }
+/* Étage */
+.etage { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); grid-auto-flow: dense; gap: 10px; }
+.piece { position: relative; border-radius: 14px; padding: 10px 8px 8px; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 9%, #15112B), #0F0C1D); border: 1px solid color-mix(in srgb, var(--c) 35%, transparent); overflow: hidden; transition: box-shadow .3s, opacity .3s; }
+.piece.vive { box-shadow: 0 0 22px -8px var(--c); border-color: var(--c); }
+.piece.estompe { opacity: .35; }
+.piece h3 { margin: 0 4px 2px; display: flex; align-items: center; gap: 8px; font: 600 12.5px/1.2 var(--ui); }
+.piece h3 .code { font: 700 10.5px var(--mono); color: #0B0A18; background: var(--c); border-radius: 6px; padding: 3px 6px; }
+.piece h3 small { margin-left: auto; font: 400 10.5px var(--mono); color: var(--doux); }
+.postes { display: grid; grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr)); gap: 4px; }
+.piece.large { grid-column: span 2; }
+.poste { position: relative; display: grid; justify-items: center; padding-top: 26px; min-width: 0; }
+.bulle { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); max-width: 98%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: 600 9.5px/1 var(--mono); padding: 5px 6px; border-radius: 6px; color: var(--c); border: 1px solid var(--c); background: color-mix(in srgb, var(--c) 14%, #0B0A18); opacity: .22; transition: opacity .3s; }
+.poste.actif .bulle, .poste.attend .bulle { opacity: 1; }
+.poste.attend .bulle { color: var(--laiton-vif); border-color: var(--laiton); background: rgba(200,161,90,.12); }
+.poste svg.scene { width: 100%; max-width: 150px; height: auto; display: block; }
+.nom { font: 700 10.5px/1 var(--ui); padding: 4px 8px; border-radius: 7px; margin-top: -4px; border: 1px solid var(--c); color: var(--c); background: #0B0A18; }
+.poste .ecran-fond { fill: #0A0C18; stroke: var(--c); stroke-width: 2; }
+.poste.actif .ecran-fond { filter: drop-shadow(0 0 6px var(--c)); }
+.poste .contenu { opacity: .22; }
+.poste.actif .contenu { opacity: 1; }
+.poste.fantome { opacity: .55; }
+.poste.actif .corps-perso { animation: travaille 1.2s ease-in-out infinite; }
+.poste.attend .corps-perso { animation: attend 2.4s ease-in-out infinite; transform-origin: 60px 120px; }
+@keyframes travaille { 0%,100% { transform: translateY(0) } 50% { transform: translateY(1.5px) } }
+@keyframes attend { 0%,100% { transform: rotate(0) } 50% { transform: rotate(-3deg) } }
+.anim-barres rect { transform-box: fill-box; transform-origin: bottom; }
+.poste.actif .anim-barres rect { animation: barre 1.4s ease-in-out infinite; }
+.poste.actif .anim-barres rect:nth-child(2) { animation-delay: .2s } .poste.actif .anim-barres rect:nth-child(3) { animation-delay: .4s } .poste.actif .anim-barres rect:nth-child(4) { animation-delay: .6s }
+@keyframes barre { 0%,100% { transform: scaleY(.4) } 50% { transform: scaleY(1) } }
+.poste.actif .anim-lignes rect { animation: tape 2s steps(8) infinite; transform-box: fill-box; transform-origin: left; }
+.poste.actif .anim-lignes rect:nth-child(2) { animation-delay: .5s } .poste.actif .anim-lignes rect:nth-child(3) { animation-delay: 1s }
+@keyframes tape { 0% { transform: scaleX(0) } 70%,100% { transform: scaleX(1) } }
+.poste.actif .anim-tourne { animation: tourne 3s linear infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes tourne { to { transform: rotate(360deg) } }
+.poste.actif .anim-tete { animation: glisse 2s linear infinite; }
+@keyframes glisse { from { transform: translateX(0) } to { transform: translateX(46px) } }
+.poste.actif .anim-pulse { animation: pulse 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0%,100% { transform: scale(.85); opacity: .6 } 50% { transform: scale(1.1); opacity: 1 } }
+.paquet { position: fixed; z-index: 20; pointer-events: none; font: 600 10.5px/1 var(--mono); padding: 6px 9px; border-radius: 7px; background: var(--laiton); color: #120E05; box-shadow: 0 0 16px rgba(232,192,110,.6); transition: transform 1.1s cubic-bezier(.6,.05,.3,1), opacity .3s; white-space: nowrap; }
+.legende { font: 400 11px var(--mono); color: var(--doux); margin-top: 10px; display: flex; flex-wrap: wrap; gap: 14px; }
+/* Droite */
+.ok-item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 10px; border-radius: 10px; background: rgba(200,161,90,.07); border: 1px solid rgba(200,161,90,.25); margin-bottom: 8px; font-size: 13px; line-height: 1.35; }
+.ok-item small { display: block; color: var(--doux); font: 400 11px var(--mono); margin-top: 3px; }
+.ok-item.pulse { animation: halo 1.6s ease-in-out infinite; }
+@keyframes halo { 0%,100% { box-shadow: 0 0 0 rgba(232,192,110,0) } 50% { box-shadow: 0 0 18px rgba(232,192,110,.45) } }
+.btn { border: 0; border-radius: 9px; padding: 9px 13px; font: 700 12.5px/1 var(--ui); cursor: pointer; background: var(--laiton); color: #120E05; }
+.vide { color: var(--doux); font: 400 12px/1.5 var(--mono); padding: 6px 2px; }
+.oks { max-height: 300px; overflow: auto; }
+.journal { font: 400 11.5px/1.45 var(--mono); max-height: 360px; overflow: auto; display: grid; gap: 6px; }
+.ev { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 6px 8px; border-radius: 8px; background: rgba(255,255,255,.025); animation: entre .4s ease-out; }
+.ev time { color: var(--doux); }
+.ev b { color: var(--c, var(--texte)); font-weight: 600; }
+@keyframes entre { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: none } }
+.synchro { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+.tache { border-radius: 10px; padding: 10px; border: 1px solid rgba(255,255,255,.07); background: rgba(255,255,255,.025); font-size: 12.5px; line-height: 1.4; }
+.tache .t { font: 600 11px var(--mono); display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.tache.fait .t span { color: var(--vert); } .tache.encours { border-color: var(--laiton); } .tache.encours .t span { color: var(--laiton-vif); } .tache.afaire .t span { color: var(--doux); }
+.note-bas { color: var(--doux); font-size: 12px; line-height: 1.5; text-align: center; }
+@media (max-width: 1240px) { .corps { grid-template-columns: minmax(0, 1fr) 300px; } .equipe { grid-column: 1 / -1; } .liste { max-height: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 5px; } .membre { margin: 0; } }
+@media (max-width: 860px) { .corps { grid-template-columns: minmax(0, 1fr); } .equipe { order: 3; } .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kpis .kpi:last-child { grid-column: 1 / -1; } .piece.large { grid-column: auto; } .etage { grid-template-columns: minmax(0, 1fr); } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head><body>
+
+<div class="page">
+  <header class="tete">
+    <div>
+      <h1>QG <em>en direct</em></h1>
+      <p>Toute l'équipe de Rouage &amp; Laiton, pièce par pièce, et ce qu'ils se passent entre eux.</p>
+    </div>
+    <div class="modes" role="group" aria-label="Mode d'affichage">
+      <button id="m-reel" aria-pressed="false">État réel</button>
+      <button id="m-sim" aria-pressed="true">Simulation d'une journée</button>
+    </div>
+  </header>
+
+  <section class="kpis" aria-label="Indicateurs">
+    <div class="panneau kpi"><div class="etiq">Agents au travail</div><div class="v" id="k-actifs">0</div><div class="s">sur 15 agents</div></div>
+    <div class="panneau kpi"><div class="etiq">Attend ton accord</div><div class="v" id="k-ok" style="color:var(--laiton-vif)">0</div><div class="s">rien ne sort sans toi</div></div>
+    <div class="panneau kpi"><div class="etiq" id="k-liv-t">Livrables du jour</div><div class="v" id="k-liv">0</div><div class="s" id="k-liv-s">dans cette simulation</div></div>
+    <div class="panneau kpi"><div class="etiq">Pièces actives</div><div class="v" id="k-pieces">0</div><div class="s">sur 12</div></div>
+    <div class="panneau kpi"><div class="etiq">Ventes, chiffre</div><div class="v" style="color:var(--doux)">—</div><div class="s">boutique pas encore ouverte</div></div>
+  </section>
+
+  <div class="corps">
+    <aside class="panneau equipe" aria-label="L'équipe">
+      <div class="etiq">L'équipe <b>15 agents</b></div>
+      <div class="filtres" id="filtres" role="group" aria-label="Filtrer"></div>
+      <div class="liste" id="liste"></div>
+    </aside>
+
+    <main class="panneau" aria-label="L'étage du QG">
+      <div class="etiq">L'étage <b id="en-cours">au repos</b></div>
+      <div class="etage" id="etage"></div>
+      <div class="legende"><span>Bulle allumée : il travaille</span><span style="color:var(--laiton-vif)">Bulle laiton : il attend ta validation</span><span>Carte qui vole : un livrable change de pièce</span><span>Poste pâle : agent prêt, pas encore utilisé</span></div>
+    </main>
+
+    <aside style="display:grid;gap:14px;min-width:0">
+      <section class="panneau" aria-label="À valider">
+        <div class="etiq">À valider <b id="nb-ok">0</b></div>
+        <div class="oks" id="oks"></div>
+      </section>
+      <section class="panneau" aria-label="Journal en direct">
+        <div class="etiq">Journal en direct <b id="src-journal">simulation</b></div>
+        <div class="journal" id="journal" aria-live="polite"></div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="panneau" aria-label="Synchro en cours">
+    <div class="etiq">Synchro en cours <b id="nom-synchro">simulation</b></div>
+    <div class="synchro" id="synchro"></div>
+  </section>
+  <p class="note-bas">Maquette en ligne. La version installée sur ton PC (qg/) lira en direct le journal de Claude Code, les livrables et les synchros ; son bouton Valider ne changera que le statut du fichier.</p>
+</div>
+
+<script>
+(() => {
+const PIECES = [
+  { id: "A", nom: "Direction", c: "#E8C06E" }, { id: "B", nom: "Marché", c: "#5AA8F2" },
+  { id: "C", nom: "Fournisseurs", c: "#8FC25A" }, { id: "D", nom: "Atelier web", c: "#3FD0C9" },
+  { id: "E", nom: "Catalogue", c: "#D97BA6" }, { id: "F", nom: "Studio", c: "#F25FA0", large: true },
+  { id: "G", nom: "Croissance", c: "#8E8BF5" }, { id: "H", nom: "Relation client", c: "#5BD69A" },
+  { id: "I", nom: "Finance", c: "#D9A35B" }, { id: "J", nom: "Conformité", c: "#6BD58A" },
+  { id: "K", nom: "Recherche", c: "#5AC8F2" }, { id: "Q", nom: "Automates", c: "#A9B0C2" }
+];
+const EQUIPE = [
+  { id: "cowork", prenom: "Cowork", role: "Chef d'orchestre", agent: "Cowork", p: "A", ecran: "lignes", cheveux: "#C8A15A" },
+  { id: "toi", prenom: "Toi", role: "Décide", agent: "l'humain", p: "A", ecran: "coches", cheveux: "#2A1E14" },
+  { id: "analyste-marche", prenom: "Margaux", role: "Veille marché", p: "B", ecran: "barres", cheveux: "#5B3A1E" },
+  { id: "sourcing-produits", prenom: "Hugo", role: "Fournisseurs", p: "C", ecran: "lignes", cheveux: "#3A2A1A" },
+  { id: "gestion-commandes", prenom: "Lina", role: "Commandes, stock", p: "C", ecran: "barres", cheveux: "#1C1C24" },
+  { id: "architecte-web", prenom: "Victor", role: "Conception", p: "D", ecran: "cube", cheveux: "#4A2C16" },
+  { id: "developpeur-web", prenom: "Nils", role: "Code du site", p: "D", ecran: "lignes", cheveux: "#C9A24A" },
+  { id: "redacteur-catalogue", prenom: "Clara", role: "Fiches produits", p: "E", ecran: "lignes", cheveux: "#7A3E2A" },
+  { id: "createur-contenu", prenom: "Jade", role: "Scripts, calendrier", p: "F", ecran: "lignes", cheveux: "#2A1E14" },
+  { id: "studio-visuel", prenom: "Iris", role: "Visuels 3D", p: "F", ecran: "cube", cheveux: "#C0633F" },
+  { id: "studio-video", prenom: "Théo", role: "Montage", p: "F", ecran: "timeline", cheveux: "#1C1C24" },
+  { id: "piper", prenom: "Piper", role: "Voix, sous-titres", agent: "outil local", p: "F", ecran: "barres", robot: true },
+  { id: "media-acquisition", prenom: "Malo", role: "Pubs, SEO", p: "G", ecran: "courbe", cheveux: "#4A2C16" },
+  { id: "service-client", prenom: "Inès", role: "Service client", p: "H", ecran: "lignes", cheveux: "#2A1E14" },
+  { id: "crm-email", prenom: "Paul", role: "E-mails", p: "H", ecran: "envoi", cheveux: "#8A5A2E" },
+  { id: "pilotage-finance", prenom: "Basile", role: "Marges, budget", p: "I", ecran: "courbe", cheveux: "#5B3A1E" },
+  { id: "conformite-qa", prenom: "Louise", role: "Audit, droit", p: "J", ecran: "coches", cheveux: "#8A5A2E" },
+  { id: "veille-outils", prenom: "Ada", role: "Outils, licences", p: "K", ecran: "barres", cheveux: "#1C1C24" },
+  { id: "auto-verif", prenom: "Vérif.", role: "verifier_livrables", agent: "script sans IA", p: "Q", ecran: "coches", robot: true },
+  { id: "auto-liens", prenom: "Liens", role: "verifier_liens", agent: "script sans IA", p: "Q", ecran: "coches", robot: true }
+];
+const C = id => PIECES.find(x => x.id === id).c;
+EQUIPE.forEach(a => a.c = C(a.p));
+const etat = {}; EQUIPE.forEach(a => etat[a.id] = { e: "repos", st: "" });
+let filtre = "tous";
+
+function ecranSVG(t, c) {
+  switch (t) {
+    case "barres": return `<g class="anim-barres"><rect x="70" y="52" width="9" height="22" rx="2" fill="${c}"/><rect x="83" y="52" width="9" height="22" rx="2" fill="${c}"/><rect x="96" y="52" width="9" height="22" rx="2" fill="${c}"/><rect x="109" y="52" width="9" height="22" rx="2" fill="${c}"/></g>`;
+    case "lignes": return `<g class="anim-lignes"><rect x="68" y="50" width="52" height="5" rx="2" fill="${c}"/><rect x="68" y="60" width="44" height="5" rx="2" fill="${c}"/><rect x="68" y="70" width="34" height="5" rx="2" fill="${c}"/></g>`;
+    case "cube": return `<g class="anim-tourne"><rect x="84" y="50" width="22" height="22" rx="3" fill="none" stroke="${c}" stroke-width="3"/><circle cx="95" cy="61" r="4" fill="${c}"/></g>`;
+    case "timeline": return `<rect x="66" y="52" width="56" height="7" rx="2" fill="${c}" opacity=".5"/><rect x="66" y="64" width="38" height="7" rx="2" fill="#3FD0C9" opacity=".6"/><g class="anim-tete"><rect x="68" y="47" width="2.5" height="30" fill="#fff"/></g>`;
+    case "coches": return `<path d="M70 56l4 4 7-8M70 70l4 4 7-8" stroke="${c}" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="86" y="54" width="32" height="5" rx="2" fill="${c}" opacity=".6"/><rect x="86" y="68" width="26" height="5" rx="2" fill="${c}" opacity=".6"/>`;
+    case "courbe": return `<path d="M68 74 L80 66 L90 70 L102 56 L118 50" stroke="${c}" stroke-width="3" fill="none" stroke-linecap="round"/><g class="anim-pulse"><circle cx="118" cy="50" r="3.5" fill="${c}"/></g>`;
+    case "envoi": return `<g class="anim-pulse"><path d="M80 66 L110 52 L100 74 L95 66 Z" fill="${c}"/></g>`;
+  }
+  return "";
+}
+function posteSVG(a) {
+  const tete = a.robot
+    ? `<rect x="80" y="70" width="30" height="24" rx="7" fill="#C9CFDA"/><circle cx="89" cy="82" r="3" fill="${a.c}"/><circle cx="101" cy="82" r="3" fill="${a.c}"/><rect x="93" y="62" width="4" height="8" fill="#C9CFDA"/>`
+    : `<circle cx="95" cy="82" r="13" fill="#EBCF9F" stroke="rgba(110,78,36,.5)"/><path d="M82 80 Q84 66 95 67 Q107 66 108 80 Q102 73 95 74 Q88 73 82 80Z" fill="${a.cheveux}"/><circle cx="94" cy="84" r="1.6" fill="#2A1E14"/><circle cx="103" cy="84" r="1.6" fill="#2A1E14"/>`;
+  return `<svg class="scene" viewBox="0 0 190 150" aria-hidden="true">
+    <rect x="38" y="96" width="114" height="10" rx="5" fill="#2A2347"/>
+    <rect x="125" y="84" width="8" height="12" fill="#2A2347"/>
+    <rect x="92" y="40" width="74" height="44" rx="6" class="ecran-fond"/>
+    <g class="contenu" transform="translate(34,0)">${ecranSVG(a.ecran, a.c)}</g>
+    <g transform="translate(-36,0)"><g class="corps-perso"><rect x="74" y="92" width="42" height="34" rx="12" fill="${a.id === "toi" ? "#C8A15A" : a.c}" opacity=".9"/>${tete}</g></g>
+    <rect x="22" y="112" width="146" height="14" rx="4" fill="#2C2550"/>
+    <rect x="30" y="118" width="40" height="3" rx="1.5" fill="${a.c}" opacity=".7"/><rect x="120" y="118" width="40" height="3" rx="1.5" fill="${a.c}" opacity=".7"/>
+    <rect x="30" y="126" width="6" height="18" fill="#221C40"/><rect x="154" y="126" width="6" height="18" fill="#221C40"/>
+  </svg>`;
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function construire() {
+  const etage = document.getElementById("etage"), liste = document.getElementById("liste"), filtres = document.getElementById("filtres");
+  [["tous", "Tous"], ["actif", "Au travail"], ["attend", "À valider"], ...PIECES.map(p => [p.id, p.id])].forEach(([f, l]) => {
+    const b = document.createElement("button"); b.textContent = l; b.dataset.f = f; b.setAttribute("aria-pressed", String(f === "tous"));
+    b.title = f.length === 1 ? PIECES.find(p => p.id === f).nom : l;
+    b.onclick = () => { filtre = f; filtres.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); appliquerFiltre(); };
+    filtres.appendChild(b);
+  });
+  PIECES.forEach(p => {
+    const occ = EQUIPE.filter(a => a.p === p.id);
+    const d = document.createElement("section"); d.className = "piece" + (p.large ? " large" : ""); d.id = "piece-" + p.id; d.style.setProperty("--c", p.c); d.style.setProperty("--n", Math.min(occ.length, p.large ? 4 : 2));
+    d.innerHTML = `<h3><span class="code">${p.id}</span>${esc(p.nom)}<small id="pc-${p.id}">au repos</small></h3><div class="postes"></div>`;
+    const postes = d.querySelector(".postes");
+    occ.forEach(a => {
+      const x = document.createElement("div"); x.className = "poste"; x.id = "poste-" + a.id; x.style.setProperty("--c", a.c);
+      x.innerHTML = `<div class="bulle" id="bulle-${a.id}">${esc(a.role)}</div>${posteSVG(a)}<div class="nom">${esc(a.prenom)}</div>`;
+      postes.appendChild(x);
+      const m = document.createElement("div"); m.className = "membre"; m.id = "membre-" + a.id; m.style.setProperty("--c", a.c); m.tabIndex = 0;
+      m.innerHTML = `<div class="pastille">${a.p}</div><div style="min-width:0"><div class="n">${esc(a.prenom)} <small>${esc(a.agent || a.id)}</small></div><div class="st" id="st-${a.id}">au repos</div></div><span class="voyant"></span>`;
+      m.onclick = () => document.getElementById("piece-" + a.p).scrollIntoView({ behavior: "smooth", block: "center" });
+      liste.appendChild(m);
+    });
+    etage.appendChild(d);
+  });
+}
+function appliquerFiltre() {
+  EQUIPE.forEach(a => {
+    const e = etat[a.id].e;
+    const ok = filtre === "tous" || filtre === a.p || filtre === e;
+    document.getElementById("membre-" + a.id).classList.toggle("estompe", !ok);
+  });
+  PIECES.forEach(p => {
+    const ok = filtre === "tous" || filtre === p.id || EQUIPE.some(a => a.p === p.id && etat[a.id].e === filtre);
+    document.getElementById("piece-" + p.id).classList.toggle("estompe", !ok);
+  });
+}
+function maj(id, e, st) {
+  const s = etat[id]; s.e = e; if (st !== undefined) s.st = st;
+  const a = EQUIPE.find(x => x.id === id);
+  ["poste-", "membre-"].forEach(pre => { const el = document.getElementById(pre + id); el.classList.toggle("actif", e === "actif"); el.classList.toggle("attend", e === "attend"); el.classList.toggle("fantome", e === "pret"); });
+  document.getElementById("bulle-" + id).textContent = s.st || a.role;
+  document.getElementById("st-" + id).textContent = s.st || (e === "pret" ? "prêt, pas encore utilisé" : "au repos");
+  const actifs = EQUIPE.filter(x => etat[x.id].e === "actif");
+  document.getElementById("k-actifs").textContent = actifs.filter(x => !x.robot && x.id !== "toi").length;
+  document.getElementById("en-cours").textContent = actifs.length ? actifs.map(x => x.prenom).join(", ") + " au travail" : "au repos";
+  let vives = 0;
+  PIECES.forEach(p => {
+    const occ = EQUIPE.filter(x => x.p === p.id), n = occ.filter(x => etat[x.id].e === "actif").length, w = occ.filter(x => etat[x.id].e === "attend").length;
+    document.getElementById("piece-" + p.id).classList.toggle("vive", n > 0); if (n) vives++;
+    document.getElementById("pc-" + p.id).textContent = n ? `${n} au travail` : w ? `${w} attend` : "au repos";
+  });
+  document.getElementById("k-pieces").textContent = vives;
+  appliquerFiltre();
+}
+function journal(qui, texte, heure) {
+  const j = document.getElementById("journal"), a = EQUIPE.find(x => x.id === qui);
+  const d = document.createElement("div"); d.className = "ev"; if (a) d.style.setProperty("--c", a.id === "toi" ? "#E8C06E" : a.c);
+  const h = heure || new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  d.innerHTML = `<time>${esc(h)}</time><div>${a ? `<b>${esc(a.prenom)}</b> · ` : ""}${esc(texte)}</div>`;
+  j.prepend(d); while (j.children.length > 50) j.lastChild.remove();
+}
+function paquet(de, vers, texte) {
+  return new Promise(res => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return res();
+    const A = document.getElementById("poste-" + de).getBoundingClientRect(), B = document.getElementById("poste-" + vers).getBoundingClientRect();
+    if (!A.width || !B.width) return res();
+    const p = document.createElement("div"); p.className = "paquet"; p.textContent = texte; document.body.appendChild(p);
+    const x0 = A.left + A.width / 2, y0 = A.top + A.height * .35, x1 = B.left + B.width / 2, y1 = B.top + B.height * .35;
+    p.style.left = x0 + "px"; p.style.top = y0 + "px"; p.style.transform = "translate(-50%,-50%) scale(.6)";
+    requestAnimationFrame(() => requestAnimationFrame(() => { p.style.transform = `translate(calc(-50% + ${x1 - x0}px), calc(-50% + ${y1 - y0}px)) scale(1)`; }));
+    setTimeout(() => { p.style.opacity = "0"; setTimeout(() => { p.remove(); res(); }, 300); }, 1150);
+  });
+}
+let oks = [];
+function rendreOks() {
+  const z = document.getElementById("oks");
+  z.innerHTML = oks.length ? "" : `<div class="vide">Rien à valider pour l'instant.</div>`;
+  oks.forEach(o => {
+    const d = document.createElement("div"); d.className = "ok-item" + (o.pulse ? " pulse" : "");
+    d.innerHTML = `<div>${esc(o.texte)}<small>${esc(o.sous || "")}</small></div>` + (o.bouton === false ? "" : `<button class="btn">${esc(o.libelle || "Valider")}</button>`);
+    const b = d.querySelector("button"); if (b) b.onclick = () => { oks = oks.filter(x => x !== o); rendreOks(); o.ok && o.ok(); };
+    z.appendChild(d);
+  });
+  document.getElementById("nb-ok").textContent = oks.length; document.getElementById("k-ok").textContent = oks.length;
+}
+const demander = o => new Promise(res => { o.ok = res; oks.unshift(o); rendreOks(); });
+function taches(liste, nom) {
+  document.getElementById("nom-synchro").textContent = nom;
+  document.getElementById("synchro").innerHTML = liste.map(t => `<div class="tache ${t.s}"><div class="t">${esc(t.id)} <span>${t.s === "fait" ? "fait" : t.s === "encours" ? "en cours" : "à faire"}</span></div>${esc(t.txt)}</div>`).join("");
+}
+// ---------- Simulation d'une journée ----------
+let jeton = 0, livr = 0;
+const pause = ms => new Promise((res, rej) => { const j = jeton; setTimeout(() => j === jeton ? res() : rej("stop"), ms); });
+async function travaille(id, st, ms) { maj(id, "actif", st); await pause(ms); }
+const T = [
+  { id: "T1", txt: "Hugo compare 3 fournisseurs européens" }, { id: "T2", txt: "Basile calcule les marges réelles" },
+  { id: "T3", txt: "Louise audite le fournisseur retenu" }, { id: "T4", txt: "Clara et Iris : fiche et visuels du nouveau produit" },
+  { id: "T5", txt: "Nils met la fiche en ligne (site local)" }, { id: "T6", txt: "Jade et Théo : la vidéo de lancement" },
+  { id: "T7", txt: "Malo prépare une pub en pause, Inès répond aux messages" }
+];
+function etape(i) { taches(T.map((t, k) => ({ ...t, s: k < i ? "fait" : k === i ? "encours" : "afaire" })), "simulation d'une journée"); }
+function livre() { livr++; document.getElementById("k-liv").textContent = livr; }
+async function journee() {
+  journal("cowork", "Synchro du jour écrite dans de-cowork.md, 7 tâches.");
+  await travaille("cowork", "Prépare la synchro", 2200); maj("cowork", "actif", "Suit la synchro");
+  etape(0); await paquet("cowork", "sourcing-produits", "synchro du jour");
+  await travaille("sourcing-produits", "Compare 3 fournisseurs UE", 3200);
+  journal("sourcing-produits", "3 fournisseurs comparés : prix, délai, stock, note. Preuves datées."); livre();
+  maj("sourcing-produits", "repos", "Comparatif livré"); await paquet("sourcing-produits", "pilotage-finance", "prix d'achat");
+  etape(1); await travaille("pilotage-finance", "Calcule les marges réelles", 3000);
+  journal("pilotage-finance", "Marge réelle : 2 produits au-dessus de 15 €, 1 sous 10 € (écarté)."); livre();
+  maj("pilotage-finance", "repos", "Marges livrées"); await paquet("pilotage-finance", "conformite-qa", "2 produits");
+  etape(2); await travaille("conformite-qa", "Audit GPSR et fournisseur", 3000);
+  journal("conformite-qa", "Fournisseur conforme : CE, responsable UE, avertissements fournis."); livre();
+  maj("conformite-qa", "attend", "Attend ta validation");
+  await demander({ texte: "Retenir le fournisseur et commander 10 échantillons", sous: "sourcing + finance + audit · commande passée par toi", libelle: "Valider", pulse: true });
+  journal("toi", "Fournisseur retenu. Tu passes la commande toi-même."); maj("conformite-qa", "repos", "Audit validé");
+  etape(3); await paquet("conformite-qa", "redacteur-catalogue", "fiche fournisseur");
+  maj("studio-visuel", "actif", "Détoure les vraies photos");
+  await travaille("redacteur-catalogue", "Écrit la fiche produit", 3200);
+  journal("redacteur-catalogue", "Fiche écrite : titre, description, FAQ, bloc sécurité complet."); livre();
+  maj("redacteur-catalogue", "repos", "Fiche livrée"); await pause(800);
+  journal("studio-visuel", "6 vues prêtes à partir des vraies photos, décor signalé « généré »."); livre();
+  maj("studio-visuel", "repos", "Visuels livrés");
+  etape(4); await paquet("redacteur-catalogue", "developpeur-web", "fiche + 6 vues");
+  await travaille("developpeur-web", "Met la fiche dans le site", 2600);
+  maj("auto-liens", "actif", "Vérifie 4 300 liens"); await pause(1600);
+  journal("auto-liens", "0 lien cassé."); maj("auto-liens", "repos", "0 lien cassé");
+  journal("developpeur-web", "Site reconstruit en local, fiche visible. Rien n'est en ligne."); livre();
+  maj("developpeur-web", "repos", "Fiche intégrée");
+  etape(5); await paquet("developpeur-web", "createur-contenu", "nouveau produit");
+  await travaille("createur-contenu", "Écrit le script de lancement", 2800);
+  maj("createur-contenu", "attend", "Attend ta validation");
+  await demander({ texte: "Valider le script de la vidéo de lancement", sous: "createur-contenu · 20 s · 7 plans", pulse: true });
+  journal("toi", "Script validé."); maj("createur-contenu", "repos", "Script validé");
+  await paquet("createur-contenu", "studio-video", "script validé");
+  maj("studio-video", "actif", "Monte la vidéo"); await travaille("piper", "Voix et sous-titres", 2400);
+  maj("piper", "repos", "Voix livrée"); await paquet("piper", "studio-video", "voix + .srt");
+  await pause(2600); journal("studio-video", "Vidéo 9:16 rendue, grille de qualité 10 sur 10."); livre();
+  maj("studio-video", "repos", "Vidéo rendue");
+  maj("auto-verif", "actif", "Vérifie les livrables"); await pause(1400); maj("auto-verif", "repos", "0 erreur");
+  etape(6); await paquet("studio-video", "media-acquisition", "vidéo");
+  maj("service-client", "actif", "Répond à 3 messages");
+  await travaille("media-acquisition", "Prépare une pub en pause", 2800);
+  journal("media-acquisition", "Pub Meta préparée en pause : 5 € par jour, 7 jours, arrêt si coût par vente > marge.");
+  maj("media-acquisition", "attend", "Pub en pause, à toi d'activer");
+  journal("service-client", "3 brouillons de réponse prêts (question, suivi, rétractation)."); livre();
+  maj("service-client", "attend", "3 brouillons à relire");
+  oks.unshift({ texte: "Relire et envoyer 3 réponses clients", sous: "service-client · brouillons, tu envoies", bouton: false }, { texte: "Activer la pub (5 € par jour)", sous: "media-acquisition · jamais activée sans toi", bouton: false }); rendreOks();
+  maj("cowork", "repos", "Synchro terminée"); journal("cowork", "Synchro terminée, compte rendu écrit. 2 décisions t'attendent.");
+  taches(T.map(t => ({ ...t, s: "fait" })), "simulation d'une journée");
+  await pause(7000);
+  oks = []; rendreOks(); EQUIPE.forEach(a => maj(a.id, "repos", "")); prets();
+  return journee();
+}
+function prets() { ["gestion-commandes", "crm-email", "veille-outils"].forEach(id => maj(id, "pret", "")); }
+function simulation() {
+  jeton++; livr = 0; oks = []; rendreOks(); document.getElementById("journal").innerHTML = "";
+  document.getElementById("src-journal").textContent = "simulation";
+  document.getElementById("k-liv").textContent = "0"; document.getElementById("k-liv-t").textContent = "Livrables du jour"; document.getElementById("k-liv-s").textContent = "dans cette simulation";
+  EQUIPE.forEach(a => maj(a.id, "repos", "")); prets(); etape(-1);
+  journee().catch(() => {});
+}
+// ---------- État réel (dépôt GitHub, 13 nov. 14 h 46) ----------
+const REEL = {
+  "analyste-marche": ["attend", "1 livrable à valider"], "sourcing-produits": ["attend", "2 à valider · Robotime le 16/11"],
+  "architecte-web": ["attend", "3 à valider"], "developpeur-web": ["attend", "3 à valider · studio en direct"],
+  "redacteur-catalogue": ["attend", "1 à valider"], "studio-visuel": ["attend", "1 à valider"],
+  "studio-video": ["attend", "1re vidéo · à corriger (T56)"], "conformite-qa": ["attend", "8 à valider · vidéo BLOQUANT"],
+  "veille-outils": ["attend", "1 à valider · licences"], "createur-contenu": ["repos", "pas encore lancé"],
+  "piper": ["repos", "voix siwis installée"], "cowork": ["repos", "synchro n°14 prête"], "toi": ["attend", "21 livrables, 3 décisions"],
+  "gestion-commandes": ["pret", ""], "service-client": ["pret", ""], "crm-email": ["pret", ""], "pilotage-finance": ["pret", ""], "media-acquisition": ["pret", ""],
+  "auto-verif": ["repos", "0 erreur"], "auto-liens": ["repos", "4 255 liens, 0 cassé"]
+};
+function etatReel() {
+  jeton++; oks = []; document.getElementById("journal").innerHTML = "";
+  document.getElementById("src-journal").textContent = "dépôt, 13 nov.";
+  EQUIPE.forEach(a => { const r = REEL[a.id] || ["repos", ""]; maj(a.id, r[0], r[1]); });
+  document.getElementById("k-liv").textContent = "21"; document.getElementById("k-liv-t").textContent = "Livrables à valider"; document.getElementById("k-liv-s").textContent = "dans outputs/";
+  [["10:45", "cowork", "Synchro n°11 : automate à manivelle, contre-audit conforme."], ["12:06", "veille-outils", "Studio vidéo à 0 € par mois, licences vérifiées."], ["13:53", "developpeur-web", "Studio en direct en service sur 127.0.0.1:4178."], ["14:30", "studio-video", "2 vidéos « De la planche à l'objet » rendues."], ["14:46", "conformite-qa", "Vidéos : BLOQUANT (nom de marque non vérifié) et 6 corrections."]].forEach(([h, q, t]) => journal(q, t, h));
+  oks = [
+    { texte: "Vérifier le nom « Rouage & Laiton » (INPI, TMview, domaine)", sous: "seul point bloquant avant publication", bouton: false },
+    { texte: "Écouter la vidéo avec la voix Piper", sous: "Piper gratuit ou ElevenLabs Starter", bouton: false },
+    { texte: "Lancer la synchro n°14 dans Claude Code", sous: "corrections vidéo + studio en direct", bouton: false },
+    { texte: "21 livrables au statut à-valider", sous: "à passer en revue dans le studio en direct", bouton: false }
+  ]; rendreOks();
+  taches([{ id: "T56", txt: "studio-video corrige les 2 vidéos (Suivez-nous, mentions, son)", s: "afaire" }, { id: "T57", txt: "developpeur-web corrige le studio en direct", s: "afaire" }, { id: "T58", txt: "conformite-qa : contre-audit des vidéos", s: "afaire" }, { id: "T59", txt: "vérificateur, commit, compte rendu", s: "afaire" }], "synchro n°14 (pas encore lancée)");
+}
+const bR = document.getElementById("m-reel"), bS = document.getElementById("m-sim");
+bR.onclick = () => { bR.setAttribute("aria-pressed", "true"); bS.setAttribute("aria-pressed", "false"); etatReel(); };
+bS.onclick = () => { bS.setAttribute("aria-pressed", "true"); bR.setAttribute("aria-pressed", "false"); simulation(); };
+construire(); rendreOks(); simulation();
+})();
+</script>
+
+</body></html>

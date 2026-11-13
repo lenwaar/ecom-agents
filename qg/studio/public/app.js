@@ -2,7 +2,7 @@
 // Mode « En direct » par défaut ; le mode « Simulation d'un cycle » reprend la maquette pour la démonstration.
 (() => {
 "use strict";
-const { EQUIPE, creerEtat, appliquer, appliquerLivrables, court } = window.Direct;
+const { EQUIPE, creerEtat, appliquer, appliquerLivrables, appliquerCowork } = window.Direct;
 const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const JOURS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
@@ -78,11 +78,15 @@ function majCompteurs(postes) {
 }
 
 // ---------- Journal ----------
-function journal(qui, texte, heure) {
+// Avec un sujet (mode direct), la ligne est une phrase : « <b>Théo</b> lit le brief du studio ».
+function journal(qui, texte, heure, sujet) {
   const j = $("journal"), a = EQUIPE.find(x => x.id === qui);
   const d = document.createElement("div"); d.className = "ev"; if (a) d.style.setProperty("--c", a.c);
   const h = (heure || new Date().toLocaleTimeString("fr-FR")).slice(0, 5);
-  d.innerHTML = `<time>${esc(h)}</time><div>${a ? `<b>${esc(a.prenom)}</b> · ` : (qui === "toi" ? `<b style="color:var(--laiton-vif)">Toi</b> · ` : `<b class="src">Claude Code</b> · `)}${esc(texte)}</div>`;
+  const style = qui === "toi" ? ' style="color:var(--laiton-vif)"' : a ? "" : ' class="src"';
+  const tete = sujet ? `<b${style}>${esc(sujet)}</b> `
+    : a ? `<b>${esc(a.prenom)}</b> · ` : (qui === "toi" ? `<b style="color:var(--laiton-vif)">Toi</b> · ` : `<b class="src">Claude Code</b> · `);
+  d.innerHTML = `<time>${esc(h)}</time><div>${tete}${esc(texte)}</div>`;
   j.prepend(d); while (j.children.length > 60) j.lastChild.remove();
 }
 function paquet(de, vers, texte) {
@@ -121,7 +125,7 @@ function traiter(ev, anime) {
     if (etat.postes[id].e === "actif") activite[id] = Date.now() - ageEvenement(ev.heure);
   });
   if (r.changes.length) majCompteurs(etat.postes);
-  if (r.journal) journal(r.journal.qui, r.journal.texte, ev.heure);
+  if (r.journal) journal(r.journal.qui, r.journal.texte, ev.heure, r.journal.sujet);
   if (r.vol && anime) paquet(r.vol.de, r.vol.vers, r.vol.texte);
 }
 // Un poste actif sans nouvelles depuis 30 minutes repasse au repos (agent arrêté sans événement de fin).
@@ -195,7 +199,7 @@ function ouvrirConfirmation(d, o, focus = true) {
       const j = await r.json();
       if (!r.ok) throw new Error(j.erreur || "Erreur " + r.status);
       enConfirmation = null;
-      journal("toi", `Livrable validé : ${o.fichier}`);
+      journal("toi", "as validé un livrable", undefined, "Tu");
       d.remove();
       if (dernierEtat) { dernierEtat.livrables = dernierEtat.livrables.filter(l => l.fichier !== o.fichier); rendreEtat(dernierEtat); }
     } catch (err) {
@@ -266,6 +270,10 @@ function rendreEtat(e) {
   dernierEtat = e;
   const changes = appliquerLivrables(etat, e.livrables);
   changes.forEach(id => afficherPoste(id, etat.postes[id]));
+  const cw = appliquerCowork(etat, e.cowork);
+  cw.changes.forEach(id => { afficherPoste(id, etat.postes[id]); if (etat.postes[id].e === "actif") activite[id] = Date.now(); });
+  if (cw.changes.length) majCompteurs(etat.postes);
+  if (cw.journal) journal(cw.journal.qui, cw.journal.texte, undefined, cw.journal.sujet);
   rendreOks(e);
   rendreCalendrier(e.calendrier);
   rendreVideo(e.videos, e.rapportVideo);

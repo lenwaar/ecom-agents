@@ -1,5 +1,32 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-13 · Synchro n°14 (T56 à T59) : terminée
+
+Synchro transmise par l'humain (collée dans la conversation), recopiée dans `de-cowork.md`. **Ordre suivi** : T56, T57, T58, T59. **Commit poussé** : `chore(coordination): synchro n°14 terminée (vidéos corrigées, studio en direct v2)`. Vérificateur : 0 erreur, 1 avertissement connu.
+
+**Rapports produits**
+- `outputs/2026-11-13-studio-video-corrections-planche-a-objet.md` (à-valider) : 2 vidéos corrigées, grille §5 recochée, légendes v1/v2 prêtes à copier (« Produit de démonstration, non vendu. » en tête, crédit complet de la voix en v2). Leçon n° 14 et 4 points ajoutés à la grille du brief.
+- `outputs/2026-11-13-developpeur-web-studio-en-direct-t57.md` (à-valider) : 4 corrections du studio en direct, `npm test` 22/22, `agent_id` ajouté au journal JSONL.
+- `outputs/2026-11-13-conformite-qa-contre-audit-videos-planche-a-objet.md` · **verdict CONFORME hors A1** : tous les points corrigés ; seul le nom « Rouage & Laiton » (A1) reste ouvert et bloque la publication. Son remesuré par Claude Code avec ffmpeg : -14,0 et -14,2 LUFS.
+
+**Remarques pour toi (Cowork)**
+- L'humain a validé 21 livrables avec le bouton « Valider » du studio en direct (`valide_par: humain`, `date_validation: 2026-11-13`), dont le rapport vidéo de T54 et l'audit BLOQUANT de T55 : ces validations sont dans ce commit.
+- T57 point 1 : le cas `à-valider   # …` était déjà compté ; les vrais cas d'échec (BOM, guillemets, « à » décomposé) sont corrigés. Si tu as vu un compteur faux, dis-moi sur quel fichier.
+- Délai de retour au repos de Cowork dans le studio : 10 min (choix de developpeur-web, à confirmer).
+- `docs/reference/qg-en-direct.html` est apparu pendant la synchro (pas écrit par Claude Code, sans doute par toi) : commité tel quel, aucune tâche ne le concernait.
+
+**🔔 ACTION HUMAINE**
+1. Vérifier le nom « Rouage & Laiton » (data.inpi.fr, TMview classes 28 et 35, domaine, noms de compte) : seul point qui bloque la publication.
+2. Écouter les 2 vidéos (`medias/de-la-planche-a-l-objet-9x16.mp4` et `-voix.mp4`) : voix Piper, « Rouage et Laiton. Suivez-nous. », niveau de la mélodie.
+3. Valider les légendes du rapport de corrections, choisir une couverture prise après 1 s (la première image est sombre), puis donner (ou non) ton accord de publication.
+4. Relancer le studio en direct pour voir T57 : arrêter l'ancien (`Ctrl+C`), puis `cd qg/studio` et `npm start`, http://127.0.0.1:4178/.
+
+### Suivi en direct
+- T56 `fait` (studio-video) : 2 vidéos corrigées, mêmes noms (`medias/de-la-planche-a-l-objet-9x16.mp4` 20,0 s, 8,0 Mo, -14,0 LUFS ; `-voix.mp4` 20,0 s, 8,1 Mo, -14,2 LUFS). « Suivez-nous » (écran ; la voix dit « Rouage et Laiton. Suivez-nous. », regénérée par Piper, sous-titres recalés) ; mention « Rendus 3D de démonstration, produit non vendu » en 36 px à y = 320 (sous les 15 % du haut) ; plan vide remplacé par un fondu vers le logo ; carte « Entraînement » nette et entière ; A4 à A7 appliqués. Grille §5 du brief complétée, leçon n° 14, outil `studio/video/outils/normaliser_lufs.py`. Rapport et légendes : `outputs/2026-11-13-studio-video-corrections-planche-a-objet.md`. Reste : première image sombre, prendre une couverture après 1 s.
+- T57 `fait` (developpeur-web) : `npm test` 22/22 (11 nouveaux, tous sur dossiers temporaires). (1) `à-valider` avec commentaire était déjà compté ; corrigés les vrais cas d'échec (BOM, guillemets, « à » décomposé). (2) Journal traduit en phrases courtes, XML et chemins masqués (commande inconnue : « lance une commande »). (3) Cowork au travail quand un fichier de `coordination/` change sans écriture de Claude Code juste avant ; repos après 10 min (à confirmer). (4) `tools/journal_claude.py` écrit `agent_id` (lancement : `tool_response.agentId` ; arrêt : SubagentStop) et le texte de fin vient maintenant de la transcription de l'agent. Rapport `outputs/2026-11-13-developpeur-web-studio-en-direct-t57.md`, capture `outputs/qg/studio-direct-t57.png`.
+- T58 `fait` (conformite-qa) : contre-audit CONFORME hors A1 (nom de marque, ouvert). `outputs/2026-11-13-conformite-qa-contre-audit-videos-planche-a-objet.md`.
+- T59 `fait` : vérificateur 0 erreur, commit et push.
+
 ## 2026-11-13 · Synchro n°13 (T52 à T55) : terminée
 
 **Ordre suivi** : T52, T53, T54, T55. **Commits poussés** : `chore(coordination): journal v2 (jsonl ignoré) et copie de la synchro n°13`, `feat(qg): studio en direct`, `chore(coordination): synchro n°13 terminée (première vidéo, contrôle BLOQUANT)`. Vérificateur `py tools/verifier_livrables.py` : 0 erreur, 1 avertissement connu.

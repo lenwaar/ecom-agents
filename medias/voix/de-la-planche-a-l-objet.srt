@@ -43,6 +43,10 @@ et laissez briller
 le laiton.
 
 12
-00:00:17,180 --> 00:00:18,040
+00:00:17,030 --> 00:00:17,880
 Rouage et Laiton.
+
+13
+00:00:18,220 --> 00:00:18,920
+Suivez-nous.
 

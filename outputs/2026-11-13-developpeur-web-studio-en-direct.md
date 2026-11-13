@@ -1,6 +1,8 @@
 ---
 agent: developpeur-web
-statut: à-valider   # toujours cette valeur
+statut: validé   # toujours cette valeur
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-13
 sources: [docs/studio/BRIEF-STUDIO-DIRECT.md, docs/reference/studio-en-direct.html, tools/journal_claude.py, coordination/journal-direct.jsonl]
 prochaine-etape: conformite-qa (audit du studio) puis validation humaine

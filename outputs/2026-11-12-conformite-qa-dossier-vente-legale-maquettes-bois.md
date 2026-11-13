@@ -1,6 +1,8 @@
 ---
 agent: conformite-qa
-statut: à-valider   # toujours cette valeur
+statut: validé   # toujours cette valeur
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-12
 mode: dossier
 sources: [CLAUDE.md, docs/architecture.md, knowledge/README.md, knowledge/niche.md, knowledge/contraintes.md, outputs/2026-11-12-sourcing-produits-maquettes-bois-v2.md, sources officielles de la section 7 (consultées le 2026-11-12)]

@@ -1,6 +1,8 @@
 ---
 agent: developpeur-web
-statut: à-valider
+statut: validé
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-13
 sources: [outputs/2026-11-12-architecte-web-conception-boutique-v2.md, outputs/2026-11-12-architecte-web-conception-boutique-v2-partie-2.md, outputs/2026-11-12-conformite-qa-audit-conception-boutique-v2.md, knowledge/decisions.md, docs/site-technique.md, coordination/vers-cowork.md, site/src/]
 prochaine-etape: conformite-qa (audit du site) puis validation humaine

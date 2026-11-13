@@ -1,6 +1,8 @@
 ---
 agent: conformite-qa
-statut: à-valider   # toujours cette valeur
+statut: validé   # toujours cette valeur
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-12
 mode: audit
 verdict: BLOQUANT

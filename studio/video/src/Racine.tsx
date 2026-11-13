@@ -15,7 +15,7 @@ export const Racine: React.FC = () => (
 			component={DeLaPlancheALObjet as React.FC<Record<string, unknown>>}
 			durationInFrames={600}
 			{...V}
-			defaultProps={{mots: [], mention: 'Rendus 3D de démonstration'} satisfies PropsPlanche}
+			defaultProps={{mots: [], mention: 'Rendus 3D de démonstration,\nproduit non vendu'} satisfies PropsPlanche}
 		/>
 		{/* Exemples de 3 s du catalogue d'effets */}
 		<Composition id="ex-accroche-texte" component={ExAccroche} durationInFrames={90} {...V} />

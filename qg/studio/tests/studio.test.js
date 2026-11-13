@@ -1,5 +1,6 @@
 // Test de bout en bout : serveur + page dans Chromium (playwright-core).
-// Travaille sur une COPIE du journal et un dossier de livrables de test : aucun vrai livrable n'est modifié.
+// Travaille sur un journal FACTICE, un dossier de livrables de test et un dossier de coordination de test,
+// tous dans un dossier temporaire : aucun vrai fichier du dépôt n'est lu ni modifié (sauf les captures).
 // Captures écrites dans outputs/qg/.
 "use strict";
 const test = require("node:test");
@@ -16,11 +17,24 @@ const CAPTURES = path.join(RACINE, "outputs", "qg");
 const PORT = 4191;
 const ORIGINE = `http://127.0.0.1:${PORT}`;
 const TMP = fs.mkdtempSync(path.join(os.tmpdir(), "studio-direct-test-"));
-const JOURNAL = path.join(TMP, "journal-direct-copie.jsonl");
+const JOURNAL = path.join(TMP, "journal-direct-factice.jsonl");
 const OUTPUTS = path.join(TMP, "outputs-test");
+const COORDINATION = path.join(TMP, "coordination-test");
+const FAUX2 = "2099-01-02-studio-video-faux-livrable-test.md";
+const FAUX3 = "2099-01-03-conformite-qa-faux-livrable-test.md";
 const FAUX = "2099-01-01-createur-contenu-faux-livrable-test.md";
 const SECRET = path.join(TMP, "hors-outputs.md");
 const CONTENU_FAUX = "---\nagent: createur-contenu\nstatut: à-valider   # toujours cette valeur\ndate: 2099-01-01\nsources: [test]\nprochaine-etape: conformite-qa\n---\n\n# Faux livrable de test\n\nCorps du livrable : statut: à-valider (ne doit pas changer).\n";
+const CONTENU_FAUX2 = "---\nagent: studio-video\nstatut: \"à-valider\"   # doit passer par conformite-qa, puis validation humaine\ndate: 2099-01-02\n---\n\n# Deuxième faux livrable\n";
+const CONTENU_FAUX3 = "---\nagent: conformite-qa\nstatut: à-valider # commentaire court\ndate: 2099-01-03\n---\n\n# Troisième faux livrable\n";
+// Journal factice : mêmes formes que les vraies lignes (messages XML automatiques, ancien format sans agent_id).
+const FACTICE = [
+  { heure: "09:00:00", type: "UserPromptSubmit", agent: "", outil: "", cible: "", texte: "DEMANDE · /cowork" },
+  { heure: "09:00:05", type: "PostToolUse", agent: "", outil: "Bash", cible: "", texte: "Bash : cd \"C:/depot/coordination\" && tail -c 1 de-cowork.md | od -c" },
+  { heure: "09:00:09", type: "UserPromptSubmit", agent: "", outil: "", cible: "", texte: "DEMANDE · <task-notification> <task-id>b1</task-id> <output-file>C:\\Users\\x\\b1.output</output-file>" },
+  { heure: "09:00:10", type: "UserPromptSubmit", agent: "", outil: "", cible: "", texte: "DEMANDE · <agent-message from=\"a00b\"> [Subagent hand-back] The text below" },
+  { heure: "09:00:12", type: "Notification", agent: "", outil: "", cible: "", texte: "ATTEND L'HUMAIN · Claude is waiting for your input" }
+].map(e => JSON.stringify(e)).join("\n") + "\n";
 const CONTENU_SECRET = "---\nagent: test\nstatut: à-valider\n---\n# Hors de outputs\n";
 
 let serveur, navigateur;
@@ -40,12 +54,14 @@ function requete(methode, chemin, corps, entetes = {}) {
 test.before(async () => {
   fs.mkdirSync(CAPTURES, { recursive: true });
   fs.mkdirSync(OUTPUTS);
-  const vrai = path.join(RACINE, "coordination", "journal-direct.jsonl");
-  fs.writeFileSync(JOURNAL, fs.existsSync(vrai) ? fs.readFileSync(vrai) : "");     // copie du journal réel
+  fs.mkdirSync(COORDINATION);
+  fs.writeFileSync(JOURNAL, FACTICE, "utf8");
   fs.writeFileSync(path.join(OUTPUTS, FAUX), CONTENU_FAUX, "utf8");
+  fs.writeFileSync(path.join(OUTPUTS, FAUX2), CONTENU_FAUX2, "utf8");
+  fs.writeFileSync(path.join(OUTPUTS, FAUX3), CONTENU_FAUX3, "utf8");
   fs.writeFileSync(SECRET, CONTENU_SECRET, "utf8");
   serveur = spawn(process.execPath, [path.join(__dirname, "..", "serveur.js")], {
-    env: { ...process.env, STUDIO_PORT: String(PORT), STUDIO_JOURNAL: JOURNAL, STUDIO_OUTPUTS: OUTPUTS }, stdio: ["ignore", "pipe", "pipe"]
+    env: { ...process.env, STUDIO_PORT: String(PORT), STUDIO_JOURNAL: JOURNAL, STUDIO_OUTPUTS: OUTPUTS, STUDIO_COORDINATION: COORDINATION }, stdio: ["ignore", "pipe", "pipe"]
   });
   await new Promise((res, rej) => {
     serveur.stdout.on("data", d => { if (String(d).includes("Studio en direct")) res(); });
@@ -72,10 +88,10 @@ test("étape 1 : six événements font passer Théo au travail puis au repos", a
   assert.notStrictEqual(await theo.getAttribute("data-etat"), "actif");
 
   ecrire({ type: "UserPromptSubmit", texte: "DEMANDE · Test du studio : produire une vidéo" });
-  ecrire({ type: "PostToolUse", outil: "Agent", cible: "studio-video", texte: "Lance l'agent studio-video : montage de test" });
-  ecrire({ type: "PostToolUse", agent: "studio-video", outil: "Read", texte: "[studio-video] Read docs/studio/BRIEF-STUDIO.md" });
+  ecrire({ type: "PostToolUse", outil: "Agent", cible: "studio-video", agent_id: "a-test-theo", texte: "Lance l'agent studio-video : Tâche T99 montage de test" });
+  ecrire({ type: "PostToolUse", agent: "studio-video", outil: "Read", texte: "[studio-video] Read C:\\depot\\docs\\studio\\BRIEF-STUDIO.md" });
   await page.waitForSelector('#poste-montage[data-etat="actif"]', { timeout: 5000 });
-  assert.match(await page.locator("#st-montage").textContent(), /BRIEF-STUDIO/);
+  assert.strictEqual(await page.locator("#st-montage").textContent(), "Lit le brief du studio");
   assert.strictEqual(await page.locator("#k-actifs").textContent(), "1");
 
   ecrire({ type: "PostToolUse", agent: "studio-video", outil: "Bash", texte: "[studio-video] Bash : piper --model fr_FR-siwis-medium --output_file voix.wav" });
@@ -83,11 +99,16 @@ test("étape 1 : six événements font passer Théo au travail puis au repos", a
   await page.screenshot({ path: path.join(CAPTURES, "studio-direct-theo-au-travail.png"), fullPage: true });
 
   ecrire({ type: "PostToolUse", agent: "studio-video", outil: "Write", texte: "[studio-video] Write medias/brouillons/test.mp4" });
-  ecrire({ type: "SubagentStop", agent: "studio-video", texte: "AGENT TERMINÉ · vidéo de test rendue" });
-  await page.waitForSelector('#poste-montage[data-etat="repos"]', { timeout: 5000 });
+  // T57, point 4 : l'arrêt ne donne que l'agent_id ; la page retrouve Théo grâce au lancement.
+  ecrire({ type: "SubagentStop", agent: "", agent_id: "a-test-theo", texte: "AGENT TERMINÉ · <b>vidéo</b> de test rendue dans `medias/`" });
+  await page.waitForSelector('#poste-montage[data-etat="attend"]', { timeout: 5000 });   // FAUX2 attend sa validation
   assert.strictEqual(await piper.getAttribute("data-etat"), "repos");
-  assert.strictEqual(await page.locator("#st-montage").textContent(), "Terminé");
-  assert.match(await page.locator("#journal").textContent(), /Théo · Terminé/);
+  const texteJournal = await page.locator("#journal").textContent();
+  for (const attendu of ["Théo a terminé", "Théo génère la voix", "Théo écrit une vidéo", "Théo lit le brief du studio", "Théo se met au travail (tâche T99)",
+    "Tu as demandé : « Test du studio : produire une vidéo »", "Tu as lancé la synchro avec Cowork", "Claude Code parcourt les fichiers", "Claude Code attend ta réponse"])
+    assert.ok(texteJournal.includes(attendu), `journal : « ${attendu} »`);
+  // T57, point 2 : ni XML, ni commande brute, ni chemin dans le journal affiché.
+  assert.doesNotMatch(texteJournal, /[<>`\\]|Bash :|task-notification|agent-message|\/\w+\/|AGENT TERMINÉ|DEMANDE ·/);
   await page.screenshot({ path: path.join(CAPTURES, "studio-direct-theo-au-repos.png"), fullPage: true });
   assert.deepStrictEqual(requetesExternes, [], "aucune ressource chargée hors du serveur local");
   await page.close();
@@ -101,6 +122,10 @@ test("étape 2 : le bouton Valider change seulement l'en-tête du faux livrable"
   const item = page.locator(`.ok-item[data-fichier="${FAUX}"]`);
   await item.waitFor();
   assert.strictEqual(await page.locator("#poste-script").getAttribute("data-etat"), "attend");
+  // T57, point 1 : les trois faux livrables comptent (commentaire, guillemets, commentaire court).
+  assert.strictEqual(await page.locator("#k-ok").textContent(), "3");
+  assert.strictEqual(await page.locator("#poste-controle").getAttribute("data-etat"), "attend");
+  assert.strictEqual(await page.locator(`.ok-item[data-fichier="${FAUX2}"]`).count(), 1);
   await item.locator("button", { hasText: "Valider" }).click();
   await item.locator(".confirmer").waitFor();
   assert.strictEqual(fs.readFileSync(path.join(OUTPUTS, FAUX), "utf8"), CONTENU_FAUX, "rien n'est écrit avant la confirmation");
@@ -110,6 +135,14 @@ test("étape 2 : le bouton Valider change seulement l'en-tête du faux livrable"
   const attendu = CONTENU_FAUX.replace("statut: à-valider   # toujours cette valeur\n", `statut: validé   # toujours cette valeur\nvalide_par: humain\ndate_validation: ${aujourdhui()}\n`);
   assert.strictEqual(fs.readFileSync(path.join(OUTPUTS, FAUX), "utf8"), attendu);
   await page.waitForSelector('#poste-script[data-etat="repos"]', { timeout: 5000 });
+  assert.strictEqual(await page.locator("#k-ok").textContent(), "2");
+  // Valider la ligne entre guillemets garde son commentaire.
+  const item2 = page.locator(`.ok-item[data-fichier="${FAUX2}"]`);
+  await item2.locator("button", { hasText: "Valider" }).click();
+  await item2.locator("button", { hasText: "Confirmer la validation" }).click();
+  await item2.waitFor({ state: "detached" });
+  assert.strictEqual(fs.readFileSync(path.join(OUTPUTS, FAUX2), "utf8"), CONTENU_FAUX2.replace("statut: \"à-valider\"   # doit", "statut: validé   # doit").replace("humaine\n", `humaine\nvalide_par: humain\ndate_validation: ${aujourdhui()}\n`));
+  assert.strictEqual(await page.locator("#k-ok").textContent(), "1");
   await page.close();
 
   // Refus côté serveur : traversée de dossier, chemin absolu, autre origine, autre méthode.
@@ -134,13 +167,36 @@ test("étape 3 : indicateurs, calendrier, dernière vidéo ; captures finales", 
     assert.strictEqual(await page.locator("#k-videos").textContent(), String(mp4));
     assert.strictEqual(await page.locator("#k-cout").textContent(), "—");
     assert.strictEqual(await page.locator("#k-abonnes").textContent(), "—");
-    assert.strictEqual(await page.locator("#k-ok").textContent(), "0");
+    assert.strictEqual(await page.locator("#k-ok").textContent(), "1", "reste le faux livrable de conformite-qa");
     assert.match(await page.locator("#nb-creneaux").textContent(), /prévu|calendrier absent/);
     if (mp4) await page.waitForFunction(() => /s,/.test(document.getElementById("duree-video").textContent), null, { timeout: 8000 });
     assert.strictEqual(await page.locator("button", { hasText: /Publier|Envoyer|Payer|Activer/ }).count(), 0, "aucun bouton qui publie, envoie, paie ou active");
     await page.screenshot({ path: path.join(CAPTURES, `studio-direct-final-${nom}.png`), fullPage: true });
     await page.close();
   }
+});
+
+test("T57-3 : un fichier écrit par Cowork dans coordination/ met Cowork au travail", async () => {
+  const page = await navigateur.newPage({ viewport: { width: 1440, height: 1000 } });
+  await page.goto(ORIGINE + "/");
+  await page.waitForSelector("body[data-pret=oui]");
+  // Écrit par Claude Code (journalisé juste après) : Cowork reste au repos.
+  fs.writeFileSync(path.join(COORDINATION, "vers-cowork.md"), "compte rendu");
+  ecrire({ type: "PostToolUse", outil: "Write", texte: "Write " + path.join(COORDINATION, "vers-cowork.md") });
+  await new Promise(r => setTimeout(r, 4500));
+  assert.notStrictEqual(await page.locator("#poste-pub").getAttribute("data-etat"), "actif");
+  // Écrit par Cowork (rien dans le journal) : Cowork au travail.
+  fs.writeFileSync(path.join(COORDINATION, "de-cowork.md"), "## Synchro de test");
+  await page.waitForSelector('#poste-pub[data-etat="actif"]', { timeout: 8000 });
+  assert.strictEqual(await page.locator("#st-pub").textContent(), "Écrit les consignes de la synchro");
+  assert.match(await page.locator("#journal").textContent(), /Cowork écrit les consignes de la synchro/);
+  ecrire({ type: "PostToolUse", agent: "studio-visuel", outil: "Bash", texte: "[studio-visuel] Bash : blender -b scene.blend -o //rendu/ -a" });
+  await page.waitForSelector('#poste-visuels[data-etat="actif"]', { timeout: 5000 });
+  await page.screenshot({ path: path.join(CAPTURES, "studio-direct-t57.png"), fullPage: true });
+  // Claude Code commence la synchro : Cowork repasse au repos.
+  ecrire({ type: "UserPromptSubmit", texte: "DEMANDE · /cowork" });
+  await page.waitForSelector('#poste-pub:not([data-etat="actif"])', { timeout: 8000 });
+  await page.close();
 });
 
 test("mode Simulation toujours disponible", async () => {

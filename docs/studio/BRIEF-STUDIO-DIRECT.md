@@ -54,5 +54,6 @@ npm start
 Ouvrir ensuite **http://127.0.0.1:4178/** (l'adresse s'affiche aussi dans le terminal). Pour arrêter : `Ctrl+C`.
 
 - Aucune installation n'est nécessaire pour `npm start` : le serveur n'utilise que Node. `npm install` ne sert qu'aux tests (`playwright-core`, en dépendance de développement).
-- Tests : `cd qg/studio`, `npm install`, puis `npm test` (copie du journal et faux livrable dans un dossier temporaire ; captures dans `outputs/qg/`).
-- Variables facultatives : `STUDIO_PORT` (4178 par défaut), `STUDIO_JOURNAL`, `STUDIO_OUTPUTS`, `STUDIO_CALENDRIER`, `STUDIO_MEDIAS`, `STUDIO_RACINE`.
+- Tests : `cd qg/studio`, `npm install`, puis `npm test` (journal factice, faux livrables et dossier de coordination de test dans un dossier temporaire ; captures dans `outputs/qg/`). Le test du journal lance `tools/journal_claude.py` avec `py` (ou `python3`, `python`).
+- Variables facultatives : `STUDIO_PORT` (4178 par défaut), `STUDIO_JOURNAL`, `STUDIO_OUTPUTS`, `STUDIO_CALENDRIER`, `STUDIO_MEDIAS`, `STUDIO_RACINE`, `STUDIO_COORDINATION` (dossier surveillé pour savoir quand Cowork travaille, `coordination/` par défaut).
+- Journal (T57) : `tools/journal_claude.py` écrit aussi un champ `agent_id` dans le JSONL (l'agent lancé au lancement, l'agent qui s'arrête à l'arrêt, sinon l'agent qui agit ; vide si Claude Code ne le donne pas). Variable facultative `JOURNAL_DIRECT_DOSSIER` : dossier où écrire les deux journaux (utilisée par les tests). La page traduit les événements en phrases ; le JSONL reste brut.

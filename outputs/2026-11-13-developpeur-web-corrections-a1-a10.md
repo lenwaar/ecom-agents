@@ -1,6 +1,8 @@
 ---
 agent: developpeur-web
-statut: à-valider
+statut: validé
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-13
 sources: [outputs/2026-11-13-conformite-qa-audit-site.md, knowledge/decisions.md, knowledge/catalogue-demo.md, docs/site-technique.md, docs/retours-experience.md]
 prochaine-etape: conformite-qa (contre-audit des corrections A1 à A10 et de la collection Automates) puis validation humaine

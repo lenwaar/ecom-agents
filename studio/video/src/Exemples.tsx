@@ -10,7 +10,7 @@ import {PlancheAObjet} from '../effets/PlancheAObjet';
 import {SousTitres} from '../effets/SousTitres';
 
 chargerPolices();
-const M = 'Rendus 3D de démonstration';
+const M = 'Rendus 3D de démonstration,\nproduit non vendu';
 
 export const ExAccroche: React.FC = () => (
 	<AbsoluteFill style={{background: C.nuit}}>
@@ -49,9 +49,9 @@ export const ExOrbite: React.FC = () => (
 export const ExCartes: React.FC = () => (
 	<AbsoluteFill style={{background: C.nuit}}>
 		<Img src={staticFile('img/situation-1600.webp')} style={{position: 'absolute', left: -228, top: 0, width: 1536, height: 1920}} />
-		<CartesVerre cartes={[{titre: 'Niveau', valeur: 'Facile'}, {titre: 'Mécanisme', valeur: 'À peigne'}, {titre: 'Entraînement', valeur: 'Manivelle'}]} haut={420} />
+		<CartesVerre cartes={[{titre: 'Niveau', valeur: 'Facile'}, {titre: 'Mécanisme', valeur: 'À peigne'}, {titre: 'Entraînement', valeur: 'Manivelle'}]} haut={500} />
 		<Mention texte={M} />
 	</AbsoluteFill>
 );
 
-export const ExFin: React.FC = () => <FinAppel appel="Suivez l'atelier" mention="Produit de démonstration, non vendu." />;
+export const ExFin: React.FC = () => <FinAppel appel="Suivez-nous" mention="Produit de démonstration, non vendu." />;

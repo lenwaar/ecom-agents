@@ -79,12 +79,12 @@ export const PlancheAObjet: React.FC<{
 				<ImageCatalogue src={apres} echelle={pousse * 1.02} />
 			</div>
 			{visible && (
-				<div style={{position: 'absolute', left: xc - 3, top: 380, width: 6, height: 1210, background: C.laiton, boxShadow: `0 0 ${20 + 40 * lueur}px rgba(200,161,90,${0.5 + 0.4 * lueur})`}}>
+				<div style={{position: 'absolute', left: xc - 3, top: 500, width: 6, height: 1030, background: C.laiton, boxShadow: `0 0 ${20 + 40 * lueur}px rgba(200,161,90,${0.5 + 0.4 * lueur})`}}>
 					<div
 						style={{
 							position: 'absolute',
 							left: -37,
-							top: 540,
+							top: 420,
 							width: 80,
 							height: 80,
 							borderRadius: 40,
@@ -101,8 +101,8 @@ export const PlancheAObjet: React.FC<{
 					</div>
 				</div>
 			)}
-			<Etiquette texte={etiquetteAvant} x={70} y={420} o={lerp(f, 4, 16, 0, 1, sortie) * (1 - lerp(f, debut + duree * 0.3, debut + duree * 0.6, 0, 1))} />
-			<Etiquette texte={etiquetteApres} x={70} y={420} o={lerp(f, debut + duree * 0.8, debut + duree + 8, 0, 1, sortie)} laiton />
+			<Etiquette texte={etiquetteAvant} x={70} y={520} o={lerp(f, 4, 16, 0, 1, sortie) * (1 - lerp(f, debut + duree * 0.3, debut + duree * 0.6, 0, 1))} />
+			<Etiquette texte={etiquetteApres} x={70} y={520} o={lerp(f, debut + duree * 0.8, debut + duree + 8, 0, 1, sortie)} laiton />
 		</AbsoluteFill>
 	);
 };

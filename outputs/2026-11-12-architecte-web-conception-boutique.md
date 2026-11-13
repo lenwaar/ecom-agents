@@ -1,6 +1,8 @@
 ---
 agent: architecte-web
-statut: à-valider   # toujours cette valeur
+statut: validé   # toujours cette valeur
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-12
 sources: [CLAUDE.md, docs/architecture.md, docs/site-technique.md, knowledge/niche.md, knowledge/politiques.md (proposé), knowledge/prix-et-marges.md (proposé), knowledge/contraintes.md, knowledge/direction-design.md, outputs/2026-11-12-conformite-qa-dossier-vente-legale-maquettes-bois.md, outputs/2026-11-12-conformite-qa-audit-sourcing-maquettes-bois-v2.md, outputs/2026-11-12-sourcing-produits-maquettes-bois-v2.md, tests/scenarios/architecte-web.md, sources externes de la section 10 (consultées le 2026-11-12)]
 prochaine-etape: conformite-qa puis developpeur-web

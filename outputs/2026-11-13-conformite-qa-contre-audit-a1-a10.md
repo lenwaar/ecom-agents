@@ -1,6 +1,8 @@
 ---
 agent: conformite-qa
-statut: à-valider
+statut: validé
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-13
 mode: audit
 verdict: CONFORME

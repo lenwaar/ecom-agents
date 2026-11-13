@@ -1,6 +1,8 @@
 ---
 agent: sourcing-produits
-statut: à-valider   # doit passer par conformite-qa, puis validation humaine
+statut: validé   # doit passer par conformite-qa, puis validation humaine
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-12
 sources: [CLAUDE.md, docs/architecture.md, knowledge/README.md, knowledge/niche.md, knowledge/contraintes.md, .claude/agents/sourcing-produits.md (v1.3), outputs/2026-11-12-sourcing-produits-maquettes-bois.md, outputs/2026-11-12-analyste-marche-top3-niches-v3.md, sources web en section 11]
 prochaine-etape: conformite-qa

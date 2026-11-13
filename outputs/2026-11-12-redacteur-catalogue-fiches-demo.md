@@ -1,6 +1,8 @@
 ---
 agent: redacteur-catalogue
-statut: à-valider
+statut: validé
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-12
 sources: [knowledge/catalogue-demo.md, knowledge/marque.md, knowledge/niche.md, knowledge/politiques.md, knowledge/prix-et-marges.md, knowledge/direction-design.md, docs/site-technique.md, outputs/2026-11-12-architecte-web-conception-boutique-v2.md, outputs/2026-11-12-architecte-web-conception-boutique-v2-partie-2.md, outputs/2026-11-12-conformite-qa-audit-conception-boutique-v2.md, outputs/2026-11-12-conformite-qa-audit-conception-boutique-v2-partie-2.md]
 prochaine-etape: conformite-qa

@@ -21,7 +21,7 @@ export const PLANS = {
 	comparateur: [138, 240],
 	orbite: [240, 324],
 	detail: [324, 402],
-	nuit: [402, 504],
+	nuit: [402, 510], // chevauche la fin de 6 images (fondu enchaîné vers le logo)
 	fin: [504, 600],
 } as const;
 
@@ -105,7 +105,7 @@ const Nuit: React.FC = () => {
 				style={{
 					position: 'absolute',
 					left: -151,
-					top: 230,
+					top: 330,
 					width: 1382,
 					height: 1728,
 					opacity: allume,
@@ -122,8 +122,19 @@ const Nuit: React.FC = () => {
 				]}
 				debut={24}
 				decalage={10}
-				haut={385}
+				haut={500}
 			/>
+		</AbsoluteFill>
+	);
+};
+
+// Fin : fondu enchaîné de 6 images depuis la scène de nuit, logo déjà présent à la coupe (pas de plan vide).
+// La mention « produit non vendu » est portée par la pastille du haut pendant toute la vidéo.
+const FinEnchainee: React.FC = () => {
+	const f = useCurrentFrame();
+	return (
+		<AbsoluteFill style={{opacity: lerp(f, 0, 6, 0, 1, sortie)}}>
+			<FinAppel appel="Suivez-nous" avance={8} />
 		</AbsoluteFill>
 	);
 };
@@ -164,7 +175,7 @@ export const DeLaPlancheALObjet: React.FC<PropsPlanche> = ({mots, mention}) => {
 				<Nuit />
 			</Sequence>
 			<Sequence from={P.fin[0]} durationInFrames={d(P.fin)}>
-				<FinAppel appel="Suivez l'atelier" mention="Produit de démonstration, non vendu." />
+				<FinEnchainee />
 			</Sequence>
 			<Vignette />
 			<SousTitres mots={mots} masquerApres={P.fin[0] / 30} />

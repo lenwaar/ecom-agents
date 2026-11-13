@@ -27,11 +27,11 @@ TEXTE = [
     f"|Un écran de plus{NBSP}? |Non.",
     "|Un objet à construire.",
     "|Éteignez les lumières… |et laissez briller |le laiton.",
-    "|Rouage et Laiton.",
+    "|Rouage et Laiton. |Suivez-nous.",
 ]
 # Départ de chaque réplique dans la bande son (planche_a_objet_audio.py, REPLIQUES) : faster-whisper
 # fait souvent commencer le premier mot d'une phrase dans le silence qui la précède ; on le recale.
-DEPARTS = [0.20, 2.25, 4.90, 8.25, 11.05, 13.65, 17.10]
+DEPARTS = [0.20, 2.25, 4.90, 8.25, 11.05, 13.65, 16.95]
 DEBUT_SOUS_TITRES = 1.9   # le titre de l'accroche porte déjà le texte de 0 à 2 s
 FIN_SOUS_TITRES = 16.8    # la carte de fin porte le nom
 
@@ -80,9 +80,9 @@ if visibles:
     visibles[0]['page'] = True
 
 os.makedirs(os.path.join(VIDEO, '.cache', 'sous-titres'), exist_ok=True)
-json.dump({'mots': visibles, 'mention': 'Rendus 3D de démonstration'},
+json.dump({'mots': visibles, 'mention': 'Rendus 3D de démonstration,\nproduit non vendu'},
           open(os.path.join(VIDEO, '.cache', 'sous-titres', 'props-v1.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
-json.dump({'mots': visibles, 'mention': 'Rendus 3D de démonstration · voix de synthèse (IA)'},
+json.dump({'mots': visibles, 'mention': 'Rendus 3D de démonstration,\nproduit non vendu,\nvoix de synthèse (IA)'},
           open(os.path.join(VIDEO, '.cache', 'sous-titres', 'props-v2.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
 # Fichiers légers commités avec la voix : temps par mot (.json) et sous-titres classiques (.srt)

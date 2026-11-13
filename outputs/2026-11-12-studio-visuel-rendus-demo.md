@@ -1,6 +1,8 @@
 ---
 agent: studio-visuel
-statut: à-valider
+statut: validé
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-12
 sources: [tests/scenarios/studio-visuel.md, knowledge/catalogue-demo.md, knowledge/marque.md, knowledge/direction-design.md, site/src/content/produits/, outputs/2026-11-12-architecte-web-conception-boutique-v2.md, outputs/2026-11-12-architecte-web-conception-boutique-v2-partie-2.md]
 prochaine-etape: validation humaine (planche contact), puis developpeur-web (T34, T35)

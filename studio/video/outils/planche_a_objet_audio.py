@@ -21,7 +21,7 @@ N = int(DUREE * son.SR)
 # Répliques (texte de medias/voix/de-la-planche-a-l-objet.md) et instant de départ (s)
 REPLIQUES = [
     (0.20, 'l1.wav'), (2.25, 'l2.wav'), (4.90, 'l3.wav'), (8.25, 'l4.wav'),
-    (11.05, 'l5.wav'), (13.65, 'l6.wav'), (17.10, 'l7.wav'),
+    (11.05, 'l5.wav'), (13.65, 'l6.wav'), (16.95, 'l7.wav'),  # l7 : « Rouage et Laiton. Suivez-nous. » (T56)
 ]
 COUPES = [2.0, 4.6, 8.0, 10.8, 13.4, 16.8]
 
@@ -51,7 +51,7 @@ son.placer(sfx, son.clic(1.0), 13.38)    # interrupteur : « Éteignez les lumi�
 for k, d in enumerate([0.0, 0.35, 0.7]):  # cartes en verre qui se posent
     son.placer(sfx, son.cliquet(0.35), 14.2 + d)
 for nom, dt in [('C5', 0.0), ('E5', 0.04), ('G5', 0.08), ('C6', 0.12)]:  # accord du logo
-    son.placer(sfx, son.lame(son.note(nom), duree=2.5, force=0.7), 16.95 + dt)
+    son.placer(sfx, son.lame(son.note(nom), duree=2.5, force=0.7), 16.82 + dt)
 
 
 def normaliser(x, crete=0.89):

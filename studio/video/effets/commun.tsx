@@ -54,33 +54,48 @@ export const chargerPolices = () => {
 		});
 };
 
-// --- mention obligatoire (lecon 11 de docs/retours-experience.md) : visible pendant toute la vidéo
-export const Mention: React.FC<{texte: string; sombre?: boolean}> = ({texte, sombre = true}) => (
-	<div
-		style={{
-			position: 'absolute',
-			top: 300,
-			left: 0,
-			right: 0,
-			display: 'flex',
-			justifyContent: 'center',
-			pointerEvents: 'none',
-		}}
-	>
+// --- mention obligatoire (leçons 11 et 14 de docs/retours-experience.md) : visible pendant toute la vidéo,
+// lisible (36 px), dans la zone sûre (sous les 15 % du haut) et hors des zones d'interface des plateformes
+// (barre d'onglets en haut, colonne de boutons à droite à partir d'environ y = 900, légende en bas).
+// Une ligne par élément séparé par un saut de ligne. La pastille tient entre x = 110 et x = 970.
+export const MENTION = {haut: 320, taille: 36, largeurMax: 860};
+export const Mention: React.FC<{texte: string; sombre?: boolean}> = ({texte, sombre = true}) => {
+	if (MENTION.haut < ZONE.haut) throw new Error('Mention hors zone sûre');
+	return (
 		<div
 			style={{
-				fontFamily: TEXTE,
-				fontWeight: 500,
-				fontSize: 30,
-				letterSpacing: 0.4,
-				color: sombre ? C.texte : C.nuit,
-				background: sombre ? 'rgba(10,15,26,0.62)' : 'rgba(251,250,247,0.75)',
-				padding: '8px 22px',
-				borderRadius: 999,
-				border: `1px solid ${sombre ? 'rgba(200,161,90,0.45)' : 'rgba(138,106,58,0.4)'}`,
+				position: 'absolute',
+				top: MENTION.haut,
+				left: 0,
+				right: 0,
+				display: 'flex',
+				justifyContent: 'center',
+				pointerEvents: 'none',
 			}}
 		>
-			{texte}
+			<div
+				style={{
+					maxWidth: MENTION.largeurMax,
+					textAlign: 'center',
+					fontFamily: TEXTE,
+					fontWeight: 600,
+					fontSize: MENTION.taille,
+					lineHeight: 1.22,
+					letterSpacing: 0.2,
+					color: sombre ? C.texte : C.nuit,
+					background: sombre ? 'rgba(10,15,26,0.78)' : 'rgba(251,250,247,0.85)',
+					padding: '12px 30px',
+					borderRadius: 26,
+					border: `1.5px solid ${sombre ? 'rgba(200,161,90,0.6)' : 'rgba(138,106,58,0.5)'}`,
+					boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
+				}}
+			>
+				{texte.split('\n').map((l, i) => (
+					<div key={i} style={{whiteSpace: 'nowrap'}}>
+						{l}
+					</div>
+				))}
+			</div>
 		</div>
-	</div>
-);
+	);
+};

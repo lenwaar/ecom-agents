@@ -7,10 +7,13 @@
 //   STUDIO_JOURNAL  journal JSONL lu en continu (coordination/journal-direct.jsonl par défaut)
 //   STUDIO_OUTPUTS  dossier des livrables (outputs/ par défaut)
 //   STUDIO_CALENDRIER, STUDIO_MEDIAS  calendrier éditorial et dossier des vidéos
+//   STUDIO_COORDINATION  dossier surveillé pour savoir quand Cowork travaille (coordination/ par défaut)
 "use strict";
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
+const { entete, estAValider, texteValide } = require("./livrables.js");
+const { creerSuivi } = require("./cowork.js");
 
 const HOTE = "127.0.0.1";
 const PORT = Number(process.env.STUDIO_PORT) || 4178;
@@ -19,6 +22,7 @@ const JOURNAL = path.resolve(process.env.STUDIO_JOURNAL || path.join(RACINE, "co
 const OUTPUTS = path.resolve(process.env.STUDIO_OUTPUTS || path.join(RACINE, "outputs"));
 const CALENDRIER = path.resolve(process.env.STUDIO_CALENDRIER || path.join(RACINE, "marketing", "calendrier.md"));
 const MEDIAS = path.resolve(process.env.STUDIO_MEDIAS || path.join(RACINE, "medias"));
+const COORDINATION = path.resolve(process.env.STUDIO_COORDINATION || path.join(RACINE, "coordination"));
 const PUBLIC = path.join(__dirname, "public");
 const HISTORIQUE = 300;      // nombre d'événements renvoyés à l'ouverture de la page
 const ORIGINE = `http://${HOTE}:${PORT}`;
@@ -42,18 +46,6 @@ function json(res, code, objet) {
 function dateDuJour() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-// En-tête YAML simple (clé: valeur) d'un livrable.
-function entete(texte) {
-  const m = /^---\r?\n([\s\S]*?)\r?\n---/.exec(texte);
-  if (!m) return null;
-  const champs = {};
-  for (const ligne of m[1].split(/\r?\n/)) {
-    const i = ligne.indexOf(":");
-    if (i > 0 && !/^\s/.test(ligne)) champs[ligne.slice(0, i).trim()] = ligne.slice(i + 1).split("#")[0].trim();
-  }
-  return { champs, debut: m.index, fin: m.index + m[0].length, bloc: m[1] };
 }
 
 // ---------- Journal : lecture continue ----------
@@ -82,10 +74,18 @@ function lireNouveautes() {
     if (evenements.length > 2000) evenements = evenements.slice(-HISTORIQUE);
     for (const res of abonnes) envoyer(res, "evenement", ev, ev.id);
   }
+  examinerCowork();
 }
 function envoyer(res, type, donnees, id) {
   res.write((id ? `id: ${id}\n` : "") + `event: ${type}\ndata: ${JSON.stringify(donnees)}\n\n`);
 }
+// ---------- Cowork : fichiers qui arrivent dans coordination/ ----------
+const suiviCowork = creerSuivi({ dossier: COORDINATION });
+function examinerCowork() {
+  if (suiviCowork.examiner(evenements)) for (const res of abonnes) envoyer(res, "etat", etat());
+}
+setInterval(examinerCowork, 1000).unref();
+
 lireNouveautes();
 fs.watchFile(JOURNAL, { interval: 400 }, lireNouveautes);       // surveillance fiable sous Windows
 try { fs.watch(path.dirname(JOURNAL), () => lireNouveautes()); } catch { /* dossier absent : watchFile suffit */ }
@@ -98,7 +98,7 @@ function livrablesAValider() {
   for (const nom of noms) {
     const p = path.join(OUTPUTS, nom);
     const h = entete(lireTexte(p) || "");
-    if (!h || h.champs.statut !== "à-valider") continue;
+    if (!h || !estAValider(h.champs.statut)) continue;
     const titre = /^#\s+(.+)$/m.exec(lireTexte(p).slice(h.fin));
     liste.push({ fichier: nom, agent: h.champs.agent || "", date: h.champs.date || nom.slice(0, 10), titre: titre ? titre[1].trim() : nom });
   }
@@ -143,6 +143,7 @@ function etat() {
     calendrier: calendrier(),
     videos: videos(),
     rapportVideo: rapportStudioVideo(),
+    cowork: suiviCowork.etat(),
     // Aucune source réelle pour l'instant : le client affiche « — ».
     cout: null,
     abonnes: null,
@@ -171,19 +172,9 @@ function valider(fichier) {
   const texte = lireTexte(reel);
   const h = texte && entete(texte);
   if (!h) return { code: 422, erreur: "En-tête YAML absent." };
-  if (h.champs.statut !== "à-valider") return { code: 409, erreur: `Statut actuel « ${h.champs.statut || "?"} » : rien à valider.` };
-  const fin = /\r\n/.test(h.bloc) ? "\r\n" : "\n";
-  const lignes = h.bloc.split(/\r?\n/);
-  const i = lignes.findIndex(l => /^statut:\s*à-valider\b/.test(l));
-  if (i < 0) return { code: 422, erreur: "Ligne de statut introuvable." };
-  const commentaire = /#.*$/.exec(lignes[i]);
-  lignes[i] = "statut: validé" + (commentaire ? "   " + commentaire[0] : "");
-  const ajouts = [];
-  if (!lignes.some(l => /^valide_par:/.test(l))) ajouts.push("valide_par: humain");
-  ajouts.push(`date_validation: ${dateDuJour()}`);
-  lignes.splice(i + 1, 0, ...ajouts);
-  const debutBloc = texte.indexOf(h.bloc, h.debut);
-  const nouveau = texte.slice(0, debutBloc) + lignes.join(fin) + texte.slice(debutBloc + h.bloc.length);
+  if (!estAValider(h.champs.statut)) return { code: 409, erreur: `Statut actuel « ${h.champs.statut || "?"} » : rien à valider.` };
+  const nouveau = texteValide(texte, h, dateDuJour());
+  if (nouveau === null) return { code: 422, erreur: "Ligne de statut introuvable." };
   fs.writeFileSync(reel, nouveau, "utf8");
   return { code: 200, ok: true, fichier, date: dateDuJour() };
 }
@@ -260,6 +251,7 @@ serveur.listen(PORT, HOTE, () => {
   console.log(`Studio en direct : ${ORIGINE}/`);
   console.log(`Journal lu en continu : ${JOURNAL}`);
   console.log(`Livrables : ${OUTPUTS}`);
+  console.log(`Coordination (Cowork) : ${COORDINATION}`);
   console.log("Arrêt : Ctrl+C");
 });
 function arret() { fs.unwatchFile(JOURNAL); serveur.close(); for (const r of abonnes) r.end(); process.exit(0); }

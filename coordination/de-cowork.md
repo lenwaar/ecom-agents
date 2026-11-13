@@ -139,5 +139,21 @@ Lance `studio-video` avec la demande de `tests/scenarios/studio-video.md` (« De
 ### T55 · Contrôle et fin · `fait`
 `conformite-qa` sur les 2 vidéos (mentions, droits, crédits Piper). Vérificateur à 0 erreur, commit, push, compte rendu avec 🔔 ACTION HUMAINE.
 
+## Synchro n°14 (transmise par l'humain le 2026-11-13) : corrections des vidéos et du studio en direct
+
+Dans l'ordre, une ligne dans `vers-cowork.md` après chaque tâche, `py` au lieu de `python`.
+
+### T56 · Corrections des 2 vidéos · `fait`
+`studio-video` : corrige les 2 vidéos « De la planche à l'objet » selon `outputs/2026-11-13-conformite-qa-videos-planche-a-objet.md` : appel final « Suivez-nous » à la place de « Suivez l'atelier » ; mention « Rendus 3D de démonstration, produit non vendu » plus grande et dans la zone sûre (pas dans les 15 % du haut) ; supprime le plan presque vide avant le logo ; carte en verre « Entraînement » nette et entière ; son normalisé autour de -14 LUFS. Ajoute ces 4 points à la grille de qualité du brief et une leçon dans `docs/retours-experience.md`. Écris aussi la légende de publication avec la mention « Produit de démonstration, non vendu ».
+
+### T57 · Studio en direct · `fait`
+`developpeur-web` : « Attend ton accord » doit compter les statuts `à-valider` même suivis d'un commentaire (`# …`) ; le journal n'affiche que des phrases lisibles (pas de XML ni de texte technique) ; Cowork passe au travail quand un fichier écrit par Cowork arrive dans `coordination/` ; `SubagentStop` retrouve l'agent par son `agent_id`. `npm test` doit passer.
+
+### T58 · Contre-audit · `fait`
+`conformite-qa` : contre-audit court des 2 vidéos corrigées (le point du nom de marque reste ouvert, l'humain vérifie l'INPI).
+
+### T59 · Clôture · `fait`
+Vérificateur, commit, push, compte rendu avec 🔔 ACTION HUMAINE.
+
 ## Règle permanente
 Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.

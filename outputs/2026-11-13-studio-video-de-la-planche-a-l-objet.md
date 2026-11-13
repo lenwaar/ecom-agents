@@ -1,6 +1,8 @@
 ---
 agent: studio-video
-statut: à-valider
+statut: validé
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-13
 mode: production (T54, synchro n°13)
 sources: [tests/scenarios/studio-video.md, docs/studio/BRIEF-STUDIO.md, docs/retours-experience.md, medias/voix-off-promo-v2.md, knowledge/marque.md, knowledge/catalogue-demo.md, site/src/content/produits/boite-a-musique-manivelle.md, outputs/2026-11-13-veille-outils-licences-studio-video.md, https://huggingface.co/rhasspy/piper-voices (MODEL_CARD siwis medium), https://datashare.ed.ac.uk/handle/10283/2353, https://www.openslr.org/109/ (consultées le 2026-11-13)]

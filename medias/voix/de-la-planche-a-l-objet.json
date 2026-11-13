@@ -20,12 +20,12 @@
  {
   "mot": "à",
   "debut": 1.02,
-  "fin": 1.08,
+  "fin": 1.04,
   "page": false
  },
  {
   "mot": "l'objet.",
-  "debut": 1.08,
+  "debut": 1.04,
   "fin": 1.5,
   "page": false
  },
@@ -74,12 +74,12 @@
  {
   "mot": "la",
   "debut": 3.68,
-  "fin": 3.76,
+  "fin": 3.78,
   "page": false
  },
  {
   "mot": "boîte.",
-  "debut": 3.76,
+  "debut": 3.78,
   "fin": 4.16,
   "page": false
  },
@@ -223,20 +223,26 @@
  },
  {
   "mot": "Rouage",
-  "debut": 17.18,
-  "fin": 17.62,
+  "debut": 17.03,
+  "fin": 17.5,
   "page": true
  },
  {
   "mot": "et",
-  "debut": 17.62,
-  "fin": 17.7,
+  "debut": 17.5,
+  "fin": 17.56,
   "page": false
  },
  {
   "mot": "Laiton.",
-  "debut": 17.7,
-  "fin": 18.04,
+  "debut": 17.56,
+  "fin": 17.88,
   "page": false
+ },
+ {
+  "mot": "Suivez-nous.",
+  "debut": 18.22,
+  "fin": 18.92,
+  "page": true
  }
 ]

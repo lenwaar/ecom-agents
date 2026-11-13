@@ -66,6 +66,10 @@ Chaque effet est un composant réutilisable dans `studio/video/effets/`, avec un
 - [ ] Droits notés pour chaque son, musique, police et image.
 - [ ] Aucune promesse chiffrée sans source, aucune fausse promo, aucun faux avis.
 - [ ] Images clés exportées dans `medias/apercus/<nom>/` pour la relecture.
+- [ ] Mention de démonstration **dans la zone sûre et lisible** : au moins 36 px en 1080×1920, sous y = 288 px (jamais dans les 15 % du haut), hors des zones d'interface des plateformes (barre d'onglets en haut, colonne de boutons à droite, légende en bas), présente du début à la fin ; « produit non vendu » quand le produit n'est pas en vente.
+- [ ] **Aucun plan vide ou presque vide** (ni fond seul avant un logo, ni noir entre deux plans), sauf effet voulu de moins de 0,2 s ; la planche contact le vérifie.
+- [ ] **Cartes et textes nets et entiers** : rien de coupé par un bord (marge d'au moins 40 px), aucun texte flou une fois posé (déplacements au pixel entier, rotation nulle à l'arrêt), vérifié sur une image clé en taille réelle.
+- [ ] **Son à -14 LUFS ± 1** (intégré, mesuré sur le MP4 final avec `ebur128`), crête vraie sous -1 dBTP, valeurs notées dans le rapport.
 
 ## 6. Photos d'ambiance (« shooting numérique »)
 

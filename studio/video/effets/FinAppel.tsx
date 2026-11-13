@@ -9,8 +9,9 @@ export const FinAppel: React.FC<{
 	appel: string;
 	signature?: string;
 	mention?: string;
-}> = ({appel, signature = 'Maquettes mécaniques en bois à assembler', mention}) => {
-	const f = useCurrentFrame();
+	avance?: number; // images d'avance : le logo est déjà là dès la coupe (pas de plan vide avant le logo)
+}> = ({appel, signature = 'Maquettes mécaniques en bois à assembler', mention, avance = 0}) => {
+	const f = useCurrentFrame() + avance;
 	const {fps} = useVideoConfig();
 	const logo = spring({frame: f - 2, fps, config: {damping: 14, stiffness: 110}});
 	const filet = lerp(f, 10, 28, 0, 1, sortie);
@@ -57,7 +58,7 @@ export const FinAppel: React.FC<{
 				</div>
 			</div>
 			{mention && (
-				<div style={{position: 'absolute', top: 1440, left: 0, right: 0, textAlign: 'center', fontFamily: TEXTE, fontSize: 30, color: C.texte2, opacity: sign}}>
+				<div style={{position: 'absolute', top: 1400, left: 0, right: 0, textAlign: 'center', fontFamily: TEXTE, fontWeight: 500, fontSize: 36, color: C.texte, opacity: sign}}>
 					{mention}
 				</div>
 			)}

@@ -1,6 +1,8 @@
 ---
 agent: veille-outils
-statut: à-valider
+statut: validé
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-13
 mode: veille (T49, synchro n°12)
 sources: [docs/studio/BRIEF-STUDIO.md, knowledge/contraintes.md, docs/retours-experience.md, https://github.com/remotion-dev/remotion/blob/main/LICENSE.md, https://www.remotion.dev/docs/license/pricing, https://www.remotion.dev/docs/license/faq, https://github.com/heygen-com/hyperframes, https://github.com/heygen-com/hyperframes/blob/main/LICENSE, https://gsap.com/licensing/, https://github.com/SYSTRAN/faster-whisper, https://huggingface.co/Systran/faster-whisper-large-v3, https://github.com/openai/whisper, https://github.com/rhasspy/piper, https://github.com/OHF-Voice/piper1-gpl, https://pypi.org/project/piper-tts/, https://huggingface.co/rhasspy/piper-voices, https://elevenlabs.io/pricing, https://elevenlabs.io/terms-of-use, https://elevenlabs.io/docs/help-center/legal/can-i-publish-the-content-i-generate-on-the-platform, https://ffmpeg.org/legal.html (toutes consultées le 2026-11-13)]

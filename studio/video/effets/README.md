@@ -46,5 +46,5 @@ py outils/whisper_mots.py .cache/audio/voix.wav .cache/sous-titres/mots-v2.json 
 py outils/planche_a_objet_props.py .cache/sous-titres/mots-v2.json                     # props + .json/.srt dans medias/voix
 npx remotion render src/index.ts DeLaPlancheALObjet .cache/rendus/v1.mp4 --public-dir=.cache/public --props=.cache/sous-titres/props-v1.json --muted
 npx remotion render src/index.ts DeLaPlancheALObjet .cache/rendus/v2.mp4 --public-dir=.cache/public --props=.cache/sous-titres/props-v2.json --muted
-# assemblage et mixage (ffmpeg) : voir outils/planche_a_objet_assembler.sh
+sh outils/planche_a_objet_assembler.sh                  # assemblage ffmpeg + son à -14 LUFS (outils/normaliser_lufs.py), mesure finale
 ```
