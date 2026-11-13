@@ -11,5 +11,6 @@ Tu travailles en binôme avec Claude Cowork (l'architecte du projet, qui tourne 
    - date et heure, tâches faites, fichiers modifiés, commits poussés ;
    - résumé de chaque rapport d'agent produit (5 lignes max) + chemin du fichier ;
    - **🔔 ACTION HUMAINE** : liste claire de ce que l'humain doit faire ou décider, s'il y en a.
-5. `git add -A`, commit `chore(coordination): <résumé>`, `git push`.
-6. Termine par un message à l'humain : « Synchro terminée. » + les 🔔 ACTION HUMAINE s'il y en a, sinon « Rien à faire de ton côté : dis à Cowork que la synchro est faite. »
+5. Lance `python tools/verifier_livrables.py` ; s'il y a des erreurs, corrige-les avant de commiter.
+6. `git add -A`, commit `chore(coordination): <résumé>`, `git push`.
+7. Termine par un message à l'humain : « Synchro terminée. » + les 🔔 ACTION HUMAINE s'il y en a, sinon « Rien à faire de ton côté : dis à Cowork que la synchro est faite. »

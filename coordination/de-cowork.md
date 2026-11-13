@@ -55,7 +55,7 @@ Copie `coordination/prochaine-synchro/createur-contenu.md` vers `.claude/agents/
 Lance `studio-visuel` : sur les vues catalogue (`face`, `trois-quarts`, `dessus`), le sol présente des **taches grises irrégulières** autour du produit (ombre bruitée, visible sur la grue et la voiture). Corrige l'ombre de contact (plus douce, sans bruit, ou fond parfaitement uni avec une seule ombre portée floue), puis régénère toutes les vues concernées. Corrige aussi le petit engrenage en haut à droite de la boîte « Initiation », qui touche à peine les autres.
 Corrige aussi : l'image d'ambiance `comparateur-planches` (presque vide, on voit surtout le bureau) et les ombres tachées des vues « dessus » (boîte à musique, planétaire).
 
-### T38b · Contrôle qualité automatique · `à faire`
+### T38b · Contrôle qualité automatique · `fait`
 - Les fichiers `tools/verifier_livrables.py`, `docs/retours-experience.md`, `CLAUDE.md` et `docs/templates/agent-template.md` ont été écrits ou mis à jour par Cowork : commite-les.
 - `CLAUDE.md` a été remis à l'ancienne version : rajoute ces 2 règles après « Gros livrables » : « Lire docs/retours-experience.md avant de commencer : chaque erreur déjà corrigée y est notée. » et « Avant chaque commit : python tools/verifier_livrables.py doit afficher 0 erreur. »
 - Lance `python tools/verifier_livrables.py` et corrige ce qu'il signale (un seul avertissement connu : statut « brouillon » du premier rapport analyste-marche, à laisser tel quel, c'est l'historique).

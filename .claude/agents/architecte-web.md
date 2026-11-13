@@ -1,7 +1,7 @@
 ---
 name: architecte-web
 description: Conception de la boutique en ligne. À utiliser pour définir le plan du site, le parcours d'achat, le contenu et la structure de chaque page (accueil, catalogue, fiche produit, pages légales, rétractation), l'identité visuelle et l'optimisation de la conversion. Rend des spécifications précises que developpeur-web implémente.
-tools: Read, Write, Glob, Grep, WebSearch, WebFetch
+tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 model: inherit
 ---
 

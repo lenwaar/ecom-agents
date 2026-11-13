@@ -14,6 +14,8 @@ Lis `docs/architecture.md` avant toute tâche.
 - Tout livrable public passe par `conformite-qa` avant validation humaine.
 - Rien n'est publié, envoyé ou payé sans l'accord explicite de l'humain.
 - **Gros livrables** : un rapport de plus de 40 Ko environ s'écrit en plusieurs fois (créer le fichier avec les premières sections, puis ajouter les suivantes une par une). Un seul très gros écriture peut bloquer l'agent.
+- Lire docs/retours-experience.md avant de commencer : chaque erreur déjà corrigée y est notée.
+- Avant chaque commit : python tools/verifier_livrables.py doit afficher 0 erreur.
 
 ## Conventions du dépôt
 

@@ -1,7 +1,7 @@
 ---
 name: conformite-qa
 description: Conformité légale et contrôle qualité. À utiliser avant toute publication (fiche produit, page, pub, email, prix, promo), pour auditer un livrable d'un autre agent, ou pour préparer un dossier réglementaire (statut d'entreprise, TVA, pages légales, sécurité des produits, recyclage). Rend un verdict CONFORME / À CORRIGER / BLOQUANT avec la liste précise des corrections.
-tools: Read, Write, Glob, Grep, WebSearch, WebFetch
+tools: Read, Write, Edit, Glob, Grep, WebSearch, WebFetch
 model: inherit
 ---
 
