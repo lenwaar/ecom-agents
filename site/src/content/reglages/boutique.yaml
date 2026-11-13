@@ -1,0 +1,56 @@
+# Informations de la boutique affichées dans les pages légales et d'aide.
+# Source : knowledge/politiques.md (proposition conformite-qa du 2026-11-12, à valider par l'humain).
+# Toute valeur encore inconnue vaut exactement "[À VALIDER]" : le site l'affiche surlignée,
+# pour qu'aucune page ne soit publiée avec une valeur manquante.
+nom_commercial: "Rouage & Laiton"   # nom de travail : disponibilité INPI, domaine, réseaux non vérifiée
+
+vendeur:
+  nom_ei: "[À VALIDER]"            # « Prénom Nom EI »
+  siren: "[À VALIDER]"
+  rcs: "[À VALIDER]"               # seulement si l'immatriculation en donne un [PRO]
+  adresse: "[À VALIDER]"           # domicile Toulouse ou domiciliation
+  email: "[À VALIDER]"
+  telephone: "[À VALIDER]"
+  directeur_publication: "[À VALIDER]"
+
+tva_mention: "TVA non applicable, art. 293 B du CGI"   # formule à confirmer par un professionnel
+
+hebergeur:                          # entité Cloudflare qui fournit Pages, relevée au moment de la publication
+  raison_sociale: "[À VALIDER]"
+  adresse: "[À VALIDER]"
+  telephone: "[À VALIDER]"
+
+idu_rep_jouets: "[À VALIDER]"       # Ecomaison
+idu_rep_emballages: "[À VALIDER]"   # Citeo ou Léko
+
+mediateur:
+  nom: "[À VALIDER]"
+  adresse: "[À VALIDER]"
+  site: "[À VALIDER]"
+
+livraison:
+  zone: "France métropolitaine"
+  delai_max_jours: 14               # contraintes.md : 14 jours maximum de la commande à la réception
+  frais: "[À VALIDER]"              # par commande, quel que soit le nombre de maquettes
+  transporteur: "[À VALIDER]"
+  suivi: "[À VALIDER]"              # audit N8 : « Livraison suivie » seulement si vrai
+  delai_expedition: "[À VALIDER]"
+
+retours:
+  adresse: "[À VALIDER]"
+  frais: "[À VALIDER]"              # à notre charge ou à celle du client (le dire avant la commande)
+
+service_client:
+  delai_reponse_jours_ouvres: "[À VALIDER]"
+  delai_reponse_piece_manquante: "[À VALIDER]"
+
+commande:
+  delai_email_confirmation: "[À VALIDER]"   # proposé : 24 h ouvrées
+  moyens_paiement: "[À VALIDER]"            # selon l'activation Stripe
+  duree_archivage: "[À VALIDER]"            # commandes ≥ 120 € : durée légale à relire sur Légifrance
+
+donnees:
+  service_emails: "[À VALIDER]"
+
+textes:
+  version_legale: "[À VALIDER]"     # date de version des pages légales, fixée à la validation des textes

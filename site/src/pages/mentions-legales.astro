@@ -1,0 +1,99 @@
+---
+/**
+ * Mentions légales (§6.3 de la spécification v2, audit point 2, audit v2 N18).
+ * Toutes les valeurs viennent de boutique.yaml ; valeurs inconnues => [À VALIDER].
+ * Aucun appel à l'action commercial (page légale).
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import AValider from '../components/ui/AValider.astro';
+import { getBoutique } from '../lib/donnees';
+
+const b = await getBoutique();
+
+const sommaire = [
+  { id: 'editeur', libelle: 'Éditeur du site' },
+  { id: 'directeur', libelle: 'Directeur de la publication' },
+  { id: 'hebergeur', libelle: 'Hébergeur' },
+  { id: 'tva', libelle: 'TVA' },
+  { id: 'rep', libelle: 'Responsabilité élargie du producteur' },
+  { id: 'mediateur', libelle: 'Médiation de la consommation' },
+  { id: 'propriete', libelle: 'Propriété intellectuelle' },
+  { id: 'credits', libelle: 'Crédits' },
+  { id: 'donnees', libelle: 'Données personnelles et cookies' },
+];
+---
+
+<PageTexte
+  titre="Mentions légales"
+  titreSeo="Mentions légales | Rouage & Laiton"
+  description="Éditeur, hébergeur, médiateur de la consommation et crédits du site Rouage & Laiton."
+  sommaire={sommaire}
+  legale
+>
+  <h2 id="editeur">1. Éditeur du site</h2>
+  <ul>
+    <li>Entreprise individuelle : <Valeur v={b.vendeur.nom_ei} note="Prénom Nom EI" /></li>
+    <li>Nom commercial : {b.nom_commercial}</li>
+    <li>Adresse : <Valeur v={b.vendeur.adresse} note="adresse postale" /></li>
+    <li>SIREN : <Valeur v={b.vendeur.siren} /></li>
+    <li>
+      RCS : <Valeur v={b.vendeur.rcs} note="ville du greffe et numéro, seulement si l'immatriculation en donne un ; sinon supprimer cette ligne" />
+    </li>
+    <li>Email : <Valeur v={b.vendeur.email} note="email de la boutique" /></li>
+    <li>Téléphone : <Valeur v={b.vendeur.telephone} /></li>
+  </ul>
+
+  <h2 id="directeur">2. Directeur de la publication</h2>
+  <p><Valeur v={b.vendeur.directeur_publication} note="Prénom Nom" /></p>
+
+  <h2 id="hebergeur">3. Hébergeur</h2>
+  <ul>
+    <li>
+      Raison sociale : <Valeur v={b.hebergeur.raison_sociale} note="entité Cloudflare qui fournit Pages, relevée dans ses conditions au moment de la publication" />
+    </li>
+    <li>Adresse : <Valeur v={b.hebergeur.adresse} /></li>
+    <li>Téléphone : <Valeur v={b.hebergeur.telephone} /></li>
+  </ul>
+
+  <h2 id="tva">4. TVA</h2>
+  <p><Valeur v={b.tva_mention} note="mention TVA" />.</p>
+
+  <h2 id="rep">5. Responsabilité élargie du producteur</h2>
+  <ul>
+    <li>Identifiant unique (IDU) pour les jouets : <Valeur v={b.idu_rep_jouets} note="Ecomaison" /></li>
+    <li>Identifiant unique (IDU) pour les emballages : <Valeur v={b.idu_rep_emballages} note="Citeo ou Léko" /></li>
+  </ul>
+
+  <h2 id="mediateur">6. Médiation de la consommation</h2>
+  <p>
+    En cas de litige que nous n'avons pas pu résoudre ensemble, vous pouvez recourir gratuitement au médiateur de la consommation suivant :
+  </p>
+  <ul>
+    <li>Nom : <Valeur v={b.mediateur.nom} /></li>
+    <li>Adresse : <Valeur v={b.mediateur.adresse} /></li>
+    <li>Site : <Valeur v={b.mediateur.site} /></li>
+  </ul>
+
+  <h2 id="propriete">7. Propriété intellectuelle</h2>
+  <p>
+    Les textes, photos, vidéos et rendus publiés sur ce site appartiennent à {b.nom_commercial}, sauf mention contraire. Toute reproduction sans autorisation écrite est interdite.
+  </p>
+  <p>
+    Les visuels fournis par des tiers ne sont utilisés qu'avec leur autorisation écrite. Ce site n'affiche aucun logo de marque tierce.
+  </p>
+  <p><AValider>formulation à confirmer par un professionnel</AValider></p>
+
+  <h2 id="credits">8. Crédits</h2>
+  <ul>
+    <li>Polices Cormorant Garamond et Inter : SIL Open Font License.</li>
+    <li>Icônes Lucide : licence ISC.</li>
+    <li>Animations GSAP : licence standard GSAP.</li>
+    <li>Three.js (vue 3D des fiches produits) : licence MIT.</li>
+  </ul>
+
+  <h2 id="donnees">9. Données personnelles et cookies</h2>
+  <p>
+    Voir notre <a href="/confidentialite/">politique de confidentialité</a> et notre <a href="/cookies/">page sur les cookies</a>.
+  </p>
+</PageTexte>

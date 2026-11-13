@@ -1,0 +1,40 @@
+---
+/**
+ * Page introuvable (§4.9 de la spécification v2).
+ * Petit engrenage qui tourne puis se bloque avec un léger rebond (1,2 s, une fois),
+ * en CSS seul ; fixe si l'utilisateur préfère réduire les animations.
+ */
+import Base from '../layouts/Base.astro';
+import Bouton from '../components/ui/Bouton.astro';
+import Cog from '@lucide/astro/icons/cog';
+---
+
+<Base titre="Page introuvable | Rouage & Laiton" description="Cette page n'existe pas ou plus." noindex>
+  <div class="conteneur flex min-h-[60svh] flex-col items-start justify-center py-20">
+    <Cog size={56} stroke-width={1.5} aria-hidden="true" class="engrenage-bloque text-laiton-fonce" />
+    <h1 class="titre-serif mt-6 text-[40px] leading-none md:text-[64px]">Cette page n'existe pas (ou plus).</h1>
+    <p class="mt-4 max-w-[60ch] text-[16px] text-gris-fort">L'adresse est peut-être mal saisie, ou la page a été déplacée.</p>
+    <div class="mt-8">
+      <Bouton href="/maquettes/">Découvrir les maquettes</Bouton>
+    </div>
+    <ul class="mt-6 flex flex-wrap gap-6 text-[15px]">
+      <li><a href="/" class="text-bleu-nuit underline underline-offset-4">Accueil</a></li>
+      <li><a href="/contact/" class="text-bleu-nuit underline underline-offset-4">Nous contacter</a></li>
+    </ul>
+  </div>
+</Base>
+
+<style>
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.engrenage-bloque) {
+      animation: engrenage-bloque 1.2s cubic-bezier(0.22, 1, 0.36, 1) 1 both;
+    }
+  }
+  @keyframes engrenage-bloque {
+    0% { transform: rotate(0deg); }
+    70% { transform: rotate(200deg); }
+    82% { transform: rotate(186deg); }
+    92% { transform: rotate(192deg); }
+    100% { transform: rotate(190deg); }
+  }
+</style>

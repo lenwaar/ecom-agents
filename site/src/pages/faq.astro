@@ -1,0 +1,153 @@
+---
+/**
+ * FAQ (§4.9 de la spécification v2, §4.7 de la v1 ; audit v2 N7, N10, N31).
+ * Réponses tirées de knowledge/politiques.md ; valeurs inconnues => [À VALIDER].
+ * Données structurées FAQPage : ajoutées quand toutes les réponses seront validées.
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import Accordeon from '../components/ui/Accordeon.astro';
+import Bouton from '../components/ui/Bouton.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import { getBoutique, getModeDemo } from '../lib/donnees';
+
+const b = await getBoutique();
+const modeDemo = await getModeDemo();
+
+const sommaire = [
+  { id: 'avant-achat', libelle: "Avant l'achat" },
+  { id: 'commande-paiement', libelle: 'Commande et paiement' },
+  { id: 'livraison', libelle: 'Livraison' },
+  { id: 'retours', libelle: 'Retours et rétractation' },
+  { id: 'assemblage', libelle: 'Assemblage' },
+  { id: 'donnees', libelle: 'Vos données' },
+];
+---
+
+<PageTexte
+  titre="Questions fréquentes"
+  titreSeo="Questions fréquentes | Rouage & Laiton"
+  description="Âge, difficulté, livraison, paiement, rétractation, pièce manquante : les réponses à vos questions sur nos maquettes en bois."
+  sommaire={sommaire}
+>
+  <h2 id="avant-achat">Avant l'achat</h2>
+  <div class="mt-2">
+    <Accordeon titre="À qui s'adressent vos maquettes ?">
+      <p>Aux adultes, à partir de 14 ans. Chaque fiche indique l'âge minimum, la difficulté et le temps d'assemblage.</p>
+    </Accordeon>
+    <Accordeon titre="Comment choisir le niveau de difficulté ?">
+      <p>
+        Notre échelle, établie à partir du nombre de pièces, du temps d'assemblage et du nombre de réglages. Elle peut différer de celle du fabricant.
+      </p>
+      <ul>
+        <li><strong>Facile</strong> : pour une première maquette. Un mécanisme simple, peu de réglages.</li>
+        <li><strong>Moyen</strong> : vous avez déjà monté une maquette. Plus de pièces et quelques réglages (jeu des engrenages, tension).</li>
+        <li><strong>Expert</strong> : pour les habitués. Mécanismes fins, ajustements précis, plusieurs séances.</li>
+      </ul>
+    </Accordeon>
+    <Accordeon titre="Faut-il de la colle ou des outils ?">
+      <p>Cela dépend du modèle : la fiche de chaque maquette indique si de la colle est nécessaire, et quels outils sont nécessaires ou fournis.</p>
+    </Accordeon>
+    <Accordeon titre="Combien de temps faut-il pour l'assembler ?">
+      <p>Le temps d'assemblage est indiqué sur chaque fiche, en heures. Rien ne presse : vous pouvez monter votre maquette en plusieurs séances.</p>
+    </Accordeon>
+    <Accordeon titre="Puis-je l'offrir ? Le prix figure-t-il sur le colis ?">
+      <p>Oui, nos maquettes se prêtent bien au cadeau. Emballage cadeau et présence du prix dans le colis : <Valeur v="" note="à confirmer selon le mode d'expédition" />.</p>
+    </Accordeon>
+    {
+      modeDemo && (
+        <Accordeon titre="Pourquoi certains produits portent la mention Démonstration ?">
+          <p>
+            La boutique est en préparation. Les maquettes présentées servent à montrer le site : elles ne sont pas en vente, et leurs images sont des rendus 3D, pas des photos d'un produit réel.
+          </p>
+        </Accordeon>
+      )
+    }
+  </div>
+
+  <h2 id="commande-paiement">Commande et paiement</h2>
+  <div class="mt-2">
+    <Accordeon titre="Quels moyens de paiement acceptez-vous ?">
+      <p>Le paiement se fait sur la page sécurisée de Stripe, notre prestataire de paiement. Moyens acceptés : <Valeur v={b.commande.moyens_paiement} />.</p>
+    </Accordeon>
+    <Accordeon titre="Le paiement est-il sécurisé ?">
+      <p>Vous payez sur la page de paiement de Stripe. Nous ne voyons jamais vos données bancaires. Aucun frais supplémentaire n'est appliqué selon le moyen de paiement.</p>
+    </Accordeon>
+    <Accordeon titre="Les prix comprennent-ils la TVA ?">
+      <p>Les prix affichés sont des prix finaux. {b.tva_mention}.</p>
+    </Accordeon>
+    <Accordeon titre="Vais-je recevoir une facture ?">
+      <p>Vous recevez un reçu de paiement par email dès la commande. Facture : <Valeur v="" note="modalités à confirmer avec l'expert-comptable" />.</p>
+    </Accordeon>
+  </div>
+
+  <h2 id="livraison">Livraison</h2>
+  <div class="mt-2">
+    <Accordeon titre="Où livrez-vous ?">
+      <p>En {b.livraison.zone}.</p>
+    </Accordeon>
+    <Accordeon titre="Quel est le délai de livraison ?">
+      <p>
+        Le délai de chaque maquette est affiché sur sa fiche, avant le paiement : {b.livraison.delai_max_jours} jours au maximum entre la commande et la réception. Si ce délai n'est pas tenu, vous pouvez annuler la commande et être remboursé sous 14 jours.
+      </p>
+    </Accordeon>
+    <Accordeon titre="Combien coûte la livraison ?">
+      <p><Valeur v={b.livraison.frais} /> par commande, quel que soit le nombre de maquettes.</p>
+    </Accordeon>
+  </div>
+
+  <h2 id="retours">Retours et rétractation</h2>
+  <div class="mt-2">
+    <Accordeon titre="Comment me rétracter ?">
+      <p>
+        Vous avez 14 jours à compter de la réception pour changer d'avis, sans vous justifier, comme le prévoit la loi pour les achats à distance. Le plus simple : le formulaire <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a>, qui vous envoie un accusé de réception. Vous pouvez aussi nous écrire par email ou utiliser le formulaire type de nos CGV.
+      </p>
+    </Accordeon>
+    <Accordeon titre="Qui paie les frais de retour ?">
+      <p><Valeur v={b.retours.frais} /></p>
+    </Accordeon>
+    <Accordeon titre="Quand serai-je remboursé ?">
+      <p>Dans les 14 jours qui suivent votre rétractation, frais de livraison standard inclus. Nous pouvons attendre d'avoir reçu la maquette, ou la preuve de son expédition.</p>
+    </Accordeon>
+    <Accordeon titre="Puis-je me rétracter si j'ai commencé l'assemblage ?">
+      <p>
+        Oui, votre droit de rétractation reste entier. Mais si l'assemblage va au-delà de ce qui est nécessaire pour examiner la maquette, nous pouvons déduire du remboursement la perte de valeur réelle, justifiée par écrit. Le détail est sur la page <a href="/livraison-et-retours/#retractation">Livraison et retours</a>.
+      </p>
+    </Accordeon>
+  </div>
+
+  <h2 id="assemblage">Assemblage</h2>
+  <div class="mt-2">
+    <Accordeon titre="Une pièce manque ou est abîmée à la réception : que faire ?">
+      <p>
+        C'est couvert par la garantie légale de conformité. Envoyez-nous une photo de la pièce et de la boîte par email : nous vous envoyons la pièce ou une maquette de remplacement. Délai de réponse : <Valeur v={b.service_client.delai_reponse_piece_manquante} />. <a href="/contact/#piece-manquante">Nous écrire</a>
+      </p>
+    </Accordeon>
+    <Accordeon titre="J'ai cassé une pièce pendant le montage : que faire ?">
+      <p><Valeur v="" note="politique de la boutique à décider par l'humain" /></p>
+    </Accordeon>
+    <Accordeon titre="Y a-t-il une notice ?">
+      <p>La fiche de chaque maquette indique le contenu de la boîte, dont la notice d'assemblage.</p>
+    </Accordeon>
+  </div>
+
+  <h2 id="donnees">Vos données</h2>
+  <div class="mt-2">
+    <Accordeon titre="Que deviennent mes réponses au questionnaire ?">
+      <p>
+        Vos réponses ne sont ni enregistrées ni transmises par nous. Seules les pages consultées apparaissent, de façon agrégée, dans les statistiques de fréquentation de notre hébergeur.
+      </p>
+    </Accordeon>
+    <Accordeon titre="Comment me désinscrire de la lettre de l'atelier ?">
+      <p>La lettre de l'atelier n'est pas encore ouverte. Quand elle le sera, chaque lettre contiendra un lien de désinscription en un clic.</p>
+    </Accordeon>
+    <Accordeon titre="Utilisez-vous des cookies ?">
+      <p>Notre site n'utilise aucun cookie publicitaire ni de mesure d'audience. Le détail est sur la page <a href="/cookies/">Cookies</a>.</p>
+    </Accordeon>
+  </div>
+
+  <div slot="apres" class="mt-12 max-w-[72ch] rounded-carte border border-bordure bg-carte p-6">
+    <p class="text-[18px] font-semibold">Vous n'avez pas trouvé votre réponse ?</p>
+    <p class="mt-2 text-gris">Nous répondons sous <Valeur v={b.service_client.delai_reponse_jours_ouvres} /> jours ouvrés.</p>
+    <div class="mt-5"><Bouton href="/contact/">Nous écrire</Bouton></div>
+  </div>
+</PageTexte>

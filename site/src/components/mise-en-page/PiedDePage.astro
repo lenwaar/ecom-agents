@@ -1,0 +1,78 @@
+---
+/**
+ * Pied de page de toutes les pages (§4.0), registre sombre.
+ * - Bouton « Renoncer au contrat ici » toujours visible, au-dessus des colonnes, jamais dans un accordéon (§6.2).
+ * - Colonnes Boutique / Aide / Informations légales ; sur mobile, accordéons natifs <details>.
+ * - Ligne finale : identité du vendeur et mention de TVA (boutique.yaml).
+ */
+import FileX from '@lucide/astro/icons/file-x';
+import ChevronDown from '@lucide/astro/icons/chevron-down';
+import { COLONNES_PIED_DE_PAGE } from '../../lib/navigation';
+import { getBoutique } from '../../lib/donnees';
+import Valeur from '../ui/Valeur.astro';
+
+const boutique = await getBoutique();
+const annee = new Date().getFullYear();
+---
+
+<footer id="pied-de-page" class="registre-sombre grain overflow-hidden bg-nuit text-creme">
+  <div class="conteneur relative z-[1] pt-16 pb-10 md:pt-24">
+    <p class="titre-serif bg-gradient-to-b from-laiton to-laiton/15 bg-clip-text text-[clamp(56px,13vw,200px)] leading-[0.9] tracking-[-0.02em] text-transparent" aria-hidden="true">
+      Rouage &amp; Laiton
+    </p>
+    <p class="mt-6 max-w-md text-[15px] text-creme-secondaire">Maquettes mécaniques en bois à assembler, pour adultes.</p>
+
+    <div class="mt-10">
+      <a
+        href="/renoncer-au-contrat/"
+        class="group inline-flex min-h-12 items-center gap-2.5 rounded-full border border-creme/30 px-6 py-3 text-[15px] font-medium text-creme transition-colors duration-250 hover:border-laiton hover:text-laiton"
+      >
+        <FileX size={20} stroke-width={1.75} aria-hidden="true" class="text-laiton" />
+        Renoncer au contrat ici
+      </a>
+    </div>
+
+    <nav aria-label="Pied de page" class="mt-12 grid gap-0 border-t border-bordure-sombre md:grid-cols-3 md:gap-10 md:border-t-0">
+      {
+        COLONNES_PIED_DE_PAGE.map((colonne) => (
+          <Fragment>
+            {/* Ordinateur : colonnes ouvertes */}
+            <div class="hidden md:block">
+              <h2 class="text-[12px] font-medium uppercase tracking-[0.22em] text-laiton">{colonne.titre}</h2>
+              <ul class="mt-4 space-y-2.5 text-[14px]">
+                {colonne.liens.map((lien) => (
+                  <li>
+                    <a href={lien.href} class="text-creme-secondaire transition-colors duration-200 hover:text-creme">
+                      {lien.libelle}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            {/* Mobile : accordéon natif */}
+            <details class="group border-b border-bordure-sombre md:hidden">
+              <summary class="flex min-h-12 list-none items-center justify-between py-3">
+                <h2 class="text-[12px] font-medium uppercase tracking-[0.22em] text-laiton">{colonne.titre}</h2>
+                <ChevronDown size={20} stroke-width={1.75} aria-hidden="true" class="text-laiton transition-transform duration-250 group-open:rotate-180" />
+              </summary>
+              <ul class="space-y-1 pb-4 text-[15px]">
+                {colonne.liens.map((lien) => (
+                  <li>
+                    <a href={lien.href} class="flex min-h-11 items-center text-creme-secondaire hover:text-creme">
+                      {lien.libelle}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </Fragment>
+        ))
+      }
+    </nav>
+
+    <p class="mt-12 border-t border-bordure-sombre pt-6 text-[13px] leading-relaxed text-creme-secondaire">
+      © {annee} {boutique.nom_commercial} · <Valeur v={boutique.vendeur.nom_ei} note="Prénom Nom EI" /> ·
+      {boutique.tva_mention} · Paiement par carte géré par Stripe
+    </p>
+  </div>
+</footer>

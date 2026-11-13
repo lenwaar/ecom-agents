@@ -1,0 +1,80 @@
+---
+/**
+ * Cookies (§6.6 de la spécification v2 ; audit points 15 et 16).
+ * Lancement : aucun traceur non exempté, donc aucun bandeau.
+ * Le tableau des cookies de sécurité Cloudflare doit être rempli après l'inventaire réel
+ * fait sur le site déployé (obligatoire avant ouverture) => [À VALIDER].
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import AValider from '../components/ui/AValider.astro';
+import { getBoutique } from '../lib/donnees';
+
+const b = await getBoutique();
+
+const sommaire = [
+  { id: 'definition', libelle: 'Qu’est-ce qu’un cookie ?' },
+  { id: 'notre-site', libelle: 'Sur notre site' },
+  { id: 'tableau', libelle: 'Liste des cookies' },
+  { id: 'stripe', libelle: 'Page de paiement Stripe' },
+  { id: 'navigateur', libelle: 'Paramétrer votre navigateur' },
+];
+---
+
+<PageTexte
+  titre="Cookies"
+  titreSeo="Cookies | Rouage & Laiton"
+  description="Notre site n'utilise aucun cookie publicitaire ni de mesure d'audience. La liste des cookies techniques et leur rôle."
+  sommaire={sommaire}
+  legale
+>
+  <h2 id="definition">1. Qu'est-ce qu'un cookie ?</h2>
+  <p>
+    Un cookie est un petit fichier déposé sur votre appareil par un site. Certains sont nécessaires au fonctionnement ou à la sécurité du site et ne demandent pas votre accord. Les autres (publicité, mesure d'audience, réseaux sociaux) ne peuvent être déposés qu'avec votre consentement.
+  </p>
+
+  <h2 id="notre-site">2. Sur notre site</h2>
+  <ul>
+    <li>Aucun cookie publicitaire, aucun pixel de réseau social, aucun outil de mesure d'audience par script.</li>
+    <li>Aucune vidéo intégrée depuis une plateforme tierce.</li>
+    <li>Les polices et les scripts sont servis depuis notre propre domaine.</li>
+    <li>Aucun script de notre prestataire de paiement n'est chargé sur nos pages : le paiement se fait sur la page de Stripe.</li>
+    <li>Le questionnaire « Trouver ma maquette » n'enregistre rien sur votre appareil.</li>
+  </ul>
+  <p>
+    C'est pourquoi nous ne vous demandons pas votre consentement : il n'y a rien à accepter. Si nous ajoutons un jour un traceur qui le demande, un bandeau vous permettra de tout refuser aussi facilement que de tout accepter, et rien ne sera chargé avant votre choix.
+  </p>
+
+  <h2 id="tableau">3. Liste des cookies</h2>
+  <p>
+    Notre hébergeur, Cloudflare, peut déposer des cookies de sécurité (protection contre les robots et les attaques). Ils sont nécessaires et ne demandent pas votre accord.
+  </p>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Nom</th>
+        <th scope="col">Émetteur</th>
+        <th scope="col">Finalité</th>
+        <th scope="col">Durée</th>
+        <th scope="col">Consentement requis</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="5"><AValider>tableau à remplir après l'inventaire réel du site déployé (toutes les pages, mobile) ; par exemple __cf_bm, cf_clearance, _cfuvid selon les options Cloudflare actives</AValider></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 id="stripe">4. Page de paiement Stripe</h2>
+  <p>
+    Lorsque vous passez commande, vous quittez notre site pour la page de paiement de Stripe, qui dépose ses propres cookies, notamment pour la prévention de la fraude. Ils sont décrits dans la <a href="https://stripe.com/fr/cookie-settings" rel="noopener">politique de cookies de Stripe</a>.
+  </p>
+  <p><AValider>adresse exacte de la politique de cookies de Stripe à vérifier</AValider></p>
+
+  <h2 id="navigateur">5. Paramétrer votre navigateur</h2>
+  <p>
+    Vous pouvez à tout moment consulter et supprimer les cookies, ou les bloquer, depuis les réglages de votre navigateur (rubrique « Confidentialité » ou « Cookies »). Bloquer les cookies de sécurité peut empêcher l'affichage de certaines pages.
+  </p>
+  <p>Pour toute question : <Valeur v={b.vendeur.email} note="email de la boutique" />. Voir aussi notre <a href="/confidentialite/">politique de confidentialité</a>.</p>
+</PageTexte>

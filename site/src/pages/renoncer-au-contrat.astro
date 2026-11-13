@@ -1,0 +1,117 @@
+---
+/**
+ * Renoncer au contrat (§6.2 de la spécification v2, article D221-5 ; audit points 6 à 9).
+ * Étape 1 : la fonction POST /api/retractation (horodatage, référence, accusé par email,
+ * champ piège, limite d'envois) n'existe pas encore. Le formulaire est donc affiché mais
+ * DÉSACTIVÉ (fieldset disabled, aucune action) : il ne doit jamais donner l'illusion d'un envoi.
+ * En attendant : email (mailto: si l'adresse est connue) ou formulaire type.
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import Bouton from '../components/ui/Bouton.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import AValider from '../components/ui/AValider.astro';
+import FormulaireTypeRetractation from '../components/legal/FormulaireTypeRetractation.astro';
+import { getBoutique, lienEmail } from '../lib/donnees';
+
+const b = await getBoutique();
+const mailto = lienEmail(b.vendeur.email, 'Rétractation');
+
+const champ = 'mt-1.5 block w-full min-h-12 rounded-champ border border-bordure bg-carte px-3.5 py-2.5 text-[16px] text-encre disabled:cursor-not-allowed disabled:opacity-60';
+const etiquette = 'block text-[15px] font-medium';
+---
+
+<PageTexte
+  titre="Renoncer au contrat"
+  titreSeo="Renoncer au contrat | Rouage & Laiton"
+  description="Exercez votre droit de rétractation en ligne : 14 jours à compter de la réception, sans avoir à vous justifier."
+>
+  <p>
+    Vous avez 14 jours à compter de la réception de votre commande pour changer d'avis, sans avoir à vous justifier. Remplissez ce formulaire : vous recevrez immédiatement un accusé de réception par email.
+  </p>
+
+  <AValider bloc>
+    Formulaire en ligne pas encore actif : l'envoi (fonction <code>/api/retractation</code>, accusé de réception par email,
+    enregistrement horodaté) sera branché à une étape suivante, après le choix du service d'envoi d'emails. En attendant,
+    utilisez l'email ou le formulaire type ci-dessous.
+  </AValider>
+
+  <form method="post" class="mt-8 max-w-[560px]" novalidate aria-describedby="identification-aide">
+    <fieldset disabled class="space-y-5">
+      <legend class="sr-only">Déclaration de rétractation</legend>
+      <p class="text-[14px] text-gris-fort">Les champs marqués d'un astérisque (*) sont obligatoires.</p>
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label for="prenom" class={etiquette}>Prénom *</label>
+          <input id="prenom" name="prenom" type="text" autocomplete="given-name" required maxlength="100" class={champ} />
+        </div>
+        <div>
+          <label for="nom" class={etiquette}>Nom *</label>
+          <input id="nom" name="nom" type="text" autocomplete="family-name" required maxlength="100" class={champ} />
+        </div>
+      </div>
+      <div>
+        <label for="email" class={etiquette}>Email pour l'accusé de réception *</label>
+        <input id="email" name="email" type="email" autocomplete="email" required maxlength="254" class={champ} />
+      </div>
+
+      <p id="identification-aide" class="text-[15px]">
+        Pour identifier votre commande, remplissez au moins un des trois champs suivants.
+      </p>
+      <div>
+        <label for="commande" class={etiquette}>Numéro de commande ou de reçu</label>
+        <input id="commande" name="commande" type="text" maxlength="100" class={champ} />
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label for="date_commande" class={etiquette}>Date de la commande</label>
+          <input id="date_commande" name="date_commande" type="date" class={champ} />
+        </div>
+        <div>
+          <label for="date_reception" class={etiquette}>Date de réception</label>
+          <input id="date_reception" name="date_reception" type="date" class={champ} />
+        </div>
+      </div>
+      <div>
+        <label for="produits" class={etiquette}>Produit(s) concerné(s)</label>
+        <input id="produits" name="produits" type="text" maxlength="300" class={champ} />
+      </div>
+      <div>
+        <label for="commentaire" class={etiquette}>Commentaire (facultatif)</label>
+        <p id="commentaire-aide" class="!mt-1 text-[14px] text-gris-fort">Vous n'avez pas à vous justifier. 1 000 caractères au plus.</p>
+        <textarea id="commentaire" name="commentaire" rows="4" maxlength="1000" aria-describedby="commentaire-aide" class={champ}></textarea>
+      </div>
+
+      <div class="absolute -left-[9999px]" aria-hidden="true">
+        <label for="champ_b7">Ne pas remplir</label>
+        <input id="champ_b7" name="champ_b7" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div>
+        <Bouton type="submit" fleche={false} pleineLargeur>Confirmer la rétractation</Bouton>
+        <p class="text-[14px] text-gris-fort">En cliquant, vous envoyez votre déclaration de rétractation.</p>
+      </div>
+    </fieldset>
+  </form>
+
+  <h2 id="autre-methode">Vous préférez une autre méthode ?</h2>
+  <ul>
+    <li>
+      Par email, à <Valeur v={b.vendeur.email} note="email de la boutique" />
+      {mailto && <Fragment> : <a href={mailto}>écrire un email de rétractation</a></Fragment>}. Indiquez votre nom, votre commande et votre souhait de vous rétracter.
+    </li>
+    <li>
+      Par courrier, à <Valeur v={b.vendeur.adresse} note="adresse postale" />, avec le formulaire type ci-dessous.
+      <AValider>version PDF imprimable du formulaire type à fournir</AValider>
+    </li>
+  </ul>
+  <FormulaireTypeRetractation />
+
+  <h2 id="ensuite">Et ensuite ?</h2>
+  <ol>
+    <li>Vous nous renvoyez la maquette dans les 14 jours qui suivent votre rétractation, à l'adresse <Valeur v={b.retours.adresse} />.</li>
+    <li>Frais de retour : <Valeur v={b.retours.frais} note="à notre charge ou à la vôtre ; à défaut d'information avant la commande, ils sont à notre charge" />.</li>
+    <li>Nous vous remboursons dans les 14 jours qui suivent votre rétractation, frais de livraison standard inclus. Nous pouvons attendre d'avoir reçu la maquette, ou la preuve de son expédition.</li>
+  </ol>
+  <p>Tous les détails : <a href="/livraison-et-retours/#retractation">Livraison et retours</a> et <a href="/cgv/#retractation">article 10 des CGV</a>.</p>
+</PageTexte>

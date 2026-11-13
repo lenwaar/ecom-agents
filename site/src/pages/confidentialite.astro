@@ -1,0 +1,120 @@
+---
+/**
+ * Politique de confidentialité (§6.5 de la spécification v2 ; audit points 10 et 31 ;
+ * audit v2 N10, N12, N15). Durées proposées [PRO] => affichées avec un marqueur [À VALIDER].
+ * Le message cadeau et la lettre ne sont pas actifs au lancement : leurs paragraphes
+ * sont présents mais signalés comme inactifs.
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import AValider from '../components/ui/AValider.astro';
+import { getBoutique } from '../lib/donnees';
+
+const b = await getBoutique();
+
+const sommaire = [
+  { id: 'responsable', libelle: 'Responsable du traitement' },
+  { id: 'traitements', libelle: 'Données, finalités et bases légales' },
+  { id: 'destinataires', libelle: 'Destinataires et transferts' },
+  { id: 'durees', libelle: 'Durées de conservation' },
+  { id: 'droits', libelle: 'Vos droits' },
+  { id: 'cookies', libelle: 'Cookies' },
+];
+---
+
+<PageTexte
+  titre="Politique de confidentialité"
+  titreSeo="Politique de confidentialité | Rouage & Laiton"
+  description="Quelles données nous collectons, pourquoi, combien de temps, et comment exercer vos droits."
+  sommaire={sommaire}
+  legale
+>
+  <h2 id="responsable">1. Responsable du traitement</h2>
+  <p>
+    <Valeur v={b.vendeur.nom_ei} note="Prénom Nom EI" />, nom commercial {b.nom_commercial}, <Valeur v={b.vendeur.adresse} note="adresse postale" />. Contact : <Valeur v={b.vendeur.email} note="email de la boutique" />.
+  </p>
+  <p>Nous collectons le minimum de données nécessaire.</p>
+
+  <h2 id="traitements">2. Données, finalités et bases légales</h2>
+
+  <h3>Votre commande</h3>
+  <p>
+    Nom, email, adresse de livraison ; téléphone seulement s'il est exigé par le transporteur. Ces données sont saisies sur la page de paiement de notre prestataire Stripe. Finalité : traiter et livrer votre commande. Base légale : exécution du contrat.
+  </p>
+
+  <h3>Message cadeau</h3>
+  <p>
+    <AValider>fonction non active au lancement ; paragraphe à conserver seulement si elle est activée</AValider>
+    Le message est conservé dans l'enregistrement de votre commande chez notre prestataire de paiement, pendant la durée de conservation des commandes. Notre copie imprimable est supprimée après l'expédition. N'y indiquez pas d'informations sensibles. Base légale : exécution du contrat.
+  </p>
+
+  <h3>Source de votre visite</h3>
+  <p>
+    Les paramètres de campagne de l'adresse (par exemple tiktok) sont transmis à notre prestataire de paiement avec votre commande, pour mesurer l'efficacité de nos contenus. Base légale : intérêt légitime. Vous pouvez vous y opposer à <Valeur v={b.vendeur.email} note="email de la boutique" />.
+  </p>
+
+  <h3>Rétractation</h3>
+  <p>
+    Les champs du formulaire <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a> (nom, email, informations sur la commande, commentaire facultatif), avec la date et l'heure de la demande. Finalités : traiter votre rétractation et en garder la preuve. Base légale : obligation légale.
+  </p>
+
+  <h3>Adresse IP</h3>
+  <p>Votre adresse IP est utilisée quelques instants pour limiter les envois abusifs des formulaires, puis effacée.</p>
+
+  <h3>Lettre de l'atelier</h3>
+  <p>
+    <AValider>inscription non active au lancement (formulaire « Bientôt »)</AValider>
+    Email, date et heure d'inscription et de confirmation, version du texte de consentement. Base légale : consentement. Vous pouvez vous désinscrire à tout moment, par le lien présent dans chaque lettre.
+  </p>
+
+  <h3>Échanges par email</h3>
+  <p>Vos messages et nos réponses. Finalité : répondre à vos questions et traiter vos demandes. Base légale : <AValider>exécution du contrat ou intérêt légitime, à préciser</AValider>.</p>
+
+  <h3>Questionnaire « Trouver ma maquette »</h3>
+  <p>
+    Vos réponses ne sont ni enregistrées ni transmises par nous. Seules les pages consultées apparaissent, de façon agrégée, dans les statistiques de fréquentation de notre hébergeur.
+  </p>
+
+  <h3>Statistiques de fréquentation</h3>
+  <p>Mesurées côté serveur par notre hébergeur, de façon agrégée, sans script ni cookie.</p>
+
+  <h2 id="destinataires">3. Destinataires et transferts</h2>
+  <ul>
+    <li>Stripe : paiement et prévention de la fraude.</li>
+    <li>Cloudflare : hébergement du site.</li>
+    <li>Service d'envoi d'emails : <Valeur v={b.donnees.service_emails} />.</li>
+    <li>Transporteur : <Valeur v={b.livraison.transporteur} />.</li>
+    <li>Le fournisseur qui expédie votre maquette, s'il ne part pas de chez nous : <AValider>selon le mode d'expédition retenu</AValider>.</li>
+  </ul>
+  <p>
+    <AValider>rôle exact de Stripe et de Cloudflare (sous-traitant ou responsable distinct) et base des transferts vers les États-Unis, à relever dans leurs accords de traitement des données ; avis d'un professionnel en cas de doute</AValider>
+  </p>
+
+  <h2 id="durees">4. Durées de conservation</h2>
+  <table>
+    <thead>
+      <tr><th scope="col">Données</th><th scope="col">Durée</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Déclarations de rétractation et échanges liés</td><td>Durée de la relation commerciale, puis 5 ans</td></tr>
+      <tr><td>Pièces comptables</td><td>10 ans</td></tr>
+      <tr><td>Adresse IP du contrôle anti-abus</td><td>Non conservée</td></tr>
+      <tr><td>Lettre de l'atelier</td><td>Jusqu'à la désinscription, puis effacement ; preuve du consentement : <AValider>durée</AValider></td></tr>
+      <tr><td>Inscriptions à la lettre non confirmées</td><td>7 jours</td></tr>
+      <tr><td>Commandes et données clients</td><td><AValider>durée</AValider></td></tr>
+      <tr><td>Message cadeau</td><td><AValider>durée</AValider></td></tr>
+    </tbody>
+  </table>
+  <p><AValider>durées proposées, à confirmer par un professionnel</AValider></p>
+
+  <h2 id="droits">5. Vos droits</h2>
+  <p>
+    Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité de vos données. Pour les exercer, écrivez à <Valeur v={b.vendeur.email} note="email de la boutique" />. Nous vous répondons sous un mois.
+  </p>
+  <p>
+    Si vous estimez que vos droits ne sont pas respectés, vous pouvez adresser une réclamation à la CNIL (<a href="https://www.cnil.fr">cnil.fr</a>).
+  </p>
+
+  <h2 id="cookies">6. Cookies</h2>
+  <p>Voir notre <a href="/cookies/">page sur les cookies</a>.</p>
+</PageTexte>

@@ -1,0 +1,174 @@
+---
+/**
+ * Barre de navigation (§4.0) : fixe en haut, 64 px (56 px mobile).
+ * - Pages claires : fond papier translucide flouté, texte encre.
+ * - Pages cinématiques : transparente au-dessus du héros, puis nuit translucide floutée
+ *   après 40 px de défilement (transition 300 ms).
+ * Mobile : « Maquettes » + bouton Menu qui ouvre un panneau latéral (<dialog> modal :
+ * focus piégé, Échap, clic hors panneau). Sans JavaScript, le bouton mène au pied de page.
+ * Pas d'icône panier ni de recherche au lancement.
+ */
+import Menu from '@lucide/astro/icons/menu';
+import X from '@lucide/astro/icons/x';
+import { LIENS_NAVIGATION, LIENS_PANNEAU_MOBILE } from '../../lib/navigation';
+
+interface Props {
+  registre: 'clair' | 'sombre';
+}
+
+const { registre } = Astro.props;
+const cheminActuel = Astro.url.pathname;
+const estActif = (href: string) => cheminActuel === href || (href !== '/' && cheminActuel.startsWith(href));
+
+const fond =
+  registre === 'clair'
+    ? 'bg-papier/80 text-encre backdrop-blur-[14px] border-b border-bordure'
+    : 'bg-transparent text-creme border-b border-transparent';
+const lienSecondaire = registre === 'clair' ? 'text-gris-fort hover:text-encre' : 'text-creme-secondaire hover:text-creme';
+---
+
+<header
+  id="barre-navigation"
+  data-registre={registre}
+  class={`sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ease-sortie ${registre === 'sombre' ? 'registre-sombre' : 'registre-clair'} ${fond}`}
+>
+  <nav aria-label="Navigation principale" class="conteneur flex h-14 items-center justify-between gap-6 md:h-16">
+    <a href="/" class="titre-serif text-[23px] leading-none" aria-label="Rouage & Laiton, accueil">
+      Rouage <span class={registre === 'clair' ? 'text-laiton-fonce' : 'text-laiton'}>&amp;</span> Laiton
+    </a>
+
+    <ul class="hidden items-center gap-7 text-[14px] md:flex">
+      {
+        LIENS_NAVIGATION.map((lien) => (
+          <li>
+            <a
+              href={lien.href}
+              aria-current={estActif(lien.href) ? 'page' : undefined}
+              class={`lien-nav relative py-2 transition-colors duration-200 ${lienSecondaire} aria-[current=page]:font-medium`}
+            >
+              {lien.libelle}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="flex items-center gap-1 md:hidden">
+      <a href="/maquettes/" class={`px-3 py-3 text-[14px] ${lienSecondaire}`}>Maquettes</a>
+      <a
+        href="#pied-de-page"
+        id="ouvrir-menu"
+        role="button"
+        aria-haspopup="dialog"
+        aria-controls="panneau-menu"
+        class="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full"
+      >
+        <Menu size={22} stroke-width={1.75} aria-hidden="true" />
+        <span class="sr-only">Ouvrir le menu</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<dialog
+  id="panneau-menu"
+  aria-label="Menu"
+  class="panneau-menu m-0 ml-auto h-dvh max-h-none w-[min(86vw,360px)] max-w-none bg-papier p-0 text-encre backdrop:bg-nuit/60"
+>
+  <div class="flex h-full flex-col">
+    <div class="flex h-14 items-center justify-between border-b border-bordure px-5">
+      <span class="titre-serif text-[21px]">Menu</span>
+      <button type="button" id="fermer-menu" class="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded-full">
+        <X size={22} stroke-width={1.75} aria-hidden="true" />
+        <span class="sr-only">Fermer le menu</span>
+      </button>
+    </div>
+    <ul class="flex flex-col px-5 py-4 text-[17px]">
+      {
+        [...LIENS_NAVIGATION, ...LIENS_PANNEAU_MOBILE].map((lien) => (
+          <li class="border-b border-bordure last:border-b-0">
+            <a href={lien.href} aria-current={estActif(lien.href) ? 'page' : undefined} class="flex min-h-12 items-center py-2 aria-[current=page]:font-semibold">
+              {lien.libelle}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</dialog>
+
+<style>
+  .lien-nav::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 300ms var(--courbe-sortie);
+  }
+  .lien-nav:hover::after,
+  .lien-nav[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Barre cinématique après 40 px de défilement. */
+  header[data-registre='sombre'].defile {
+    background-color: rgba(10, 15, 26, 0.72);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom-color: var(--bordure-sombre);
+  }
+
+  /* Panneau latéral : glisse depuis la droite en 300 ms. */
+  .panneau-menu[open] {
+    display: block;
+    transform: translateX(0);
+    transition: transform 300ms var(--courbe-sortie);
+  }
+  @starting-style {
+    .panneau-menu[open] {
+      transform: translateX(100%);
+    }
+  }
+</style>
+
+<script>
+  const barre = document.getElementById('barre-navigation');
+  if (barre?.dataset.registre === 'sombre') {
+    const majFond = () => barre.classList.toggle('defile', window.scrollY > 40);
+    majFond();
+    window.addEventListener('scroll', majFond, { passive: true });
+  }
+
+  const panneau = document.getElementById('panneau-menu') as HTMLDialogElement | null;
+  const ouvrir = document.getElementById('ouvrir-menu');
+  const fermer = document.getElementById('fermer-menu');
+  if (panneau && ouvrir) {
+    ouvrir.addEventListener('click', (evenement) => {
+      evenement.preventDefault();
+      panneau.showModal();
+      ouvrir.setAttribute('aria-expanded', 'true');
+    });
+    ouvrir.addEventListener('keydown', (evenement) => {
+      // role="button" : la barre d'espace active aussi le bouton.
+      if (evenement.key === ' ') {
+        evenement.preventDefault();
+        ouvrir.click();
+      }
+    });
+    fermer?.addEventListener('click', () => panneau.close());
+    // Clic hors du panneau : la cible est le <dialog> lui-même (zone du fond).
+    panneau.addEventListener('click', (evenement) => {
+      if (evenement.target === panneau) panneau.close();
+    });
+    panneau.addEventListener('close', () => {
+      ouvrir.setAttribute('aria-expanded', 'false');
+      ouvrir.focus();
+    });
+  }
+</script>

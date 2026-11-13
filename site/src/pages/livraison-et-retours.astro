@@ -1,0 +1,102 @@
+---
+/**
+ * Livraison et retours (§4.8 de la spécification v2, audit points 5 et 26, audit v2 N8 et N31).
+ * Textes : knowledge/politiques.md ; valeurs inconnues : boutique.yaml => [À VALIDER].
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import Bouton from '../components/ui/Bouton.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import FileX from '@lucide/astro/icons/file-x';
+import { getBoutique, getDelaisEnVente } from '../lib/donnees';
+
+const b = await getBoutique();
+const delais = await getDelaisEnVente();
+
+const sommaire = [
+  { id: 'livraison', libelle: 'Livraison' },
+  { id: 'retractation', libelle: 'Droit de rétractation' },
+  { id: 'piece-manquante', libelle: 'Pièce manquante ou abîmée' },
+  { id: 'garanties', libelle: 'Garanties légales' },
+];
+---
+
+<PageTexte
+  titre="Livraison et retours"
+  titreSeo="Livraison et retours | Rouage & Laiton"
+  description="Délais et frais de livraison, droit de rétractation de 14 jours, pièce manquante et garanties légales."
+  sommaire={sommaire}
+>
+  <h2 id="livraison">Livraison</h2>
+  <ul>
+    <li>Zone de livraison : {b.livraison.zone}.</li>
+    <li>
+      Délai entre votre commande et la réception :
+      {delais ? `${delais.min} à ${delais.max} jours` : <Fragment><Valeur v="" note="délai réel par produit" />, {b.livraison.delai_max_jours} jours au maximum</Fragment>}.
+      Le délai de chaque maquette est affiché sur sa fiche, avant le paiement.
+    </li>
+    <li>Transporteur : <Valeur v={b.livraison.transporteur} />. Suivi du colis : <Valeur v={b.livraison.suivi} />.</li>
+    <li>
+      Frais de livraison : <Valeur v={b.livraison.frais} />, par commande, quel que soit le nombre de maquettes.
+    </li>
+    <li>
+      Avant toute expédition, nous vous envoyons un email de confirmation avec le récapitulatif de votre commande, nos conditions de vente et le formulaire de rétractation.
+    </li>
+    <li>
+      Si votre colis n'arrive pas dans le délai annoncé, vous pouvez annuler la commande. Nous vous remboursons alors sous 14 jours, sans jamais vous imposer un avoir.
+    </li>
+  </ul>
+
+  <h2 id="retractation">Droit de rétractation</h2>
+  <p>
+    Vous avez 14 jours à compter de la réception de votre commande pour changer d'avis, sans avoir à vous justifier, comme le prévoit la loi pour les achats à distance.
+  </p>
+  <h3>Trois façons de vous rétracter</h3>
+  <ol>
+    <li>Le formulaire en ligne <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a> : vous recevez un accusé de réception par email.</li>
+    <li>Un email à <Valeur v={b.vendeur.email} note="email de la boutique" />.</li>
+    <li>Le formulaire type de rétractation, reproduit en annexe de nos <a href="/cgv/#annexe">conditions générales de vente</a>.</li>
+  </ol>
+  <h3>Renvoyer la maquette</h3>
+  <ul>
+    <li>Adresse de retour : <Valeur v={b.retours.adresse} />.</li>
+    <li>Délai : 14 jours après nous avoir informés de votre rétractation.</li>
+    <li>
+      Frais de retour : <Valeur v={b.retours.frais} note="à notre charge ou à la vôtre ; à défaut d'information avant la commande, ils sont à notre charge" />.
+    </li>
+  </ul>
+  <h3>Remboursement</h3>
+  <p>
+    Nous vous remboursons toutes les sommes versées, y compris les frais de livraison initiaux (livraison standard), dans les 14 jours qui suivent votre rétractation. Nous pouvons attendre d'avoir reçu la maquette, ou la preuve de son expédition, avant de rembourser.
+  </p>
+  <h3>Si vous avez commencé l'assemblage</h3>
+  <p>
+    Vous pouvez examiner votre maquette comme vous le feriez en magasin : ouvrir la boîte, vérifier le contenu, les planches et la notice. Si vous commencez l'assemblage (pièces détachées des planches, assemblées ou collées), vous allez au-delà de ce qui est nécessaire pour établir la nature, les caractéristiques et le bon fonctionnement du produit. Votre droit de rétractation reste entier, mais votre responsabilité peut être engagée pour la dépréciation qui en résulte : nous pourrons alors déduire du remboursement un montant correspondant à la perte de valeur réelle, que nous vous justifierons par écrit.
+  </p>
+  <p><mark class="a-valider">[À VALIDER : formulation à confirmer par un juriste]</mark></p>
+  <p class="mt-6!">
+    <a href="/renoncer-au-contrat/" data-bouton class="inline-flex min-h-12 items-center gap-2.5 rounded-full border border-bordure bg-carte px-6 py-3 text-[15px] font-medium text-encre transition-colors hover:border-laiton-fonce hover:text-laiton-fonce">
+      <FileX size={20} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+      Renoncer au contrat ici
+    </a>
+  </p>
+
+  <h2 id="piece-manquante">Pièce manquante ou abîmée à la réception</h2>
+  <p>
+    C'est un défaut de conformité, couvert par la garantie légale. Envoyez-nous une photo de la pièce et de la boîte par email à <Valeur v={b.vendeur.email} note="email de la boutique" /> : nous vous envoyons la pièce ou une maquette de remplacement.
+  </p>
+  <p>Délai de réponse : <Valeur v={b.service_client.delai_reponse_piece_manquante} />.</p>
+  <p><a href="/contact/#piece-manquante">Signaler une pièce manquante</a></p>
+
+  <h2 id="garanties">Garanties légales</h2>
+  <ul>
+    <li>
+      Garantie légale de conformité : 2 ans à compter de la livraison. En cas de défaut, la maquette est réparée ou remplacée ; à défaut, vous obtenez une réduction du prix ou le remboursement.
+    </li>
+    <li>Garantie des vices cachés : articles 1641 et suivants du Code civil.</li>
+  </ul>
+  <p>Le texte officiel qui décrit ces garanties figure à l'<a href="/cgv/#garanties">article 11 de nos conditions générales de vente</a>.</p>
+
+  <div slot="apres" class="mt-10">
+    <Bouton href="/maquettes/">Découvrir les maquettes</Bouton>
+  </div>
+</PageTexte>

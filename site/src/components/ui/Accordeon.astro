@@ -1,0 +1,56 @@
+---
+/**
+ * Élément d'accordéon (§4.0) : <details>/<summary> natifs, fonctionne sans JavaScript.
+ * Chevron qui pivote ; ouverture animée 250 ms là où le navigateur le permet,
+ * désactivée si le système demande moins d'animation.
+ * Les textes légaux ne sont jamais placés dans un accordéon (§6.1).
+ */
+import ChevronDown from '@lucide/astro/icons/chevron-down';
+
+interface Props {
+  titre: string;
+  id?: string;
+  ouvert?: boolean;
+  registre?: 'clair' | 'sombre';
+  niveauTitre?: 'h2' | 'h3' | 'span';
+}
+
+const { titre, id, ouvert = false, registre = 'clair', niveauTitre = 'h3' } = Astro.props;
+const Titre = niveauTitre;
+const bordure = registre === 'clair' ? 'border-bordure' : 'border-bordure-sombre';
+const icone = registre === 'clair' ? 'text-laiton-fonce' : 'text-laiton';
+---
+
+<details id={id} open={ouvert} class={`accordeon group border-b ${bordure}`}>
+  <summary class="flex min-h-12 list-none items-center justify-between gap-4 py-4 text-left font-medium">
+    <Titre class="text-[16px] font-medium leading-snug">{titre}</Titre>
+    <ChevronDown
+      size={20}
+      stroke-width={1.75}
+      aria-hidden="true"
+      class={`shrink-0 transition-transform duration-250 ease-sortie group-open:rotate-180 ${icone}`}
+    />
+  </summary>
+  <div class="pb-5 pr-8">
+    <slot />
+  </div>
+</details>
+
+<style>
+  /* Ouverture animée (navigateurs récents) ; sinon ouverture instantanée. */
+  @supports (interpolate-size: allow-keywords) {
+    .accordeon {
+      interpolate-size: allow-keywords;
+    }
+    .accordeon::details-content {
+      block-size: 0;
+      overflow: hidden;
+      transition:
+        block-size 250ms var(--courbe-sortie),
+        content-visibility 250ms allow-discrete;
+    }
+    .accordeon[open]::details-content {
+      block-size: auto;
+    }
+  }
+</style>

@@ -1,0 +1,78 @@
+---
+/**
+ * Bouton en pilule (§4.0 de la spécification v2).
+ * - principal : une seule action principale par page. Sombre : crème sur nuit ; clair : bleu nuit.
+ * - secondaire : contour fin, laiton au survol.
+ * Lien si `href` est fourni, sinon <button>. `desactive` : aria-disabled, sans lien (produit de démonstration).
+ */
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends Omit<HTMLAttributes<'button'>, 'type'> {
+  variante?: 'principal' | 'secondaire';
+  registre?: 'clair' | 'sombre';
+  href?: string;
+  type?: 'button' | 'submit';
+  desactive?: boolean;
+  fleche?: boolean;
+  pleineLargeur?: boolean;
+  class?: string;
+}
+
+const {
+  variante = 'principal',
+  registre = 'clair',
+  href,
+  type = 'button',
+  desactive = false,
+  fleche = variante === 'principal',
+  pleineLargeur = false,
+  class: classe,
+  ...reste
+} = Astro.props;
+
+const base =
+  'group inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full px-6 py-3 text-[15px] font-medium leading-tight transition-[transform,background-color,color,border-color,box-shadow] duration-250 ease-sortie select-none';
+const actif = 'active:scale-[.97]';
+
+const styles = {
+  principal: {
+    sombre: 'bg-creme text-nuit hover:bg-white hover:shadow-[0_10px_30px_rgba(200,161,90,.28)]',
+    clair: 'bg-bleu-nuit text-white hover:bg-[#16304f]',
+  },
+  secondaire: {
+    sombre: 'border border-bordure-sombre text-creme hover:border-laiton hover:text-laiton',
+    clair: 'border border-bordure text-encre bg-carte hover:border-laiton-fonce hover:text-laiton-fonce',
+  },
+} as const;
+
+const classes = [
+  base,
+  styles[variante][registre],
+  desactive ? 'cursor-not-allowed opacity-50 pointer-events-auto' : actif,
+  pleineLargeur ? 'w-full' : '',
+  classe ?? '',
+].join(' ');
+---
+
+{
+  desactive ? (
+    <span role="link" aria-disabled="true" class={classes} data-bouton>
+      <slot />
+    </span>
+  ) : href ? (
+    <a href={href} class={classes} data-bouton {...(reste as HTMLAttributes<'a'>)}>
+      <slot />
+      {fleche && (
+        <ArrowRight size={18} stroke-width={1.75} aria-hidden="true" class="transition-transform duration-250 ease-sortie group-hover:translate-x-[3px]" />
+      )}
+    </a>
+  ) : (
+    <button type={type} class={classes} data-bouton {...reste}>
+      <slot />
+      {fleche && (
+        <ArrowRight size={18} stroke-width={1.75} aria-hidden="true" class="transition-transform duration-250 ease-sortie group-hover:translate-x-[3px]" />
+      )}
+    </button>
+  )
+}

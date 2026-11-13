@@ -1,0 +1,30 @@
+---
+/**
+ * Badge en pilule (§4.0) : « 14 ans et plus », niveau, « Démonstration »…
+ * Texte toujours complet (jamais « 14+ » seul).
+ */
+interface Props {
+  variante?: 'neutre' | 'laiton' | 'demo';
+  registre?: 'clair' | 'sombre';
+  class?: string;
+}
+
+const { variante = 'neutre', registre = 'clair', class: classe } = Astro.props;
+
+const styles = {
+  clair: {
+    neutre: 'border border-bordure bg-carte text-encre',
+    laiton: 'border border-laiton-fonce/40 bg-carte text-laiton-fonce',
+    demo: 'bg-encre text-creme',
+  },
+  sombre: {
+    neutre: 'border border-bordure-sombre text-creme-secondaire',
+    laiton: 'border border-laiton/40 text-laiton',
+    demo: 'bg-creme text-nuit',
+  },
+} as const;
+---
+
+<span class={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[13px] font-medium leading-none ${styles[registre][variante]} ${classe ?? ''}`}>
+  <slot />
+</span>

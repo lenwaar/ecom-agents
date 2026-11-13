@@ -1,0 +1,107 @@
+---
+/**
+ * Contact (§4.9 de la spécification v2, inchangé depuis la v1).
+ * Pas de formulaire : liens mailto: avec objet prérempli, actifs seulement quand
+ * l'email de la boutique est connu (sinon bouton désactivé + [À VALIDER]).
+ * Ancre #piece-manquante utilisée par le pied de page et la page Livraison et retours.
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import Bouton from '../components/ui/Bouton.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import Mail from '@lucide/astro/icons/mail';
+import Package from '@lucide/astro/icons/package';
+import PuzzleIcon from '@lucide/astro/icons/puzzle';
+import CircleHelp from '@lucide/astro/icons/circle-question-mark';
+import FileX from '@lucide/astro/icons/file-x';
+import { getBoutique, lienEmail } from '../lib/donnees';
+
+const b = await getBoutique();
+const mailto = lienEmail(b.vendeur.email);
+
+const raccourcis = [
+  {
+    id: 'question',
+    icone: CircleHelp,
+    titre: 'Une question avant l’achat',
+    texte: 'Difficulté, temps d’assemblage, idée de cadeau : dites-nous ce que vous cherchez.',
+    objet: 'Question sur une maquette',
+  },
+  {
+    id: 'commande',
+    icone: Package,
+    titre: 'Ma commande',
+    texte: 'Indiquez votre numéro de commande ou de reçu.',
+    objet: 'Ma commande',
+  },
+  {
+    id: 'piece-manquante',
+    icone: PuzzleIcon,
+    titre: 'Pièce manquante ou abîmée',
+    texte: 'Joignez une photo de la pièce et de la boîte, avec votre numéro de commande.',
+    objet: 'Pièce manquante ou abîmée',
+  },
+];
+---
+
+<PageTexte
+  titre="Nous contacter"
+  titreSeo="Contact | Rouage & Laiton"
+  description="Une question sur une maquette, votre commande ou une pièce manquante : écrivez-nous."
+>
+  <p>
+    Nous répondons sous <Valeur v={b.service_client.delai_reponse_jours_ouvres} note="nombre de" /> jours ouvrés, par email.
+  </p>
+  <p class="mt-6!">
+    {
+      mailto ? (
+        <Bouton href={mailto} fleche={false}>
+          <Mail size={20} stroke-width={1.75} aria-hidden="true" />
+          Écrire un email
+        </Bouton>
+      ) : (
+        <Fragment>
+          <Bouton desactive>Écrire un email</Bouton>
+          <span class="ml-3"><Valeur v="" note="email de la boutique" /></span>
+        </Fragment>
+      )
+    }
+  </p>
+
+  <h2>Raccourcis</h2>
+  <ul class="!list-none !pl-0 grid gap-4 md:grid-cols-3">
+    {
+      raccourcis.map((r) => {
+        const lien = lienEmail(b.vendeur.email, r.objet);
+        const Icone = r.icone;
+        return (
+          <li id={r.id} class="!mt-0 scroll-mt-24 rounded-carte border border-bordure bg-carte p-5">
+            <Icone size={24} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+            <h3 class="!mt-3">{r.titre}</h3>
+            <p class="text-[15px]">{r.texte}</p>
+            <p class="text-[15px]">
+              {lien ? <a href={lien}>Écrire à ce sujet</a> : <Valeur v="" note="lien email avec objet prérempli" />}
+            </p>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  <h2>Autres moyens</h2>
+  <ul>
+    <li>Email : <Valeur v={b.vendeur.email} note="email de la boutique" /></li>
+    <li>Téléphone : <Valeur v={b.vendeur.telephone} /></li>
+    <li>Adresse postale : <Valeur v={b.vendeur.adresse} /></li>
+  </ul>
+
+  <h2>Vous voulez vous rétracter ?</h2>
+  <p>
+    Pour vous rétracter, utilisez plutôt le formulaire Renoncer au contrat ici : accusé de réception immédiat.
+  </p>
+  <p class="mt-4!">
+    <a href="/renoncer-au-contrat/" data-bouton class="inline-flex min-h-12 items-center gap-2.5 rounded-full border border-bordure bg-carte px-6 py-3 text-[15px] font-medium text-encre transition-colors hover:border-laiton-fonce hover:text-laiton-fonce">
+      <FileX size={20} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+      Renoncer au contrat ici
+    </a>
+  </p>
+</PageTexte>

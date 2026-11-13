@@ -1,0 +1,26 @@
+---
+/**
+ * Polices auto-hébergées (Fontsource), sous-ensemble latin, servies depuis notre domaine :
+ * aucune requête vers Google (§4.0). Inter variable (400 à 600) + Cormorant Garamond 400 et 400 italique.
+ * Le sous-ensemble latin couvre le français (accents, « », œ, espace fine insécable).
+ */
+import interVariable from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import cormorant400 from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-400-normal.woff2?url';
+import cormorant400Italique from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-400-italic.woff2?url';
+
+interface Props {
+  /** Précharge la serif (pages dont le premier écran affiche un grand titre serif). */
+  prechargerSerif?: boolean;
+}
+const { prechargerSerif = true } = Astro.props;
+
+const css = `
+@font-face{font-family:"Inter";font-style:normal;font-display:swap;font-weight:100 900;src:url(${interVariable}) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Cormorant Garamond";font-style:normal;font-display:swap;font-weight:400;src:url(${cormorant400}) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Cormorant Garamond";font-style:italic;font-display:swap;font-weight:400;src:url(${cormorant400Italique}) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+`;
+---
+
+<link rel="preload" href={interVariable} as="font" type="font/woff2" crossorigin />
+{prechargerSerif && <link rel="preload" href={cormorant400} as="font" type="font/woff2" crossorigin />}
+<style is:inline set:html={css} />

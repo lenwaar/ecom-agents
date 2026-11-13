@@ -1,0 +1,82 @@
+---
+/**
+ * Mise en page des pages légales et d'aide (registre clair, §6.1) :
+ * H1, « Version du … » (pages légales), sommaire d'ancres, texte 16 px, aucun texte replié,
+ * lien « Haut de page », aucune animation, aucun appel à l'action commercial (pages légales).
+ * Sur mobile, le sommaire est une liste horizontale défilante collée sous la barre.
+ */
+import ArrowUp from '@lucide/astro/icons/arrow-up';
+import Base from './Base.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import { getBoutique } from '../lib/donnees';
+
+interface Props {
+  titre: string;
+  titreSeo: string;
+  description: string;
+  sommaire?: { id: string; libelle: string }[];
+  legale?: boolean;
+  noindex?: boolean;
+  avertissementProvisoire?: boolean;
+}
+
+const { titre, titreSeo, description, sommaire = [], legale = false, noindex = false, avertissementProvisoire = true } = Astro.props;
+const boutique = await getBoutique();
+---
+
+<Base titre={titreSeo} description={description} noindex={noindex}>
+  <div class="conteneur pt-10 pb-20 md:pt-16">
+    <nav aria-label="Fil d'Ariane" class="text-[14px] text-gris-fort">
+      <ol class="flex flex-wrap gap-1.5">
+        <li><a href="/" class="underline-offset-4 hover:underline">Accueil</a> <span aria-hidden="true">›</span></li>
+        <li aria-current="page">{titre}</li>
+      </ol>
+    </nav>
+
+    <h1 id="haut" class="titre-serif mt-4 text-[40px] leading-none md:text-[64px]">{titre}</h1>
+    {
+      legale && (
+        <p class="mt-4 text-[15px] text-gris-fort">
+          Version du <Valeur v={boutique.textes.version_legale} note="date de validation des textes" />
+        </p>
+      )
+    }
+    {
+      avertissementProvisoire && (
+        <p class="mt-6 max-w-[72ch] rounded-champ border-l-[3px] border-laiton-fonce bg-encart px-4 py-3 text-[15px]">
+          Texte provisoire, en cours de validation. Les valeurs marquées « À VALIDER » seront complétées avant toute ouverture de la boutique.
+        </p>
+      )
+    }
+
+    {
+      sommaire.length > 0 && (
+        <nav aria-label="Sommaire" class="sticky top-14 z-10 -mx-[clamp(16px,4vw,48px)] mt-8 border-y border-bordure bg-papier/95 px-[clamp(16px,4vw,48px)] backdrop-blur md:static md:mx-0 md:max-w-[72ch] md:rounded-carte md:border md:px-6 md:py-5">
+          <p class="hidden text-[13px] font-semibold uppercase tracking-[0.12em] text-gris-fort md:block">Sommaire</p>
+          <ol class="flex gap-5 overflow-x-auto py-3 text-[15px] whitespace-nowrap md:mt-3 md:block md:space-y-1.5 md:overflow-visible md:py-0 md:whitespace-normal">
+            {sommaire.map((s, i) => (
+              <li>
+                <a href={`#${s.id}`} class="text-bleu-nuit underline-offset-4 hover:underline">
+                  {legale ? `${i + 1}. ` : ''}
+                  {s.libelle}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+
+    <div class="prose-boutique mt-10">
+      <slot />
+    </div>
+
+    <p class="sans-impression mt-14">
+      <a href="#haut" class="inline-flex min-h-11 items-center gap-2 text-[15px] text-bleu-nuit underline-offset-4 hover:underline">
+        <ArrowUp size={18} stroke-width={1.75} aria-hidden="true" />
+        Haut de page
+      </a>
+    </p>
+    <slot name="apres" />
+  </div>
+</Base>

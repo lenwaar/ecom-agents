@@ -1,0 +1,21 @@
+---
+/**
+ * Marqueur pour un texte entier qui manque (ex. encadré officiel à recopier depuis Légifrance).
+ * Jamais de texte légal inventé : on écrit ce qu'il faut fournir, et qui le fournit.
+ */
+interface Props {
+  bloc?: boolean;
+}
+const { bloc = false } = Astro.props;
+---
+
+{
+  bloc ? (
+    <div class="my-4 rounded-champ border border-dashed border-[#B45309] bg-[#FFFBEB] p-4 text-[15px] text-[#78350F]">
+      <p class="!mt-0 font-semibold">[À VALIDER]</p>
+      <div class="mt-1"><slot /></div>
+    </div>
+  ) : (
+    <mark class="a-valider">[À VALIDER : <slot />]</mark>
+  )
+}

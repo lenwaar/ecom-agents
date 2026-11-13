@@ -1,0 +1,14 @@
+---
+/**
+ * Bandeau du mode démonstration (§4.0) : au-dessus de tout, non masquable.
+ * Affiché seulement si `mode_demo: true` dans src/content/reglages/accueil.yaml.
+ */
+import Info from '@lucide/astro/icons/info';
+---
+
+<div class="registre-sombre relative z-[60] bg-nuit-2 text-creme">
+  <p class="conteneur flex items-start gap-2.5 py-2.5 text-[14px] leading-snug sm:items-center">
+    <Info size={18} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton sm:mt-0" />
+    <span>Boutique en préparation. Les maquettes présentées sont des démonstrations (rendus 3D) : rien n'est en vente pour le moment.</span>
+  </p>
+</div>

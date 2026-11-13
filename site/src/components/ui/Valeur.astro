@@ -1,0 +1,18 @@
+---
+/**
+ * Affiche une valeur de la boutique (boutique.yaml). Si elle n'est pas encore connue,
+ * affiche un marqueur « [À VALIDER] » surligné, avec une note facultative
+ * (ex. « adresse postale »), pour que la relecture le repère tout de suite.
+ */
+import { estAValider } from '../../lib/donnees';
+
+interface Props {
+  v: string;
+  note?: string;
+}
+
+const { v, note } = Astro.props;
+const manque = estAValider(v);
+---
+
+{manque ? <mark class="a-valider">[À VALIDER{note ? ` : ${note}` : ''}]</mark> : <Fragment>{v}</Fragment>}

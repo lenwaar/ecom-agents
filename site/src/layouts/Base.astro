@@ -1,0 +1,80 @@
+---
+/**
+ * Mise en page commune à toutes les pages.
+ * - Langue fr, lien « Aller au contenu » en premier.
+ * - Bandeau démonstration (si mode_demo) + noindex sur tout le site (§4.0, audit N16 et N18).
+ * - Registre « clair » (boutique, aide, légal) ou « sombre » (cinématique).
+ * - `animations` : charge le système de mouvement GSAP (pages cinématiques uniquement).
+ */
+import '../styles/global.css';
+import Polices from '../components/mise-en-page/Polices.astro';
+import BandeauDemo from '../components/mise-en-page/BandeauDemo.astro';
+import BandeauReassurance from '../components/mise-en-page/BandeauReassurance.astro';
+import Navigation from '../components/mise-en-page/Navigation.astro';
+import PiedDePage from '../components/mise-en-page/PiedDePage.astro';
+import { getModeDemo } from '../lib/donnees';
+
+interface Props {
+  titre: string;
+  description: string;
+  registre?: 'clair' | 'sombre';
+  noindex?: boolean;
+  animations?: boolean;
+}
+
+const { titre, description, registre = 'clair', noindex = false, animations = false } = Astro.props;
+const modeDemo = await getModeDemo();
+const indexer = !modeDemo && !noindex;
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{titre}</title>
+    <meta name="description" content={description} />
+    {!indexer && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content={registre === 'sombre' ? '#0A0F1A' : '#FBFAF7'} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <Polices prechargerSerif={registre === 'sombre'} />
+    {
+      animations && (
+        <script is:inline>
+          if(!matchMedia('(prefers-reduced-motion: reduce)').matches&&!(navigator.connection&&navigator.connection.saveData))document.documentElement.classList.add('js-anim');
+        </script>
+      )
+    }
+  </head>
+  <body class={registre === 'sombre' ? 'registre-sombre bg-nuit text-creme' : 'registre-clair bg-papier text-encre'}>
+    <a
+      href="#contenu"
+      class="sr-only z-[100] rounded-full bg-bleu-nuit px-5 py-3 text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+    >
+      Aller au contenu
+    </a>
+    {modeDemo && <BandeauDemo />}
+    <Navigation registre={registre} />
+    {registre === 'clair' && <BandeauReassurance />}
+    <main id="contenu" tabindex="-1" class="outline-none">
+      <slot />
+    </main>
+    <PiedDePage />
+    {
+      animations && (
+        <script>
+          import {demarrerMouvement} from '../scripts/mouvement';
+          demarrerMouvement();
+        </script>
+      )
+    }
+  </body>
+</html>
+
+<style is:global>
+  html.js-anim [data-revele='bloc'],
+  html.js-anim [data-revele='cartes'] > * {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+</style>

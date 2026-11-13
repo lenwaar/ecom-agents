@@ -1,0 +1,39 @@
+---
+/**
+ * Accueil PROVISOIRE (étape 1). L'accueil animé (tâche T35, niveau du prototype
+ * docs/reference/prototype-accueil-v2.html) sera construit à une étape suivante.
+ * Cette page ne sert qu'à vérifier le registre sombre, la barre et le pied de page.
+ */
+import Base from '../layouts/Base.astro';
+import Bouton from '../components/ui/Bouton.astro';
+import Badge from '../components/ui/Badge.astro';
+---
+
+<Base
+  titre="Maquettes mécaniques en bois à assembler | Rouage & Laiton"
+  description="Maquettes mécaniques en bois à assembler soi-même, pour adultes, à partir de 14 ans. Boutique en préparation."
+  registre="sombre"
+>
+  <section
+    class="grain relative -mt-14 flex min-h-[88svh] items-center overflow-hidden pt-14 md:-mt-16 md:pt-16"
+    style="background: radial-gradient(55% 55% at 72% 45%, rgba(200,161,90,.17), transparent 70%), radial-gradient(80% 80% at 15% 95%, rgba(30,58,95,.5), transparent 70%), var(--fond-nuit);"
+  >
+    <div class="conteneur relative z-[1] py-20">
+      <p class="kicker text-laiton">Maquettes en bois à assembler</p>
+      <h1 class="titre-serif mt-6 max-w-4xl text-[52px] leading-[0.92] md:text-[clamp(52px,9vw,128px)]">
+        Construire un objet <em>qui bouge.</em>
+      </h1>
+      <p class="mt-6 max-w-[460px] text-[16px] leading-[1.65] text-creme-secondaire">
+        Des maquettes mécaniques en bois, pour adultes, à partir de 14 ans. La boutique est en préparation.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-3">
+        <Bouton registre="sombre" href="/livraison-et-retours/">Livraison et retours</Bouton>
+        <Bouton registre="sombre" variante="secondaire" href="/faq/">Questions fréquentes</Bouton>
+      </div>
+      <div class="mt-10 flex flex-wrap gap-2">
+        <Badge registre="sombre">14 ans et plus</Badge>
+        <Badge registre="sombre" variante="laiton">Accueil provisoire</Badge>
+      </div>
+    </div>
+  </section>
+</Base>

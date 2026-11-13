@@ -1,0 +1,56 @@
+---
+/**
+ * À propos (§4.7 de la spécification v2 ; audit point 26 : droits légaux présentés comme des droits).
+ * Le texte personnel (prénom, Toulouse, critères réels de sélection, lieu d'expédition) est à
+ * rédiger avec l'humain : aucun fait inventé => [À VALIDER].
+ * Photos (mains, atelier, maquettes montées, aucun visage) : à fournir.
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import Bouton from '../components/ui/Bouton.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import AValider from '../components/ui/AValider.astro';
+import { getBoutique } from '../lib/donnees';
+
+const b = await getBoutique();
+---
+
+<PageTexte
+  titre={`Qui est derrière ${b.nom_commercial} ?`}
+  titreSeo={`À propos | ${b.nom_commercial}`}
+  description="Une petite boutique de maquettes mécaniques en bois à assembler, pour adultes. Qui nous sommes et comment nous travaillons."
+>
+  <p>
+    {b.nom_commercial} propose des maquettes mécaniques en bois à assembler soi-même, pour adultes : le plaisir de construire un objet qui bouge, et un beau cadeau.
+  </p>
+
+  <AValider bloc>
+    Texte vrai à rédiger avec l'humain : prénom, Toulouse, pourquoi les maquettes en bois, critères réels de sélection
+    (délai de 14 jours au plus, fabricant identifié, responsable dans l'Union européenne, pièces vérifiées sur échantillon
+    seulement si c'est fait), lieu d'expédition réel (« depuis Toulouse » ou « depuis l'entrepôt de notre fournisseur en [pays de l'UE] »).
+    Photos : mains, atelier, maquettes montées ; aucun visage.
+  </AValider>
+
+  <h2 id="vos-droits">Vos droits et notre façon de travailler</h2>
+  <h3>Vos droits, comme pour tout achat en ligne</h3>
+  <ul>
+    <li>14 jours pour vous rétracter, à compter de la réception de votre commande.</li>
+    <li>Si le délai de livraison annoncé n'est pas tenu, vous pouvez annuler la commande et être remboursé.</li>
+    <li>La garantie légale de conformité de 2 ans, qui couvre une pièce manquante ou défectueuse.</li>
+    <li>La garantie des vices cachés.</li>
+  </ul>
+  <p>Le détail figure sur la page <a href="/livraison-et-retours/">Livraison et retours</a>.</p>
+
+  <h3>Ce que nous faisons en plus</h3>
+  <p>
+    <AValider>engagements supplémentaires seulement s'ils sont décidés par l'humain (par exemple « Nous renvoyons une pièce cassée pendant le montage ») ; sinon supprimer ce paragraphe</AValider>
+  </p>
+
+  <h2 id="identite">Identité légale</h2>
+  <p>
+    <Valeur v={b.vendeur.nom_ei} note="Prénom Nom EI" />, SIREN <Valeur v={b.vendeur.siren} /> · Voir les <a href="/mentions-legales/">mentions légales</a>.
+  </p>
+
+  <div slot="apres" class="mt-10">
+    <Bouton href="/maquettes/">Découvrir les maquettes</Bouton>
+  </div>
+</PageTexte>

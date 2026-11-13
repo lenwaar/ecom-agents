@@ -1,0 +1,24 @@
+---
+/**
+ * Bandeau de réassurance des pages claires (§4.0), formulé comme des droits (audit point 26).
+ * Délais calculés depuis les produits en vente ; « Livraison suivie » seulement si le suivi
+ * est confirmé (audit N8). Tant que rien n'est en vente : version sans délai chiffré.
+ */
+import { getBoutique, getDelaisEnVente } from '../../lib/donnees';
+
+const boutique = await getBoutique();
+const delais = await getDelaisEnVente();
+const suivie = boutique.livraison.suivi.trim().toLowerCase() === 'oui';
+
+const livraisonCourte = delais ? `Livraison en ${delais.min} à ${delais.max} jours` : `Livraison en ${boutique.livraison.zone}`;
+const livraisonLongue = delais
+  ? `Livraison ${suivie ? 'suivie ' : ''}en ${boutique.livraison.zone} en ${delais.min} à ${delais.max} jours`
+  : `Livraison ${suivie ? 'suivie ' : ''}en ${boutique.livraison.zone}`;
+---
+
+<div class="border-b border-bordure bg-papier text-gris-fort">
+  <p class="conteneur py-2 text-center text-[13px] leading-snug">
+    <span class="md:hidden">{livraisonCourte} · Droit de rétractation 14 jours</span>
+    <span class="hidden md:inline">{livraisonLongue} · Droit de rétractation 14 jours · Paiement par Stripe</span>
+  </p>
+</div>

@@ -1,0 +1,16 @@
+# Réglages de l'accueil et du mode démonstration.
+# Source : §3 de outputs/2026-11-12-architecte-web-conception-boutique-v2.md.
+# Édité par l'humain ou l'orchestrateur. Seul mode_demo est utilisé à l'étape 1.
+mode_demo: true                 # bandeau global + noindex sur tout le site
+produit_comparateur: horloge-murale-balancier
+produit_eclate: boite-engrenages-initiation
+selection_du_moment: [boite-engrenages-initiation, locomotive-vapeur, horloge-murale-balancier, planetaire-mecanique]
+conseils_atelier: [detacher-une-piece, engrenage-qui-accroche, ranger-les-planches]   # textes À RÉDIGER
+faq_apercu: [delai, difficulte, retractation, piece-manquante]
+offrir:
+  message_cadeau_actif: false   # true seulement en option B (expédition par l'humain)
+  date_limite_noel: null        # décision : pas de date limite affichée en dur (knowledge/decisions.md)
+lettre:
+  active: false                 # formulaire visible mais désactivé (« Bientôt ») tant qu'aucun service d'emails n'est choisi
+  frequence: "[À VALIDER]"
+seuil_soirees_heures: 3
