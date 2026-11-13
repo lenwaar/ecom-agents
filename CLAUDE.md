@@ -7,6 +7,7 @@ Lis `docs/architecture.md` avant toute tâche.
 
 - Toujours lire `knowledge/` (marque, niche, politiques) avant de produire quoi que ce soit.
 - Écrire en français, ton défini dans `knowledge/marque.md`.
+- Réponds toujours à l'humain en français, même quand les outils ou les agents écrivent en anglais.
 - Ne jamais inventer un chiffre (prix, délai, stock, avis, statistique) : citer la source ou écrire `À VÉRIFIER`.
 - Ne jamais inventer d'avis clients, de témoignages ou de fausses promos (« -70 % » sans prix de référence réel) : c'est illégal en France (pratiques commerciales trompeuses).
 - Aucune allégation santé/médicale sur les produits beauté/bien-être.
