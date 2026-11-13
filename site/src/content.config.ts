@@ -42,7 +42,7 @@ const produits = defineCollection({
       nom_court: z.string().max(30),
       slug: z.string(),
       accroche: z.string().optional(),
-      collections: z.array(z.enum(['mecanique', 'vehicules', 'miniatures', 'idees-cadeaux'])).min(1),
+      collections: z.array(z.enum(['mecanique', 'vehicules', 'automates', 'idees-cadeaux'])).min(1),
       ordre: z.number().int(),
       statut: z.enum(['brouillon', 'presentation', 'en-vente', 'rupture']),
       demo: z.boolean(),
@@ -206,6 +206,8 @@ const boutique = defineCollection({
     service_client: z.object({ delai_reponse_jours_ouvres: texte, delai_reponse_piece_manquante: texte }),
     commande: z.object({ delai_email_confirmation: texte, moyens_paiement: texte, duree_archivage: texte }),
     donnees: z.object({ service_emails: texte }),
+    // Audit site A1 : tant que false, aucun texte ne promet d'accusé de réception du formulaire en ligne.
+    retractation: z.object({ en_ligne_active: z.boolean() }),
     textes: z.object({ version_legale: texte }),
   }),
 });

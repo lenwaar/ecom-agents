@@ -206,19 +206,6 @@ function book(w, h, d, cover) {
   return g;
 }
 
-// Livre debout (étagère / book nook) : dos vers l'avant (+z)
-export function standingBook(w, h, d, cover) {
-  const g = new THREE.Group();
-  const coverMat = new THREE.MeshStandardMaterial({ color: new THREE.Color(cover), roughness: 0.75 });
-  const pages = box(w - 3, h - 4, d - 3, MAT.paper); pages.position.set(0, 0, -1.5); g.add(pages);
-  for (const s of [-1, 1]) { const c = box(1.5, h, d, coverMat); c.position.x = s * (w / 2 - 0.75); g.add(c); }
-  const sp = box(w, h, 2, coverMat); sp.position.z = d / 2 - 1; g.add(sp);
-  const band = box(w + 0.2, 3, 2.2, MAT.brassDark); band.position.set(0, h * 0.32, d / 2 - 1); g.add(band);
-  const band2 = band.clone(); band2.position.y = -h * 0.32; g.add(band2);
-  g.position.y = h / 2;
-  return g;
-}
-
 // Lampe de bureau articulée générique (aucun modèle de marque) : socle, deux bras, abat-jour conique.
 function deskLamp(head, base) {
   const g = new THREE.Group();
@@ -239,7 +226,7 @@ function deskLamp(head, base) {
   return g;
 }
 
-// Décor de nuit. opts : { bbox, mode:'desk'|'wall'|'shelf', camAz, props:true, window:true }
+// Décor de nuit. opts : { bbox, mode:'desk'|'wall', camAz, props:true, window:true }
 export function nightSet(renderer, scene, objBox, opts = {}) {
   const envTex = nightEnv(renderer);
   const size = objBox.getSize(new THREE.Vector3()); const center = objBox.getCenter(new THREE.Vector3());

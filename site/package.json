@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "node outils/verifier-liens.mjs",
+    "verifier-liens": "node outils/verifier-liens.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },

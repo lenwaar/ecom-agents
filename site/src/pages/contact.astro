@@ -96,7 +96,9 @@ const raccourcis = [
 
   <h2>Vous voulez vous rétracter ?</h2>
   <p>
-    Pour vous rétracter, utilisez plutôt le formulaire Renoncer au contrat ici : accusé de réception immédiat.
+    {b.retractation.en_ligne_active
+      ? 'Pour vous rétracter, utilisez plutôt le formulaire Renoncer au contrat ici : vous recevez un accusé de réception par email.'
+      : 'Pour vous rétracter, utilisez la page Renoncer au contrat ici.'}
   </p>
   <p class="mt-4!">
     <a href="/renoncer-au-contrat/" data-bouton class="inline-flex min-h-12 items-center gap-2.5 rounded-full border border-bordure bg-carte px-6 py-3 text-[15px] font-medium text-encre transition-colors hover:border-laiton-fonce hover:text-laiton-fonce">

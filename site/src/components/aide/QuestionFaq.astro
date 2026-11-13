@@ -52,8 +52,9 @@ const titres: Record<CleFaq, string> = {
     cle === 'retractation' && (
       <p>
         Vous avez 14 jours à compter de la réception pour changer d'avis, sans vous justifier, comme le prévoit la loi pour les achats à distance. Le plus
-        simple : le formulaire <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a>, qui vous envoie un accusé de réception. Vous pouvez aussi nous
-        écrire par email ou utiliser le formulaire type de nos CGV.
+        simple : le formulaire <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a>
+        {b.retractation.en_ligne_active ? ', qui vous envoie un accusé de réception.' : '.'} Vous pouvez aussi nous écrire par email ou utiliser le
+        formulaire type de nos CGV.
       </p>
     )
   }

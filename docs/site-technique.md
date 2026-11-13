@@ -33,8 +33,11 @@ site/src/lib/accueil.ts    réglages de l'accueil et accroches globales calculé
 site/src/lib/questionnaire.ts   règle de recommandation (pure, utilisée à la construction et dans le navigateur)
 site/src/lib/atelier.ts    titres des conseils (textes à rédiger)
 site/src/scripts/accueil*.ts    animations GSAP de l'accueil (chargées seulement si l'animation est permise)
+site/src/content/reglages/boutique.yaml données de la boutique ; `retractation.en_ligne_active` (false tant que le formulaire de rétractation n'envoie rien)
 site/src/content/reglages/accueil.yaml  produits mis en avant, sélection du moment, FAQ, lettre, Offrir (schéma validé)
-site/public/               images et fichiers statiques (produits/<slug>/<vue>.webp, ambiance/)
+site/public/               images et fichiers statiques (produits/<slug>/<vue>.webp, ambiance/, _headers : X-Robots-Tag noindex)
+site/outils/verifier-liens.mjs  lanceur de tools/verifier_liens.py après la construction (postbuild)
+tools/verifier_liens.py    vérification des liens internes et des ancres de site/dist/ (Python standard)
 studio/                    production des visuels 3D (Three.js + rendu automatisé), voir agent studio-visuel
 ```
 
@@ -46,7 +49,7 @@ slug: ""
 prix_ttc: 0          # en euros
 statut: brouillon    # brouillon | en-vente | rupture
 demo: false          # true = produit de démonstration (jamais en vente, bandeau affiché)
-collections: []      # mecanique | vehicules | miniatures | idees-cadeaux | pour-debuter
+collections: []      # mecanique | vehicules | automates | idees-cadeaux | pour-debuter
 delai_livraison_max_jours: 14
 age_minimum: 14
 difficulte: ""       # facile | moyen | expert
@@ -79,3 +82,7 @@ npm run build       # doit passer sans erreur ni avertissement (58 pages à l'é
 npm run preview     # aperçu de dist/ sur http://localhost:4321/
 ```
 Une fiche `demo: false` qui contient encore « À VÉRIFIER » fait échouer `npm run build` (le message liste les champs à compléter). Sur une fiche `demo: true`, ces valeurs ne sont pas affichées.
+
+**Vérification des liens** : `npm run build` lance ensuite `tools/verifier_liens.py` (script `postbuild`), qui parcourt `site/dist/` et échoue s'il trouve un lien interne (href, src, srcset) vers une page ou un fichier absent, ou une ancre `#id` absente de la page cible.
+À la main : `npm run verifier-liens` dans `site/`, ou `py tools/verifier_liens.py` depuis la racine. Interpréteur essayé : `py`, puis `python3`, puis `python`.
+Sans Python, la vérification est sautée avec un avertissement ; `VERIFIER_LIENS_OBLIGATOIRE=1` en fait un échec.

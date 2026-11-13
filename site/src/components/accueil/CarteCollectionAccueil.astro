@@ -5,7 +5,7 @@
  * + calque animé propre à la collection (SVG, décoratif) :
  * - mecanique : deux roues engrenées (60° et −120° au survol) ;
  * - vehicules : roue, bielle et piston (un tour de roue, la bielle suit, avance de 12 px) ;
- * - miniatures : lumière qui se réchauffe (calque chaud 0 → 0,6) et zoom 1,04 ;
+ * - automates : un tour de manivelle, la came excentrée soulève le poussoir, et zoom 1,04 ;
  * - pour-debuter : trois pièces qui se détachent de leur planche (y −10 px, ±6°, décalage 80 ms).
  * Animations jouées par scripts/accueil.ts (survol ou focus ; une fois à 60 % de visibilité sur écran tactile).
  * Sans animation / sans JS : visuels fixes, carte et lien complets. Rendus de démonstration : légende.
@@ -31,6 +31,9 @@ const vehicule = { cx: 210, cy: 100, R: 52, r: 30, L: 92 };
 const pinX = vehicule.cx + vehicule.r;
 const pistonX = pinX - vehicule.L;
 const nbModeles = produits.length;
+// Automates : came excentrée (rayon R, excentrement e) sous un poussoir vertical.
+const came = { cx: 215, cy: 132, R: 30, e: 12 };
+const contact0 = came.cy - Math.sqrt(came.R ** 2 - came.e ** 2);
 ---
 
 <a
@@ -55,7 +58,6 @@ const nbModeles = produits.length;
       />
     )
   }
-  {slug === 'miniatures' && <span data-carte-chaud class="calque-chaud absolute inset-0 -z-10 opacity-0" aria-hidden="true" />}
   <span class="degrade absolute inset-0 -z-10" aria-hidden="true"></span>
 
   <svg viewBox="0 0 300 200" class="calque pointer-events-none absolute right-0 w-[40%] max-w-[260px] opacity-90 sm:w-[62%]" aria-hidden="true" focusable="false">
@@ -97,13 +99,23 @@ const nbModeles = produits.length;
       )
     }
     {
-      slug === 'miniatures' && (
-        <g fill="none" stroke="#E3C88E" stroke-width="2" opacity=".85">
-          <path d="M150 170 V80 L185 52 L220 80 V170" />
-          <path d="M220 170 V100 L250 76 L280 100 V170" />
-          <rect x="172" y="104" width="26" height="30" rx="3" data-carte-fenetre fill="rgba(255,190,110,.0)" />
-          <rect x="238" y="118" width="22" height="26" rx="3" data-carte-fenetre fill="rgba(255,190,110,.0)" />
-          <line x1="130" y1="170" x2="295" y2="170" />
+      slug === 'automates' && (
+        <g data-carte-automate data-came={JSON.stringify(came)}>
+          <line x1="140" y1="182" x2="290" y2="182" stroke="#C8A15A" stroke-opacity=".45" stroke-width="2" />
+          <rect x="196" y={came.cy + came.R + 12} width="38" height="8" rx="2" fill="url(#degrade-bois)" />
+          <line x1={came.cx} y1={came.cy} x2={came.cx} y2={came.cy + came.R + 12} stroke="#C8A15A" stroke-opacity=".6" stroke-width="3" />
+          <rect x="203" y="56" width="24" height="10" rx="2" fill="none" stroke="#C8A15A" stroke-opacity=".55" stroke-width="1.5" />
+          <g data-carte-poussoir>
+            <line x1={came.cx} y1={contact0} x2={came.cx} y2="34" stroke="#E3C88E" stroke-width="4" stroke-linecap="round" />
+            <rect x={came.cx - 14} y={contact0 - 5} width="28" height="5" rx="2" fill="#E3C88E" />
+            <circle cx={came.cx} cy="28" r="9" fill="url(#degrade-laiton)" />
+          </g>
+          <g data-carte-came transform={`rotate(0 ${came.cx} ${came.cy})`}>
+            <circle cx={came.cx + came.e} cy={came.cy} r={came.R} fill="url(#degrade-bois)" stroke="#C8A15A" stroke-opacity=".7" stroke-width="2" />
+            <line x1={came.cx} y1={came.cy} x2={came.cx + 58} y2={came.cy} stroke="#E3C88E" stroke-width="4" stroke-linecap="round" />
+            <circle cx={came.cx + 58} cy={came.cy} r="6" fill="#C8A15A" />
+            <circle cx={came.cx} cy={came.cy} r="5" fill="#0A0F1A" stroke="#E3C88E" stroke-width="2" />
+          </g>
         </g>
       )
     }
@@ -142,10 +154,6 @@ const nbModeles = produits.length;
 <style>
   .degrade {
     background: linear-gradient(180deg, rgba(10, 15, 26, 0.15) 0%, rgba(10, 15, 26, 0.25) 40%, rgba(10, 15, 26, 0.92) 100%);
-  }
-  .calque-chaud {
-    background: radial-gradient(60% 50% at 50% 45%, rgba(255, 170, 80, 0.6), transparent 70%);
-    mix-blend-mode: soft-light;
   }
   .calque {
     top: 56px;

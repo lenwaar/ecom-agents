@@ -2,8 +2,8 @@
 /**
  * Bloc « Sécurité du produit » (GPSR, §5.2 bloc 13) : toujours ouvert, icône ShieldCheck, H2.
  * - Toujours : « Âge : 14 ans et plus. Ne convient pas aux enfants de moins de 14 ans. »
- * - Démonstration : texte de knowledge/decisions.md (« Informations du fabricant affichées dès la
- *   mise en vente de ce produit. ») à la place des données du fabricant.
+ * - Démonstration : texte de knowledge/decisions.md (« Produit de démonstration, non vendu : il n'a
+ *   pas de fabricant. », décision du 2026-11-13, audit site A8) à la place des données du fabricant.
  * - Vrai produit : fabricant (nom, adresse, email), responsable UE, importateur, référence,
  *   avertissements, lien vers la photo de l'étiquette. Valeur inconnue : « [À VALIDER] »
  *   (la construction échoue déjà pour un vrai produit publié incomplet, content.config.ts).
@@ -35,7 +35,7 @@ if (estPersonne(s.importateur)) personnes.push({ titre: 'Importateur', personne:
 
   {
     p.demo ? (
-      <p class="mt-3 text-gris">Informations du fabricant affichées dès la mise en vente de ce produit.</p>
+      <p class="mt-3 text-gris">Produit de démonstration, non vendu : il n'a pas de fabricant.</p>
     ) : (
       <Fragment>
         <dl class="mt-4 grid gap-4 text-[15px] sm:grid-cols-2">

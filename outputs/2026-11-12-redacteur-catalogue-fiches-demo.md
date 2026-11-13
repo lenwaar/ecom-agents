@@ -70,3 +70,14 @@ Les 10 fiches de `knowledge/catalogue-demo.md` sont écrites dans `site/src/cont
 - [x] Titres ≤ 60 caractères, méta-descriptions ≤ 155.
 - [x] 6 textes alternatifs par fiche ; `etiquette: null` (démonstration).
 - [x] Aucun lien de paiement.
+
+## Mise à jour 2026-11-13 (synchro n°11)
+Décision de l'humain (`knowledge/decisions.md`, « Positionnement du catalogue ») : chaque produit doit avoir un mécanisme ou une partie mobile.
+- **Retiré** : le n° 8 `book-nook-ruelle-horloger.md` (sans mécanisme). Les lignes qui le concernent ci-dessus (tableau §2, `mecanisme: aucun` au §3, « largeur à prévoir sur l'étagère » au §4, sélection « Idées cadeaux » au §3) sont caduques.
+- **Ajouté** : `automate-manivelle.md` (n° 8), `demo: true`, `statut: presentation`, ordre 80, type Automate, difficulté moyen, 8 h, 49,90 € (prix indicatif de démonstration), 14 ans et plus, sans électronique, `mecanisme: manivelle` (transmission par cames et poussoirs), `partie_mobile: true`, aucun lien de paiement.
+  - Collections : `[automates, idees-cadeaux]`. Le slug `automates` n'existe pas encore dans `site/src/content.config.ts` ni dans `site/src/lib/catalogue.ts` : la construction échouera tant que `developpeur-web` ne l'a pas ajouté.
+  - Mot-clé principal : « automate en bois à monter » ; secondaires : « automate mécanique à manivelle », « maquette mécanique adulte », « idée cadeau ».
+  - Titre SEO : 55 caractères ; méta-description : 137 caractères.
+  - Contenu : accroche, description en 3 intertitres (environ 170 mots : montage et calage des cames, fonctionnement, pour qui), 3 bénéfices, FAQ de 5 questions, 6 textes alternatifs (vues attendues dans `site/public/produits/automate-manivelle/`, mêmes noms que les autres produits, à produire par `studio-visuel`).
+  - `À VÉRIFIER` : les mêmes que les autres fiches (§4), plus le sujet de la scène animée (champ `scene_representee`). Le texte ne décrit pas la scène pour ne rien inventer.
+  - Le texte alternatif `detail` montre l'arbre à cames et les poussoirs : `studio-visuel` doit les rendre visibles sur cette vue.

@@ -4,7 +4,7 @@
  * sans JavaScript ou sans animation, le visuel est fixe et complet.
  * - mecanique : chaîne d'engrenages (rotation pilotée par scripts/collection.ts) ;
  * - vehicules : roue + bielle + piston, bielle recalculée à chaque image ;
- * - miniatures : rendu en calques (image, lumière chaude, vignettage) avec parallaxe ;
+ * - automates : rendu en calques (image, lumière chaude, vignettage) avec parallaxe ;
  * - pour-debuter : planche dont les pièces se détachent puis se replacent ;
  * - idees-cadeaux : étiquette kraft suspendue qui oscille.
  * Décoratif : aria-hidden. Les rendus restent des démonstrations (audit N3) : aucun lien vers une fiche.
@@ -14,7 +14,7 @@ import { cheminVue, type SlugCollection } from '../../lib/catalogue';
 
 interface Props {
   slug: SlugCollection;
-  /** Produit dont le rendu « situation » sert de visuel (Miniatures). */
+  /** Produit dont le rendu « situation » sert de visuel (Automates). */
   produitImage?: string;
 }
 
@@ -93,7 +93,7 @@ const pistonX = pinX - Math.sqrt(vehicule.L ** 2 - (pinY - vehicule.cy) ** 2);
   }
 
   {
-    slug === 'miniatures' && produitImage && (
+    slug === 'automates' && produitImage && (
       <div class="relative h-full w-full overflow-hidden rounded-[24px]">
         <img
           data-calque-image

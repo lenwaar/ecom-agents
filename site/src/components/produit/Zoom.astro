@@ -10,10 +10,17 @@
  *   retour du focus sur l'image d'origine à la fermeture.
  * - Ouverture en fondu court (instantanée sans animation) ; l'agrandissement FLIP de la spec
  *   est remplacé par ce fondu (écart noté dans le rapport).
+ * - Produit de démonstration : légende « Rendus 3D de démonstration. » visible dans le zoom (audit site A5).
  */
 import X from '@lucide/astro/icons/x';
 import ChevronLeft from '@lucide/astro/icons/chevron-left';
 import ChevronRight from '@lucide/astro/icons/chevron-right';
+
+interface Props {
+  demo?: boolean;
+}
+
+const { demo = false } = Astro.props;
 ---
 
 <dialog
@@ -37,6 +44,7 @@ import ChevronRight from '@lucide/astro/icons/chevron-right';
     <ChevronRight size={22} stroke-width={1.75} aria-hidden="true" />
     <span class="sr-only">Image suivante</span>
   </button>
+  {demo && <p class="absolute bottom-4 left-4 rounded-full bg-nuit-2/80 px-3 py-1.5 text-[13px]">Rendus 3D de démonstration.</p>}
   <p class="sr-only">Touchez ou cliquez sur l'image pour l'agrandir deux fois. Flèches gauche et droite pour changer d'image, Échap pour fermer.</p>
 </dialog>
 

@@ -77,7 +77,7 @@ export async function animerCollection(): Promise<void> {
     });
   }
 
-  if (type === 'miniatures') {
+  if (type === 'automates') {
     const image = visuel.querySelector('[data-calque-image]');
     const lumiere = visuel.querySelector('[data-calque-lumiere]');
     if (image) gsap.fromTo(image, { yPercent: -5 }, { yPercent: 5, ease: 'none', scrollTrigger: { trigger: heros, start: 'top top', end: 'bottom top', scrub: 0.6 } });

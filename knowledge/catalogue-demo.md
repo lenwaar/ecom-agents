@@ -7,7 +7,7 @@
 - **Aucun produit de démonstration ne peut être mis en vente** : pas de lien de paiement, bouton « Acheter » désactivé.
 - Les visuels de démonstration sont des **rendus 3D ou illustrations** produits par `studio-visuel`, jamais des photos d'un vrai produit d'une marque.
 - Quand un vrai produit arrive (fournisseur validé), sa fiche est réécrite avec ses vraies caractéristiques et **ses vraies photos** (officielles avec autorisation, ou prises par l'humain). Un rendu ne remplace jamais la photo d'un produit réellement vendu.
-- Tous : 14 ans et plus, **sans électronique** (`niche.md`).
+- Tous : 14 ans et plus, **sans électronique** (`niche.md`), avec un **mécanisme ou une partie mobile** (`decisions.md`).
 
 ## Les 10 produits
 | # | Nom de travail | Type | Difficulté | Temps | Prix démo |
@@ -19,11 +19,13 @@
 | 5 | Grue de chantier à treuil | Mécanique | Moyen | 5 h | 39,90 € |
 | 6 | Voiture rétro à moteur élastique | Véhicule | Moyen | 6 h | 42,90 € |
 | 7 | Locomotive à vapeur | Véhicule | Moyen | 7 h | 44,90 € |
-| 8 | Book nook « Ruelle d'horloger » (sans éclairage) | Miniature | Moyen | 8 h | 49,90 € |
+| 8 | Automate à manivelle (cames et poussoirs, scène animée par une manivelle) | Automate | Moyen | 8 h | 49,90 € |
 | 9 | Planétaire mécanique (orrery) | Mécanique | Expert | 10 h | 54,90 € |
 | 10 | Horloge murale à balancier | Mécanique | Expert | 12 h | 59,90 € |
 
-Collections : **Mécanique**, **Véhicules**, **Miniatures**, **Idées cadeaux** (sélection transversale), **Pour débuter** (difficulté Facile).
+Collections : **Mécanique**, **Véhicules**, **Automates** (moulin à vent + automate à manivelle), **Idées cadeaux** (sélection transversale), **Pour débuter** (difficulté Facile).
+
+Historique : le n° 8 était un book nook « Ruelle d'horloger » (sans mécanisme), retiré le 2026-11-13 (synchro n°11) car la boutique reste « maquettes mécaniques en bois » ; il est remplacé par l'automate à manivelle au même prix indicatif de démonstration. La collection « Miniatures » est remplacée par « Automates » (`decisions.md`).
 
 ## Vues attendues par produit (studio-visuel)
 1. Face (fond clair uni, catalogue)

@@ -83,5 +83,24 @@ Commit `feat(agents): organisation à 100 rôles et 7 nouveaux agents`.
 Une ligne dans `vers-cowork.md`, puis demande à l'humain de redémarrer Claude Code.
 Ne lance aucun de ces agents dans cette session. `gestion-commandes`, `service-client`, `crm-email` et `pilotage-finance` ne seront utilisés qu'avant le lancement ; `media-acquisition` après le lancement.
 
+## Synchro n°11 (demandée par l'humain le 2026-11-13)
+
+Dans l'ordre, une ligne dans `vers-cowork.md` après chaque tâche ; utiliser `py` (pas `python`) sur ce PC.
+
+### T43 · Décisions : bloc sécurité des démos et automate à manivelle · `fait`
+Ajouter dans `knowledge/decisions.md` : (1) bloc sécurité des démos = « Produit de démonstration, non vendu : il n'a pas de fabricant. » ; (2) la boutique reste « maquettes mécaniques en bois » : le book nook est remplacé par une démo avec mécanisme, « Automate à manivelle ». Mettre à jour `knowledge/catalogue-demo.md`.
+
+### T44 · Fiche et visuels de l'automate à manivelle · `fait`
+`redacteur-catalogue` : fiche démo de l'automate à manivelle, suppression de la fiche book nook. Puis `studio-visuel` : ses 6 vues, suppression des images du book nook, planche contact.
+
+### T45 · Corrections A1 à A10 du site · `fait`
+`developpeur-web` : corriger A1 à A10 de `outputs/2026-11-13-conformite-qa-audit-site.md` avec la phrase de T43, et ajouter un script de vérification des liens reproductible dans `tools/` lancé après chaque build. `npm run build` doit passer.
+
+### T46 · Contre-audit A1 à A10 · `à faire`
+`conformite-qa` : contre-audit court de A1 à A10 seulement.
+
+### T47 · Clôture · `à faire`
+Vider `coordination/a-installer/`, lancer le vérificateur, commit, push, compte rendu avec les 🔔 ACTION HUMAINE.
+
 ## Règle permanente
 Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.

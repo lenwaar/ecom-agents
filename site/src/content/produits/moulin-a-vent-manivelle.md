@@ -4,7 +4,7 @@ nom: "Maquette en bois Moulin à vent à manivelle à assembler"
 nom_court: "Moulin à vent à manivelle"
 slug: "moulin-a-vent-manivelle"
 accroche: "Un tour de manivelle, et les ailes que vous avez posées vous-même se mettent à tourner au-dessus du bureau."
-collections: [mecanique]
+collections: [mecanique, automates]
 ordre: 20
 statut: presentation
 demo: true

@@ -260,7 +260,7 @@ const delaiMinConnu = typeof p.delai_livraison_min_jours === 'number';
     }
   </div>
 
-  <Zoom />
+  <Zoom demo={produit.data.demo} />
   <BarreAchatMobile produit={produit} lienAchat={achat.lienAchat} libelleDesactive={achat.libelleDesactive} />
 
   <DonneesStructurees

@@ -13,14 +13,14 @@ const b = await getBoutique();
 ---
 
 <div class="mt-4 rounded-carte border border-bordure bg-carte p-5 text-[15px] md:p-6">
-  <p class="!mt-0 font-semibold">Formulaire de rétractation</p>
+  <p class="!mt-0 font-semibold">Modèle de formulaire de rétractation</p>
   <p>(Veuillez compléter et renvoyer le présent formulaire uniquement si vous souhaitez vous rétracter du contrat.)</p>
   <p>
     À l'attention de <Valeur v={b.vendeur.nom_ei} note="Prénom Nom EI" />, {b.nom_commercial},
     <Valeur v={b.vendeur.adresse} note="adresse postale" />, <Valeur v={b.vendeur.email} note="email de la boutique" /> :
   </p>
   <p>
-    Je/Nous (*) vous notifie/notifions (*) par la présente ma/notre (*) rétractation du contrat portant sur la vente du bien (*)/pour la prestation de services (*) ci-dessous :
+    Je/nous (*) vous notifie/notifions (*) par la présente ma/notre (*) rétractation du contrat portant sur la vente du bien (*)/pour la prestation de services (*) ci-dessous :
   </p>
   <ul class="!list-none !pl-0">
     <li>Commandé le (*)/reçu le (*) :</li>
@@ -31,6 +31,6 @@ const b = await getBoutique();
   </ul>
   <p>(*) Rayez la mention inutile.</p>
   <p class="text-[14px]">
-    <AValider>texte à contrôler mot pour mot avec l'annexe à l'article R221-1 sur Légifrance ; version PDF imprimable à fournir</AValider>
+    <AValider>version PDF imprimable à fournir</AValider>
   </p>
 </div>

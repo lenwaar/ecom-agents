@@ -6,7 +6,7 @@ import type { Produit } from './donnees';
 import { formatPrix } from './donnees';
 
 export type Niveau = 'facile' | 'moyen' | 'expert';
-export type SlugCollection = 'mecanique' | 'vehicules' | 'miniatures' | 'pour-debuter' | 'idees-cadeaux';
+export type SlugCollection = 'mecanique' | 'vehicules' | 'automates' | 'pour-debuter' | 'idees-cadeaux';
 export type NomVue = 'trois-quarts' | 'face' | 'detail' | 'dessus' | 'situation' | 'boite';
 
 /** Ordre de la galerie (§5.3) : la première vue est la principale. */
@@ -125,7 +125,9 @@ export function ligneStatistiques(produits: Produit[]): string {
     produits.map((p) => p.data.prix_ttc),
     formatPrix,
   );
-  return `${n} modèle${n > 1 ? 's' : ''} · ${heures} h · ${prix}`;
+  // Audit site A3 : fourchette de prix de démonstration toujours signalée comme indicative.
+  const demo = produits.every((p) => p.data.demo);
+  return `${n} modèle${n > 1 ? 's' : ''} · ${heures} h · ${prix}` + (demo ? ' (prix indicatifs de démonstration)' : '');
 }
 
 // ---------------------------------------------------------------------------
@@ -165,6 +167,8 @@ export function collections(produits: Produit[]): Collection[] {
   const vehi = produitsDeCollection(produits, 'vehicules');
   const mecaBouge = tous(meca, (p) => p.data.partie_mobile === true);
   const vehiRoule = tous(vehi, (p) => p.data.partie_mobile === true);
+  const auto = produitsDeCollection(produits, 'automates');
+  const autoBouge = tous(auto, (p) => p.data.partie_mobile === true);
 
   return [
     {
@@ -192,13 +196,15 @@ export function collections(produits: Produit[]): Collection[] {
       visuel: 'situation',
     },
     {
-      slug: 'miniatures',
-      nom: 'Miniatures',
-      ligneItalique: 'des mondes à poser.',
-      phrase: 'Des scènes à poser sur une étagère, dans le détail.',
-      titreSeo: 'Miniatures en bois à assembler | Rouage & Laiton',
+      slug: 'automates',
+      nom: 'Automates',
+      ligneItalique: autoBouge ? 'à la manivelle.' : 'à assembler.',
+      phrase: autoBouge
+        ? 'Une manivelle à tourner, et la scène se met en mouvement.'
+        : 'Des automates en bois à manivelle, à assembler.',
+      titreSeo: 'Automates en bois à manivelle à assembler | Rouage & Laiton',
       descriptionSeo:
-        "Scènes miniatures en bois à assembler, à poser sur une étagère. Pour adultes, à partir de 14 ans. Temps d'assemblage et difficulté indiqués.",
+        "Automates en bois à manivelle à assembler soi-même, pour adultes, à partir de 14 ans. Temps d'assemblage et difficulté indiqués sur chaque fiche.",
       visuel: 'situation',
     },
     {
@@ -225,7 +231,7 @@ export function collections(produits: Produit[]): Collection[] {
 }
 
 /** Les 4 grandes collections présentées en cartes (§4.1.5) ; « Idées cadeaux » est transversale. */
-export const COLLECTIONS_PRINCIPALES: SlugCollection[] = ['mecanique', 'vehicules', 'miniatures', 'pour-debuter'];
+export const COLLECTIONS_PRINCIPALES: SlugCollection[] = ['mecanique', 'vehicules', 'automates', 'pour-debuter'];
 
 /** Libellé de la collection principale d'un produit (fil d'Ariane, §5.2 bloc 1). */
 export function collectionPrincipale(produit: Produit, liste: Collection[]): Collection {

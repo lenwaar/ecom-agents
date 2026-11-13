@@ -52,7 +52,7 @@ const sommaire = [
   </p>
   <h3>Trois façons de vous rétracter</h3>
   <ol>
-    <li>Le formulaire en ligne <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a> : vous recevez un accusé de réception par email.</li>
+    <li>Le formulaire en ligne <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a>{b.retractation.en_ligne_active ? ' : vous recevez un accusé de réception par email.' : '.'}</li>
     <li>Un email à <Valeur v={b.vendeur.email} note="email de la boutique" />.</li>
     <li>Le formulaire type de rétractation, reproduit en annexe de nos <a href="/cgv/#annexe">conditions générales de vente</a>.</li>
   </ol>

@@ -9,9 +9,12 @@ import PageTexte from '../layouts/PageTexte.astro';
 import Bouton from '../components/ui/Bouton.astro';
 import Valeur from '../components/ui/Valeur.astro';
 import AValider from '../components/ui/AValider.astro';
-import { getBoutique } from '../lib/donnees';
+import { getBoutique, getProduitsPublies } from '../lib/donnees';
+import { faitsGlobaux } from '../lib/accueil';
 
 const b = await getBoutique();
+// Audit site A7 (audit v2 N2) : « un objet qui bouge » seulement si c'est vrai pour chaque produit publié.
+const objet = faitsGlobaux(await getProduitsPublies()).mobile ? 'un objet qui bouge' : 'un objet en bois';
 ---
 
 <PageTexte
@@ -20,7 +23,7 @@ const b = await getBoutique();
   description="Une petite boutique de maquettes mécaniques en bois à assembler, pour adultes. Qui nous sommes et comment nous travaillons."
 >
   <p>
-    {b.nom_commercial} propose des maquettes mécaniques en bois à assembler soi-même, pour adultes : le plaisir de construire un objet qui bouge, et un beau cadeau.
+    {b.nom_commercial} propose des maquettes mécaniques en bois à assembler soi-même, pour adultes : le plaisir de construire {objet}, et un beau cadeau.
   </p>
 
   <AValider bloc>
@@ -31,7 +34,7 @@ const b = await getBoutique();
   </AValider>
 
   <h2 id="vos-droits">Vos droits et notre façon de travailler</h2>
-  <h3>Vos droits, comme pour tout achat en ligne</h3>
+  <h3>Vos droits, prévus par la loi pour les achats à distance</h3>
   <ul>
     <li>14 jours pour vous rétracter, à compter de la réception de votre commande.</li>
     <li>Si le délai de livraison annoncé n'est pas tenu, vous pouvez annuler la commande et être remboursé.</li>

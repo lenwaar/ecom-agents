@@ -101,3 +101,29 @@ node apercu.js <slug>             # aperçu 3 × 2 des vues d'un produit (studio
 - Comparateur, version portrait (800 px) : le tiers supérieur de `comparateur-planches` est du mur vide. C'est le prix de l'alignement avec l'horloge, plus haute que les planches.
 - Les pertes de contexte WebGL restent fréquentes sur cette machine (7 nouveaux essais pendant le rendu complet) : elles sont maintenant détectées et refaites, mais le rendu complet prend environ 30 min.
 - Les limites du §6 restent valables (rendus de démonstration à remplacer par des photos réelles avant toute vente).
+
+## 8. Synchro n°11 : automate à manivelle
+Date : 2026-11-13 (T44, partie 2/2). Statut inchangé : `à-valider`. Rendus de démonstration uniquement : ils ne représentent aucun produit réel, aucun logo ni design de marque, rien n'est publié.
+
+### Ce qui change
+- **Nouvelle scène** `studio/scenes/automate-manivelle.js`. Elle reprend les mêmes rigs, matériaux, réglages catalogue, la même manivelle que le moulin et les mêmes entures que la boîte à musique. L'automate est un caisson à entures de 150 × 90 × 100 mm, ouvert en façade, avec un hublot dans le dos et une fenêtre cintrée sur chaque flanc. Un arbre à cames en laiton est entraîné par une manivelle sur le flanc droit. Il porte trois cames en bois de 6 mm, maintenues par des bagues d'arrêt en laiton : une came en poire au centre, et deux excentriques en opposition de phase. Trois poussoirs à plateau traversent une réglette de guidage puis le plateau supérieur.
+- **Sujet de la scène** (choix neutre de l'atelier, puisque la fiche indique « À VÉRIFIER ») : un petit voilier porté par le poussoir central, entre deux vagues mobiles portées par les poussoirs latéraux. Derrière, une vague fixe et un soleil découpé sur un mât. Pas de personnage, ni de marque, ni d'élément tiré d'un produit existant.
+- **Cohérence mécanique** : la hauteur de chaque poussoir est calculée à partir du profil réel de sa came. Le calcul prend le point le plus haut de la came sous le plateau de 8 mm, à l'angle de la manivelle. L'arbre, les cames et la manivelle tournent du même angle (-28°). Les plateaux touchent donc leurs cames, ce qui se vérifie en vue `detail`. Les pièces portées gardent au moins 3 mm de jeu au-dessus du plateau au point bas de leur came.
+- **6 vues rendues** : `face`, `trois-quarts`, `detail` (arbre à cames et poussoirs vus de biais par la façade ouverte), `dessus` (profil côté manivelle, conforme au texte alternatif de la fiche), `situation`, `boite`. Elles sont dans `site/public/produits/automate-manivelle/`, en `-1600.webp` (1600 × 2000) et `-800.webp` (800 × 1000), pour 497 Ko au total. Les autres produits n'ont pas été régénérés.
+- **Book nook retiré** : suppression du dossier `site/public/produits/book-nook-ruelle-horloger/`, de la scène `studio/scenes/book-nook-ruelle-horloger.js` et de son cache (`studio/.cache/png/book-nook-ruelle-horloger/`, `studio/.cache/apercu-book-nook-ruelle-horloger.jpg`). La fonction `standingBook` de `studio/lib/rigs.js` ne servait qu'au book nook : elle est supprimée, tout comme la mention du mode `shelf`. Les livres du bureau de nuit (`book()`, `booksAt`) restent en place, et les ambiances ne sont pas touchées.
+- **Planche contact** régénérée au même emplacement : `outputs/planches/2026-11-12-studio-visuel-planche-contact.jpg`. Elle compte 10 produits, l'automate en première ligne (ordre alphabétique des dossiers), plus les ambiances. Contrôles faits sur la planche : sols unis, automate lisible, cames visibles en vue détail.
+
+### Commandes
+```
+cd studio
+node render.js --only automate-manivelle       # les 6 vues de l'automate et la planche contact (~2,5 min ici)
+node apercu.js automate-manivelle              # aperçu 3 × 2 dans studio/.cache/
+npm run render                                 # tout depuis zéro (10 produits + ambiances)
+```
+
+### Limites
+- Vue `face` : la caméra est commune à tout le catalogue, donc les cames y sont vues par la tranche. Leur profil se lit en `trois-quarts` et en `detail`.
+- Vue `dessus` (profil) : la scène du dessus est vue par la tranche. Elle est moins parlante que les autres vues, mais conforme au texte alternatif (« vu de profil, avec la manivelle au premier plan »).
+- Vue `boite` : trois planches en colonne, assez petites en vignette 800 px (même limite que la grue et la locomotive).
+- Le sujet de la scène (voilier) et toutes les dimensions sont inventés pour la démonstration. Ils sont à remplacer par les photos du modèle réel après sourcing.
+- Une perte de contexte WebGL a eu lieu pendant le rendu. Elle a été détectée, et la vue a été refaite automatiquement.

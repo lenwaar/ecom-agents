@@ -17,9 +17,14 @@ Décisions prises par Cowork le 2026-11-12 pour ne pas bloquer la construction d
 ## Affichage des produits de démonstration
 Les fiches `demo: true` contiennent beaucoup de valeurs `À VÉRIFIER` (normal : ce ne sont pas de vrais produits). Sur le site :
 - une ligne de caractéristique dont la valeur est `À VÉRIFIER` **n'est pas affichée** (pas de texte « À VÉRIFIER » visible par un visiteur) ;
-- le bloc « Sécurité du produit » affiche sur une fiche de démonstration : « Informations du fabricant affichées dès la mise en vente de ce produit. » ;
+- le bloc « Sécurité du produit » affiche sur une fiche de démonstration : « Produit de démonstration, non vendu : il n'a pas de fabricant. » (décision de l'humain du 2026-11-13, synchro n°11, remplace l'ancien texte « affichées dès la mise en vente », qui contredisait les CGV : point A8 de l'audit du site) ;
 - une FAQ dont la réponse commence par `À VÉRIFIER` n'est pas affichée ;
 - sur un **vrai** produit (`demo: false`), une valeur `À VÉRIFIER` **bloque la construction** (règles de validation de la spécification).
+
+## Positionnement du catalogue (décision de l'humain du 2026-11-13, synchro n°11)
+- La boutique reste « **maquettes mécaniques en bois** » : chaque produit, démonstration comprise, a un mécanisme ou une partie mobile.
+- Le book nook « Ruelle d'horloger » (sans mécanisme) est **retiré** du catalogue de démonstration et remplacé par l'**« Automate à manivelle »** (démo avec mécanisme). Point B15 de l'audit du site.
+- Conséquence : la collection « Miniatures » n'a plus de produit ; elle est remplacée par la collection **« Automates »** (moulin à vent à manivelle + automate à manivelle). Choix de Claude Code pour ne pas laisser une collection vide, modifiable par l'humain.
 
 ## Plus tard
 - Donner l'outil `Edit` à `architecte-web` et `conformite-qa` (frontmatter), pour écrire les gros livrables dans un seul fichier.

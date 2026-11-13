@@ -1,6 +1,6 @@
 ---
 /**
- * Pages de collection /collections/[mecanique|vehicules|miniatures|pour-debuter|idees-cadeaux]/ (§4.3) :
+ * Pages de collection /collections/[mecanique|vehicules|automates|pour-debuter|idees-cadeaux]/ (§4.3) :
  * héros cinématique animé, puis panneau clair : grille filtrable par niveau, « Ce qui les réunit »,
  * « Vous aimerez peut-être aussi » (moins de 3 modèles), autres collections, réassurance.
  * Filtres : sans JS, liens vers /maquettes/niveau/… ; avec JS, ils masquent les cartes et mettent
@@ -45,6 +45,8 @@ const mecanismesConnus = [...new Set(produits.map((p) => p.data.mecanisme).filte
 const mecanismesInconnus = produits.filter((p) => !estConnu(p.data.mecanisme)).length;
 const pieces = produits.map((p) => p.data.nombre_pieces);
 const piecesConnues = pieces.every((x) => typeof x === 'number') ? (pieces as number[]) : null;
+// Audit site A4 : sur des démonstrations, une donnée inconnue n'est pas affichée (ni marqueur [À VALIDER]).
+const toutDemo = produits.length > 0 && produits.every((p) => p.data.demo);
 
 // Vous aimerez peut-être aussi : collection de moins de 3 modèles, 2 produits d'autres collections, même niveau.
 const ids = new Set(produits.map((p) => p.id));
@@ -121,32 +123,36 @@ const autres = COLLECTIONS_PRINCIPALES.filter((s) => s !== collection.slug).map(
           Ce qui <em>les réunit.</em>
         </h2>
         <dl class="mt-8 grid gap-5 md:grid-cols-3" data-revele="cartes">
-          <div class="rounded-carte border border-bordure bg-carte p-5">
-            <dt class="text-[13px] font-medium tracking-[0.12em] text-gris-fort uppercase">Mécanisme</dt>
-            <dd class="mt-2 text-[16px]">
-              {mecanismesConnus.join(', ')}
-              {mecanismesInconnus > 0 && (
-                <Fragment>
-                  {mecanismesConnus.length > 0 && ' · '}
-                  <Valeur v="" note={`mécanisme de ${mecanismesInconnus} modèle${mecanismesInconnus > 1 ? 's' : ''}`} />
-                </Fragment>
-              )}
-            </dd>
-          </div>
-          <div class="rounded-carte border border-bordure bg-carte p-5">
-            <dt class="text-[13px] font-medium tracking-[0.12em] text-gris-fort uppercase">Nombre de pièces</dt>
-            <dd class="mt-2 text-[16px]">
-              {piecesConnues ? (
-                Math.min(...piecesConnues) === Math.max(...piecesConnues) ? (
-                  `${piecesConnues[0]} pièces`
+          {(mecanismesConnus.length > 0 || !toutDemo) && (
+            <div class="rounded-carte border border-bordure bg-carte p-5">
+              <dt class="text-[13px] font-medium tracking-[0.12em] text-gris-fort uppercase">Mécanisme</dt>
+              <dd class="mt-2 text-[16px]">
+                {mecanismesConnus.join(', ')}
+                {mecanismesInconnus > 0 && !toutDemo && (
+                  <Fragment>
+                    {mecanismesConnus.length > 0 && ' · '}
+                    <Valeur v="" note={`mécanisme de ${mecanismesInconnus} modèle${mecanismesInconnus > 1 ? 's' : ''}`} />
+                  </Fragment>
+                )}
+              </dd>
+            </div>
+          )}
+          {(piecesConnues || !toutDemo) && (
+            <div class="rounded-carte border border-bordure bg-carte p-5">
+              <dt class="text-[13px] font-medium tracking-[0.12em] text-gris-fort uppercase">Nombre de pièces</dt>
+              <dd class="mt-2 text-[16px]">
+                {piecesConnues ? (
+                  Math.min(...piecesConnues) === Math.max(...piecesConnues) ? (
+                    `${piecesConnues[0]} pièces`
+                  ) : (
+                    `De ${Math.min(...piecesConnues)} à ${Math.max(...piecesConnues)} pièces`
+                  )
                 ) : (
-                  `De ${Math.min(...piecesConnues)} à ${Math.max(...piecesConnues)} pièces`
-                )
-              ) : (
-                <Valeur v="" note="nombre de pièces" />
-              )}
-            </dd>
-          </div>
+                  <Valeur v="" note="nombre de pièces" />
+                )}
+              </dd>
+            </div>
+          )}
           <div class="rounded-carte border border-bordure bg-carte p-5">
             <dt class="text-[13px] font-medium tracking-[0.12em] text-gris-fort uppercase">Niveaux</dt>
             <dd class="mt-2 text-[16px]">{niveauxPresents.map((n) => n.libelle).join(', ')}</dd>

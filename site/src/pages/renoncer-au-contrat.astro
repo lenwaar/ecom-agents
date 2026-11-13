@@ -25,9 +25,19 @@ const etiquette = 'block text-[15px] font-medium';
   titreSeo="Renoncer au contrat | Rouage & Laiton"
   description="Exercez votre droit de rétractation en ligne : 14 jours à compter de la réception, sans avoir à vous justifier."
 >
-  <p>
-    Vous avez 14 jours à compter de la réception de votre commande pour changer d'avis, sans avoir à vous justifier. Remplissez ce formulaire : vous recevrez immédiatement un accusé de réception par email.
-  </p>
+  {
+    b.retractation.en_ligne_active ? (
+      <p>
+        Vous avez 14 jours à compter de la réception de votre commande pour changer d'avis, sans avoir à vous justifier. Remplissez ce formulaire : vous
+        recevrez un accusé de réception par email.
+      </p>
+    ) : (
+      <p>
+        Vous avez 14 jours à compter de la réception de votre commande pour changer d'avis, sans avoir à vous justifier. Le formulaire en ligne ci-dessous
+        sera actif avant l'ouverture de la boutique ; en attendant, écrivez-nous par email ou utilisez le formulaire type.
+      </p>
+    )
+  }
 
   <AValider bloc>
     Formulaire en ligne pas encore actif : l'envoi (fonction <code>/api/retractation</code>, accusé de réception par email,

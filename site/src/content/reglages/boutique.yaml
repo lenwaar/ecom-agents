@@ -52,5 +52,8 @@ commande:
 donnees:
   service_emails: "[À VALIDER]"
 
+retractation:
+  en_ligne_active: false            # passer à true seulement quand /api/retractation et l'accusé par email sont branchés et testés (audit site A1)
+
 textes:
   version_legale: "[À VALIDER]"     # date de version des pages légales, fixée à la validation des textes

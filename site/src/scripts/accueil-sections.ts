@@ -179,19 +179,29 @@ function collections(gsap: Gsap) {
       revenir = () => gsap.to(a, { v: 0, x: 0, duration: 0.4, ease: 'power2.out', onUpdate: maj, overwrite: true });
     }
 
-    if (type === 'miniatures') {
-      const chaud = carte.querySelector('[data-carte-chaud]');
+    if (type === 'automates') {
+      // Un tour de manivelle : la came excentrée tourne, le poussoir monte et descend (contact exact).
+      const groupe = carte.querySelector<SVGGElement>('[data-carte-automate]')!;
+      const c = JSON.parse(groupe.dataset.came!) as { cx: number; cy: number; R: number; e: number };
+      const came = groupe.querySelector('[data-carte-came]')!;
+      const poussoir = groupe.querySelector('[data-carte-poussoir]')!;
       const image = carte.querySelector('[data-carte-image]');
-      const fenetres = carte.querySelectorAll('[data-carte-fenetre]');
+      const contact = (deg: number) => {
+        const t = (deg * Math.PI) / 180;
+        return c.cy + c.e * Math.sin(t) - Math.sqrt(c.R ** 2 - (c.e * Math.cos(t)) ** 2);
+      };
+      const a = { v: 0 };
+      const maj = () => {
+        came.setAttribute('transform', `rotate(${a.v.toFixed(2)} ${c.cx} ${c.cy})`);
+        poussoir.setAttribute('transform', `translate(0 ${(contact(a.v) - contact(0)).toFixed(2)})`);
+      };
       jouer = () => {
-        gsap.to(chaud, { opacity: 0.6, duration: 0.8, overwrite: true });
+        gsap.to(a, { v: 360, duration: 1.4, ease: 'power2.inOut', onUpdate: maj, overwrite: true });
         gsap.to(image, { scale: 1.04, duration: 0.8, ease: 'expo.out', overwrite: true });
-        gsap.to(fenetres, { attr: { fill: 'rgba(255,190,110,.65)' }, duration: 0.8, overwrite: true });
       };
       revenir = () => {
-        gsap.to(chaud, { opacity: 0, duration: 0.4, overwrite: true });
+        gsap.to(a, { v: 0, duration: 0.5, ease: 'power2.out', onUpdate: maj, overwrite: true });
         gsap.to(image, { scale: 1, duration: 0.4, overwrite: true });
-        gsap.to(fenetres, { attr: { fill: 'rgba(255,190,110,0)' }, duration: 0.4, overwrite: true });
       };
     }
 
