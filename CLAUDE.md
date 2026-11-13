@@ -16,6 +16,9 @@ Lis `docs/architecture.md` avant toute tâche.
 - **Gros livrables** : un rapport de plus de 40 Ko environ s'écrit en plusieurs fois (créer le fichier avec les premières sections, puis ajouter les suivantes une par une). Un seul très gros écriture peut bloquer l'agent.
 - Lire docs/retours-experience.md avant de commencer : chaque erreur déjà corrigée y est notée.
 - Avant chaque commit : python tools/verifier_livrables.py doit afficher 0 erreur.
+- **Travail en parallèle** : les tâches qui ne touchent pas les mêmes fichiers se lancent en parallèle (agents en arrière-plan) ; on n'attend que pour les tâches qui dépendent d'une autre. Cette règle remplace l'ancienne consigne « un agent à la fois ».
+- Avant d'agir, chaque agent lit `CLAUDE.md`, `knowledge/memo.md` et `docs/retours-experience.md`, puis seulement les fichiers utiles à sa tâche. Modèles de livrables : `docs/exemples/`.
+- **Rapports courts** : 1 page de résultats et de décisions pour l'humain ; le détail en annexe seulement s'il est demandé.
 
 ## Conventions du dépôt
 

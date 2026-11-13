@@ -155,5 +155,33 @@ Dans l'ordre, une ligne dans `vers-cowork.md` après chaque tâche, `py` au lieu
 ### T59 · Clôture · `fait`
 Vérificateur, commit, push, compte rendu avec 🔔 ACTION HUMAINE.
 
+## Synchro n°15 (transmise par l'humain le 2026-11-13) : vitesse et qualité
+
+Une ligne dans `vers-cowork.md` après chaque tâche, `py` au lieu de `python`. T67 tourne en parallèle de T61 à T66. L'ancienne T60 (QG en direct, commencée dans une session précédente) est reprise dans T67.
+
+### T61 · Travail en parallèle · `fait`
+Dans `CLAUDE.md` et `.claude/commands/cowork.md`, remplace la règle « un agent à la fois » par : les tâches qui ne touchent pas les mêmes fichiers se lancent en parallèle (agents en arrière-plan) ; on n'attend que pour les tâches qui dépendent d'une autre.
+
+### T62 · Modèles · `fait`
+Passe en `model: sonnet` les agents redacteur-catalogue, createur-contenu, service-client, crm-email, gestion-commandes, media-acquisition. Les autres restent en `inherit`.
+
+### T63 · Fiche-mémo · `fait`
+Écris `knowledge/memo.md` (2 Ko maximum) qui résume les règles indispensables de tout `knowledge/` et de `decisions.md`. Dans chaque agent, « Avant d'agir » devient : lire `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`, puis seulement les fichiers utiles à SA tâche.
+
+### T64 · Rapports courts · `fait`
+Dans `docs/templates/agent-template.md` et chaque agent : un rapport = 1 page de résultats et de décisions pour l'humain, le détail en annexe seulement s'il est demandé.
+
+### T65 · Exemples · `fait`
+Crée `docs/exemples/` avec le meilleur livrable existant pour chaque type (rapport d'audit, fiche produit, script vidéo, rapport de veille), et ajoute dans chaque agent « inspire-toi de docs/exemples/ ».
+
+### T66 · Studio en mode brouillon · `fait`
+`studio-video` fait les essais en 540x960 avec Whisper small, la version finale seulement en 1080x1920 avec large-v3. À noter dans le brief et dans l'agent.
+
+### T67 · QG en direct (en parallèle de T61 à T66) · `à faire`
+`developpeur-web` étend `qg/studio` en « QG en direct » pour toute l'équipe, sur le modèle de `docs/reference/qg-en-direct.html` (12 pièces, 15 agents, filtres, synchro en cours lue dans `de-cowork.md`). Le bouton Valider ne change que le statut. Garde l'onglet Studio. `npm test` doit passer.
+
+### T68 · Clôture · `à faire`
+Vérificateur, commit, push, compte rendu, puis demander à l'humain de redémarrer.
+
 ## Règle permanente
 Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.

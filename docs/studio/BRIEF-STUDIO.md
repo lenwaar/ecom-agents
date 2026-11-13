@@ -135,6 +135,16 @@ npm run studio            # éditeur Remotion dans le navigateur
 npm run hf-preview        # aperçu HyperFrames dans le navigateur
 ```
 
+### Mode brouillon, puis version finale (synchro n°15, T66)
+Pour aller vite, `studio-video` travaille en deux temps :
+| | Brouillon (tous les essais) | Version finale (une seule fois, montage arrêté) |
+|---|---|---|
+| Image | **540×960**, même cadrage et même zone sûre (toutes les valeurs en px divisées par 2) | **1080×1920**, 30 i/s |
+| Sous-titres | faster-whisper **`small`** | faster-whisper **`large-v3`** |
+| Usage | aperçus, planches contact, réglages | `medias/<nom>-9x16.mp4`, grille §5, son à -14 LUFS mesuré sur ce fichier |
+- Un brouillon n'est jamais publié ni livré comme vidéo finale ; la grille §5 se coche sur la version finale.
+- Licence du modèle `small` : `À VÉRIFIER` (comme `tiny`), d'où son usage limité aux essais.
+
 ### Voix off et sous-titres en local
 ```
 py -m piper -m .cache/voix-piper/fr_FR-siwis-medium.onnx -f ../../medias/voix/<nom>.wav -- "Texte de la voix off."
