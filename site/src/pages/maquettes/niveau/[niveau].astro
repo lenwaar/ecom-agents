@@ -1,0 +1,32 @@
+---
+/**
+ * Catalogue par niveau /maquettes/niveau/[facile|moyen|expert]/ (§4.2) : même gabarit,
+ * H1 « Maquettes de niveau [Facile] », définition du niveau (§4.1.8).
+ * Sert aussi de repli sans JavaScript aux filtres de niveau des pages de collection (§4.3).
+ */
+import type { GetStaticPaths } from 'astro';
+import PageCatalogue from '../../../layouts/PageCatalogue.astro';
+import JaugeNiveau from '../../../components/produit/JaugeNiveau.astro';
+import { getProduitsPublies } from '../../../lib/donnees';
+import { INTRO_ECHELLE, NIVEAUX } from '../../../lib/catalogue';
+
+export const getStaticPaths = (() => NIVEAUX.map((n) => ({ params: { niveau: n.slug }, props: { n } }))) satisfies GetStaticPaths;
+
+const { n } = Astro.props;
+const produits = (await getProduitsPublies()).filter((p) => p.data.difficulte === n.slug);
+---
+
+<PageCatalogue
+  titre={`Maquettes de niveau ${n.libelle}`}
+  intro={n.definition}
+  titreSeo={`Maquettes en bois niveau ${n.libelle} | Rouage & Laiton`}
+  description={`Maquettes en bois à assembler de niveau ${n.libelle.toLowerCase()} : ${n.definition} Pour adultes, à partir de 14 ans.`.slice(0, 155)}
+  chemin={`/maquettes/niveau/${n.slug}/`}
+  ariane={[{ libelle: 'Accueil', href: '/' }, { libelle: 'Maquettes', href: '/maquettes/' }, { libelle: `Niveau ${n.libelle}` }]}
+  produits={produits}
+>
+  <p slot="apres-intro" class="mt-3 flex max-w-[60ch] flex-wrap items-center gap-3 text-[14px] text-gris-fort">
+    <JaugeNiveau difficulte={n.slug} />
+    <span>{INTRO_ECHELLE}</span>
+  </p>
+</PageCatalogue>

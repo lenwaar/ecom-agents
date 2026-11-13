@@ -1,0 +1,27 @@
+---
+/**
+ * Jauge de niveau (§4.1.8) : 3 segments, remplis en laiton foncé. Le niveau est toujours
+ * écrit en texte (jamais la couleur seule) ; role="img" avec un libellé complet.
+ */
+import { niveau, type Niveau } from '../../lib/catalogue';
+
+interface Props {
+  difficulte: Niveau;
+  texte?: boolean;
+  class?: string;
+}
+
+const { difficulte, texte = true, class: classe } = Astro.props;
+const n = niveau(difficulte);
+---
+
+<span class={`inline-flex items-center gap-2 ${classe ?? ''}`}>
+  <span role="img" aria-label={`Niveau ${n.libelle.toLowerCase()}, ${n.rang} sur 3`} class="inline-flex gap-[3px]">
+    {
+      [1, 2, 3].map((i) => (
+        <span class={`block h-[6px] w-[14px] rounded-full ${i <= n.rang ? 'bg-laiton-fonce' : 'bg-bordure'}`} />
+      ))
+    }
+  </span>
+  {texte && <span aria-hidden="true">{n.libelle}</span>}
+</span>

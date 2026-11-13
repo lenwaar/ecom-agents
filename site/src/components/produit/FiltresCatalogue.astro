@@ -1,0 +1,52 @@
+---
+/**
+ * Filtres du catalogue (§4.2, 2) : rangée de puces-LIENS, aucun JavaScript nécessaire.
+ * « Toutes », les 4 collections (→ pages de collection), puis les 3 niveaux (→ /maquettes/niveau/…).
+ * Mobile : rangée défilante horizontalement.
+ */
+import { NIVEAUX } from '../../lib/catalogue';
+
+interface Props {
+  /** Chemin de la page affichée, pour marquer la puce active (aria-current). */
+  actif: string;
+}
+
+const { actif } = Astro.props;
+
+const groupes = [
+  {
+    titre: 'Collections',
+    liens: [
+      { libelle: 'Toutes', href: '/maquettes/' },
+      { libelle: 'Mécanique', href: '/collections/mecanique/' },
+      { libelle: 'Véhicules', href: '/collections/vehicules/' },
+      { libelle: 'Miniatures', href: '/collections/miniatures/' },
+      { libelle: 'Pour débuter', href: '/collections/pour-debuter/' },
+    ],
+  },
+  { titre: 'Niveaux', liens: NIVEAUX.map((n) => ({ libelle: n.libelle, href: `/maquettes/niveau/${n.slug}/` })) },
+];
+---
+
+<nav aria-label="Filtrer les maquettes" class="-mx-[clamp(16px,4vw,48px)] overflow-x-auto px-[clamp(16px,4vw,48px)] [scrollbar-width:thin]">
+  <ul class="flex w-max items-center gap-2 py-1">
+    {
+      groupes.map((groupe, g) => (
+        <Fragment>
+          {g > 0 && <li aria-hidden="true" class="mx-2 h-6 w-px bg-bordure" />}
+          {groupe.liens.map((lien) => (
+            <li>
+              <a
+                href={lien.href}
+                aria-current={actif === lien.href ? 'page' : undefined}
+                class="inline-flex min-h-11 items-center whitespace-nowrap rounded-full border border-bordure bg-carte px-4 text-[14px] font-medium text-encre transition-colors duration-200 hover:border-laiton-fonce hover:text-laiton-fonce aria-[current=page]:border-bleu-nuit aria-[current=page]:bg-bleu-nuit aria-[current=page]:text-white"
+              >
+                {lien.libelle}
+              </a>
+            </li>
+          ))}
+        </Fragment>
+      ))
+    }
+  </ul>
+</nav>

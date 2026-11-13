@@ -1,0 +1,118 @@
+---
+/**
+ * Carte produit (§4.0) : la carte entière est UN seul lien (« Voir la maquette [nom] »).
+ * Image 4:5 sur fond clair dégradé, badge « 14 ans et plus » en haut à gauche,
+ * « Démonstration » en haut à droite si `demo` (§5.1), nom, temps · niveau, prix.
+ * Survol (ordinateur) : carte −4 px, ombre, fondu vers la vue `detail` avec scale 1.04 (600 ms).
+ * Rupture : badge « Indisponible pour le moment » (« Bientôt de retour » seulement si reassort_prevu).
+ * Aucun prix barré, aucune note, aucun stock.
+ */
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import Clock from '@lucide/astro/icons/clock';
+import Badge from '../ui/Badge.astro';
+import JaugeNiveau from './JaugeNiveau.astro';
+import { cheminVue, formatHeures, srcsetVue } from '../../lib/catalogue';
+import { formatPrix, type Produit } from '../../lib/donnees';
+
+interface Props {
+  produit: Produit;
+  /** Titre de carte : h2 dans une grille de page, h3 sous un H2 de section. */
+  niveauTitre?: 'h2' | 'h3';
+  /** Tailles d'affichage pour le choix 800 / 1600 px. */
+  sizes?: string;
+  /** Première rangée visible : chargement prioritaire. */
+  prioritaire?: boolean;
+  class?: string;
+}
+
+const {
+  produit,
+  niveauTitre = 'h3',
+  sizes = '(min-width: 1280px) 300px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw',
+  prioritaire = false,
+  class: classe,
+} = Astro.props;
+const p = produit.data;
+const Titre = niveauTitre;
+const rupture = p.statut === 'rupture';
+const reassort = rupture && typeof p.reassort_prevu === 'string' && p.reassort_prevu.trim() !== '';
+---
+
+<a
+  href={`/maquettes/${p.slug}/`}
+  aria-label={`Voir la maquette ${p.nom_court}`}
+  class={`carte-produit group flex h-full flex-col overflow-hidden rounded-carte border border-bordure bg-carte text-encre transition-[transform,box-shadow] duration-400 ease-sortie md:hover:-translate-y-1 md:hover:shadow-survol ${classe ?? ''}`}
+  data-niveau={p.difficulte}
+>
+  <div class="fond-produit relative aspect-[4/5] overflow-hidden">
+    <img
+      src={cheminVue(p.slug, 'face', 800)}
+      srcset={srcsetVue(p.slug, 'face')}
+      sizes={sizes}
+      width="800"
+      height="1000"
+      alt={p.vues.face.alt}
+      loading={prioritaire ? 'eager' : 'lazy'}
+      decoding="async"
+      class="absolute inset-0 h-full w-full object-cover"
+    />
+    <img
+      src={cheminVue(p.slug, 'detail', 800)}
+      width="800"
+      height="1000"
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      decoding="async"
+      class="vue-survol absolute inset-0 hidden h-full w-full object-cover opacity-0 transition-[opacity,transform] duration-600 ease-sortie md:block"
+    />
+    <div class="absolute inset-x-3 top-3 flex items-start justify-between gap-2">
+      <Badge>14 ans et plus</Badge>
+      {p.demo && <Badge variante="demo">Démonstration</Badge>}
+    </div>
+    {
+      rupture && (
+        <div class="absolute inset-x-3 bottom-3">
+          <Badge>{reassort ? 'Bientôt de retour' : 'Indisponible pour le moment'}</Badge>
+        </div>
+      )
+    }
+  </div>
+
+  <div class="flex flex-1 flex-col gap-2 p-4">
+    <Titre class="text-[16px] font-semibold leading-snug">{p.nom_court}</Titre>
+    <p class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[14px] text-gris-fort">
+      <span class="inline-flex items-center gap-1.5">
+        <Clock size={16} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+        <span>{formatHeures(p.temps_assemblage_heures_min, p.temps_assemblage_heures_max)}</span>
+      </span>
+      <span aria-hidden="true">·</span>
+      <JaugeNiveau difficulte={p.difficulte} />
+    </p>
+    <div class="mt-auto flex items-end justify-between gap-3 pt-2">
+      <p>
+        <span class="block text-[20px] font-semibold leading-tight">{formatPrix(p.prix_ttc)}</span>
+        {p.demo && <span class="block text-[13px] text-gris-fort">Prix indicatif de démonstration</span>}
+      </p>
+      <span
+        aria-hidden="true"
+        class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-bordure text-encre transition-colors duration-250 group-hover:border-bleu-nuit group-hover:bg-bleu-nuit group-hover:text-white"
+      >
+        <ArrowRight size={18} stroke-width={1.75} />
+      </span>
+    </div>
+  </div>
+</a>
+
+<style>
+  .fond-produit {
+    background: radial-gradient(70% 60% at 50% 40%, #f4eee2, #e9e2d3);
+  }
+  @media (hover: hover) and (min-width: 768px) {
+    .carte-produit:hover .vue-survol,
+    .carte-produit:focus-visible .vue-survol {
+      opacity: 1;
+      transform: scale(1.04);
+    }
+  }
+</style>

@@ -1,0 +1,222 @@
+---
+/**
+ * Galerie de la fiche produit (§5.3) : 6 vues dans l'ordre trois-quarts, face, detail, dessus,
+ * situation, boite (+ etiquette pour un vrai produit).
+ * - Carrousel en scroll-snap horizontal : fonctionne SANS JavaScript (défilement au doigt,
+ *   points et vignettes = ancres #vue-…). Compteur « 1 / 6 ».
+ * - Ordinateur (≥ 1024 px) : vignettes verticales de 72 px à gauche.
+ * - Image principale chargée en priorité (fetchpriority high), les autres en différé.
+ * - Zoom : chaque image est un lien vers le fichier 1600 px (sans JS) ; avec JS, <dialog> plein
+ *   écran (Zoom.astro). Les boutons précédent / suivant n'apparaissent qu'avec JS.
+ */
+import ChevronLeft from '@lucide/astro/icons/chevron-left';
+import ChevronRight from '@lucide/astro/icons/chevron-right';
+import ZoomIn from '@lucide/astro/icons/zoom-in';
+import { VUES, cheminVue, srcsetVue, type NomVue } from '../../lib/catalogue';
+import type { Produit } from '../../lib/donnees';
+
+interface Props {
+  produit: Produit;
+}
+
+const { produit } = Astro.props;
+const p = produit.data;
+
+const vues: { nom: NomVue | 'etiquette'; alt: string; src800: string; src1600: string; srcset: string }[] = VUES.map((nom) => ({
+  nom,
+  alt: p.vues[nom].alt,
+  src800: cheminVue(p.slug, nom, 800),
+  src1600: cheminVue(p.slug, nom, 1600),
+  srcset: srcsetVue(p.slug, nom),
+}));
+// Vue « etiquette » : vrai produit uniquement (fichier fourni avec les vraies photos).
+if (!p.demo && p.vues.etiquette) {
+  const base = `/produits/${p.slug}/etiquette`;
+  vues.push({
+    nom: 'etiquette',
+    alt: p.vues.etiquette.alt,
+    src800: `${base}-800.webp`,
+    src1600: `${base}-1600.webp`,
+    srcset: `${base}-800.webp 800w, ${base}-1600.webp 1600w`,
+  });
+}
+const total = vues.length;
+const sizes = '(min-width: 1280px) 620px, (min-width: 1024px) 50vw, 100vw';
+---
+
+<div class="galerie lg:grid lg:grid-cols-[72px_minmax(0,1fr)] lg:gap-4" data-galerie>
+  <!-- Vignettes (ordinateur) -->
+  <ul class="hidden flex-col gap-3 lg:flex" aria-label="Choisir une vue">
+    {
+      vues.map((vue, i) => (
+        <li>
+          <a
+            href={`#vue-${vue.nom}`}
+            data-vignette={i}
+            aria-current={i === 0 ? 'true' : undefined}
+            class="fond-produit block aspect-[4/5] w-[72px] overflow-hidden rounded-[10px] border border-bordure transition-[border-color,box-shadow] duration-200 hover:border-laiton-fonce aria-[current=true]:border-bleu-nuit aria-[current=true]:shadow-[0_0_0_1px_var(--action-bleu-nuit)]"
+          >
+            <img src={vue.src800} alt="" width="800" height="1000" loading="lazy" decoding="async" class="h-full w-full object-cover" />
+            <span class="sr-only">
+              Vue {i + 1} sur {total} : {vue.alt}
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="relative">
+    <ul
+      class="piste flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-carte [scrollbar-width:none]"
+      data-piste
+      tabindex="0"
+      aria-label={`Vues de ${p.nom_court}, ${total} images. Faites défiler horizontalement.`}
+    >
+      {
+        vues.map((vue, i) => (
+          <li id={`vue-${vue.nom}`} class="fond-produit relative aspect-[4/5] w-full shrink-0 snap-center snap-always" data-diapo={i}>
+            <a href={vue.src1600} data-zoom={i} data-src-zoom={vue.src1600} class="group block h-full w-full cursor-zoom-in">
+              <img
+                src={vue.src800}
+                srcset={vue.srcset}
+                sizes={sizes}
+                width="800"
+                height="1000"
+                alt={vue.alt}
+                loading={i === 0 ? 'eager' : 'lazy'}
+                fetchpriority={i === 0 ? 'high' : undefined}
+                decoding={i === 0 ? 'sync' : 'async'}
+                class="h-full w-full object-cover"
+              />
+              <span class="absolute right-3 bottom-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-carte/90 text-encre shadow-sm transition-transform duration-200 group-hover:scale-105">
+                <ZoomIn size={20} stroke-width={1.75} aria-hidden="true" />
+                <span class="sr-only">Agrandir l'image</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="pointer-events-none absolute top-3 right-3 rounded-full bg-carte/90 px-2.5 py-1 text-[13px] font-medium text-encre" aria-hidden="true">
+      <span data-compteur>1</span> / {total}
+    </p>
+
+    <button
+      type="button"
+      data-precedent
+      hidden
+      class="absolute top-1/2 left-3 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-carte/90 text-encre shadow-sm disabled:opacity-40"
+    >
+      <ChevronLeft size={22} stroke-width={1.75} aria-hidden="true" />
+      <span class="sr-only">Vue précédente</span>
+    </button>
+    <button
+      type="button"
+      data-suivant
+      hidden
+      class="absolute top-1/2 right-3 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-carte/90 text-encre shadow-sm disabled:opacity-40"
+    >
+      <ChevronRight size={22} stroke-width={1.75} aria-hidden="true" />
+      <span class="sr-only">Vue suivante</span>
+    </button>
+
+    <!-- Points indicateurs (mobile et tablette) -->
+    <ul class="mt-3 flex justify-center gap-1 lg:hidden" aria-label="Choisir une vue">
+      {
+        vues.map((vue, i) => (
+          <li>
+            <a href={`#vue-${vue.nom}`} data-point={i} aria-current={i === 0 ? 'true' : undefined} class="group flex h-11 w-7 items-center justify-center">
+              <span class="block h-2 w-2 rounded-full bg-bordure transition-[background-color,width] duration-200 group-aria-[current=true]:w-4 group-aria-[current=true]:bg-bleu-nuit" />
+              <span class="sr-only">Vue {i + 1} sur {total}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="sr-only" aria-live="polite" data-annonce></p>
+  </div>
+</div>
+
+<style>
+  .fond-produit {
+    background: radial-gradient(70% 60% at 50% 40%, #f4eee2, #e9e2d3);
+  }
+  .piste::-webkit-scrollbar {
+    display: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .piste {
+      scroll-behavior: smooth;
+    }
+  }
+</style>
+
+<script>
+  // Synchronise compteur, points et vignettes avec la position du carrousel ;
+  // boutons précédent / suivant ; les ancres déplacent la piste sans faire sauter la page.
+  document.querySelectorAll<HTMLElement>('[data-galerie]').forEach((galerie) => {
+    const piste = galerie.querySelector<HTMLElement>('[data-piste]')!;
+    const diapos = [...galerie.querySelectorAll<HTMLElement>('[data-diapo]')];
+    const compteur = galerie.querySelector<HTMLElement>('[data-compteur]')!;
+    const annonce = galerie.querySelector<HTMLElement>('[data-annonce]')!;
+    const precedent = galerie.querySelector<HTMLButtonElement>('[data-precedent]')!;
+    const suivant = galerie.querySelector<HTMLButtonElement>('[data-suivant]')!;
+    const marqueurs = [...galerie.querySelectorAll<HTMLAnchorElement>('[data-point], [data-vignette]')];
+    let actuel = 0;
+
+    const majEtat = (i: number) => {
+      const change = i !== actuel;
+      actuel = i;
+      if (change) annonce.textContent = `Vue ${i + 1} sur ${diapos.length}`;
+      compteur.textContent = String(i + 1);
+      marqueurs.forEach((m) => {
+        const n = Number(m.dataset.point ?? m.dataset.vignette);
+        if (n === i) m.setAttribute('aria-current', 'true');
+        else m.removeAttribute('aria-current');
+      });
+      precedent.disabled = i === 0;
+      suivant.disabled = i === diapos.length - 1;
+    };
+
+    const aller = (i: number) => {
+      const cible = Math.max(0, Math.min(diapos.length - 1, i));
+      piste.scrollTo({ left: cible * piste.clientWidth });
+      majEtat(cible);
+    };
+
+    piste.addEventListener('scroll', () => majEtat(Math.round(piste.scrollLeft / Math.max(1, piste.clientWidth))), { passive: true });
+    precedent.hidden = false;
+    suivant.hidden = false;
+    precedent.addEventListener('click', () => aller(actuel - 1));
+    suivant.addEventListener('click', () => aller(actuel + 1));
+    piste.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); aller(actuel - 1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); aller(actuel + 1); }
+    });
+    marqueurs.forEach((m) =>
+      m.addEventListener('click', (e) => {
+        e.preventDefault();
+        aller(Number(m.dataset.point ?? m.dataset.vignette));
+      }),
+    );
+    // Liens ailleurs dans la page vers une vue (ex. « Voir la vue Dans la boîte »).
+    document.querySelectorAll<HTMLAnchorElement>('a[href^="#vue-"]:not([data-point]):not([data-vignette])').forEach((lien) =>
+      lien.addEventListener('click', (e) => {
+        const i = diapos.findIndex((d) => `#${d.id}` === lien.getAttribute('href'));
+        if (i < 0) return;
+        e.preventDefault();
+        galerie.scrollIntoView({ block: 'start' });
+        aller(i);
+      }),
+    );
+    // Arrivée directe sur /maquettes/x/#vue-boite.
+    const depart = diapos.findIndex((d) => `#${d.id}` === location.hash);
+    if (depart > 0) aller(depart);
+    majEtat(depart > 0 ? depart : 0);
+
+    // Le zoom (Zoom.astro) demande d'aligner la galerie sur l'image vue en dernier.
+    galerie.addEventListener('galerie:aller', (e) => aller((e as CustomEvent<number>).detail));
+  });
+</script>

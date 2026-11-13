@@ -1,0 +1,84 @@
+---
+/**
+ * Bloc « Sécurité du produit » (GPSR, §5.2 bloc 13) : toujours ouvert, icône ShieldCheck, H2.
+ * - Toujours : « Âge : 14 ans et plus. Ne convient pas aux enfants de moins de 14 ans. »
+ * - Démonstration : texte de knowledge/decisions.md (« Informations du fabricant affichées dès la
+ *   mise en vente de ce produit. ») à la place des données du fabricant.
+ * - Vrai produit : fabricant (nom, adresse, email), responsable UE, importateur, référence,
+ *   avertissements, lien vers la photo de l'étiquette. Valeur inconnue : « [À VALIDER] »
+ *   (la construction échoue déjà pour un vrai produit publié incomplet, content.config.ts).
+ */
+import ShieldCheck from '@lucide/astro/icons/shield-check';
+import Donnee from './Donnee.astro';
+import type { Produit } from '../../lib/donnees';
+
+interface Props {
+  produit: Produit;
+}
+
+const { produit } = Astro.props;
+const p = produit.data;
+const s = p.securite;
+type Personne = { nom: string; adresse: string; pays?: string; email: string };
+const estPersonne = (x: unknown): x is Personne => !!x && typeof x === 'object' && 'nom' in x;
+const personnes: { titre: string; personne: Personne }[] = [{ titre: 'Fabricant', personne: s.fabricant }];
+if (estPersonne(s.responsable_ue)) personnes.push({ titre: "Personne responsable dans l'Union européenne", personne: s.responsable_ue });
+if (estPersonne(s.importateur)) personnes.push({ titre: 'Importateur', personne: s.importateur });
+---
+
+<section aria-labelledby="titre-securite" class="rounded-carte border border-bordure bg-carte p-5 md:p-6">
+  <h2 id="titre-securite" class="flex items-center gap-2.5 text-[22px] font-semibold">
+    <ShieldCheck size={22} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+    Sécurité du produit
+  </h2>
+  <p class="mt-4 font-medium">Âge : {p.age_minimum} ans et plus. Ne convient pas aux enfants de moins de {p.age_minimum} ans.</p>
+
+  {
+    p.demo ? (
+      <p class="mt-3 text-gris">Informations du fabricant affichées dès la mise en vente de ce produit.</p>
+    ) : (
+      <Fragment>
+        <dl class="mt-4 grid gap-4 text-[15px] sm:grid-cols-2">
+          {personnes.map(({ titre, personne }) => (
+            <div>
+              <dt class="font-semibold">{titre}</dt>
+              <dd class="mt-1">
+                <Donnee v={personne.nom} note="nom" />
+                <br />
+                <Donnee v={personne.adresse} note="adresse postale" />
+                {personne.pays && (
+                  <Fragment>
+                    {' '}(<Donnee v={personne.pays} note="pays" />)
+                  </Fragment>
+                )}
+                <br />
+                <Donnee v={personne.email} note="email" />
+              </dd>
+            </div>
+          ))}
+          <div>
+            <dt class="font-semibold">Référence</dt>
+            <dd class="mt-1">
+              <Donnee v={s.reference} note="référence et lot" />
+            </dd>
+          </div>
+        </dl>
+        <h3 class="mt-5 text-[16px] font-semibold">Avertissements</h3>
+        <ul class="mt-2 list-disc space-y-1 pl-5 text-[15px]">
+          {s.avertissements.map((a) => (
+            <li>
+              <Donnee v={a} />
+            </li>
+          ))}
+        </ul>
+        {p.vues.etiquette && (
+          <p class="mt-4 text-[15px]">
+            <a href="#vue-etiquette" class="text-bleu-nuit underline underline-offset-4">
+              Voir la photo de l'étiquette
+            </a>
+          </p>
+        )}
+      </Fragment>
+    )
+  }
+</section>

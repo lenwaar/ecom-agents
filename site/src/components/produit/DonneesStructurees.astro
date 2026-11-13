@@ -1,0 +1,23 @@
+---
+/**
+ * Données structurées JSON-LD (schema.org).
+ * Les URL sont relatives tant que le nom de domaine n'est pas choisi
+ * ([À VALIDER] : renseigner `site` dans astro.config.mjs pour des URL absolues).
+ */
+interface Props {
+  donnees: Record<string, unknown>;
+}
+
+const { donnees } = Astro.props;
+const base = Astro.site;
+/** Rend une URL absolue si le domaine est configuré, sinon la garde relative. */
+function absolue(valeur: unknown): unknown {
+  if (typeof valeur === 'string' && valeur.startsWith('/') && base) return new URL(valeur, base).href;
+  if (Array.isArray(valeur)) return valeur.map(absolue);
+  if (valeur && typeof valeur === 'object') return Object.fromEntries(Object.entries(valeur).map(([k, v]) => [k, absolue(v)]));
+  return valeur;
+}
+const json = JSON.stringify({ '@context': 'https://schema.org', ...(absolue(donnees) as object) }).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" set:html={json} />

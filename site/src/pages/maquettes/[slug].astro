@@ -1,0 +1,268 @@
+---
+/**
+ * Fiche produit /maquettes/[slug]/ (partie 2, §5). Registre clair, aucun GSAP :
+ * transitions CSS seulement. Ordre des blocs (mobile) : §5.2, 0 à 18.
+ * Ordinateur : galerie à gauche (60 %), colonne d'achat collante à droite (40 %, blocs 3 à 7).
+ * Démonstration : bandeau §5.1, bouton désactivé, aucune Offer en données structurées.
+ */
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import Info from '@lucide/astro/icons/info';
+import Package from '@lucide/astro/icons/package';
+import Base from '../../layouts/Base.astro';
+import Accordeon from '../../components/ui/Accordeon.astro';
+import Valeur from '../../components/ui/Valeur.astro';
+import FilAriane from '../../components/produit/FilAriane.astro';
+import Galerie from '../../components/produit/Galerie.astro';
+import Zoom from '../../components/produit/Zoom.astro';
+import Vue3D from '../../components/produit/Vue3D.astro';
+import BlocAchat from '../../components/produit/BlocAchat.astro';
+import Caracteristiques from '../../components/produit/Caracteristiques.astro';
+import BlocSecurite from '../../components/produit/BlocSecurite.astro';
+import BarreAchatMobile from '../../components/produit/BarreAchatMobile.astro';
+import CarteProduit from '../../components/produit/CarteProduit.astro';
+import Donnee from '../../components/produit/Donnee.astro';
+import DonneesStructurees from '../../components/produit/DonneesStructurees.astro';
+import { getBoutique, getProduitsPublies, formatPrix } from '../../lib/donnees';
+import { cheminVue, collectionPrincipale, collections, etatAchat, niveau, produitsDeCollection, VUES, type SlugCollection } from '../../lib/catalogue';
+
+export const getStaticPaths = (async () => {
+  const produits = await getProduitsPublies();
+  return produits.map((produit) => ({ params: { slug: produit.data.slug }, props: { produit } }));
+}) satisfies GetStaticPaths;
+
+const { produit } = Astro.props;
+const p = produit.data;
+const { Content } = await render(produit);
+const boutique = await getBoutique();
+const tous = await getProduitsPublies();
+const listeCollections = collections(tous);
+const principale = collectionPrincipale(produit, listeCollections);
+const achat = etatAchat(produit);
+
+// 18. Pour aller plus loin : (a) même collection, niveau suivant ; (c) 2 autres de la même collection.
+const memeCollection = produitsDeCollection(tous, principale.slug as SlugCollection).filter((x) => x.id !== produit.id);
+const rang = niveau(p.difficulte).rang;
+const apres = memeCollection
+  .filter((x) => niveau(x.data.difficulte).rang === rang + 1)
+  .sort((a, b) => a.data.temps_assemblage_heures_max - b.data.temps_assemblage_heures_max)[0];
+const autres = memeCollection.filter((x) => x.id !== apres?.id).slice(0, 2);
+
+const fraisRetour = boutique.retours.frais;
+const faqVisibles = p.faq.filter((f) => f.question.trim() !== '');
+---
+
+<Base titre={p.seo.titre} description={p.seo.description}>
+  {
+    p.demo && (
+      <div class="border-b border-bordure bg-encart">
+        <p class="conteneur flex gap-2.5 border-l-[3px] border-laiton-fonce py-3 text-[15px] text-encre">
+          <Info size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+          <span>
+            <strong>Produit de démonstration.</strong> Ce modèle sert à présenter la boutique : il n'est pas en vente. Les images sont des
+            rendus 3D, pas des photos d'un produit réel.
+          </span>
+        </p>
+      </div>
+    )
+  }
+
+  <div class="conteneur pt-6 pb-24 md:pt-8">
+    <FilAriane
+      masquerMobile
+      etapes={[{ libelle: 'Accueil', href: '/' }, { libelle: principale.nom, href: `/collections/${principale.slug}/` }, { libelle: p.nom_court }]}
+    />
+
+    <div class="mt-5 grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12">
+      <div>
+        <Galerie produit={produit} />
+        <Vue3D produit={produit} />
+      </div>
+      <div class="lg:sticky lg:top-24 lg:self-start">
+        <BlocAchat produit={produit} />
+      </div>
+    </div>
+
+    <div class="mt-16 grid gap-16 lg:max-w-[820px]">
+      <!-- 8. Ce que vous allez fabriquer -->
+      <section aria-labelledby="titre-benefices">
+        <h2 id="titre-benefices" class="text-[22px] font-semibold md:text-[28px]">Ce que vous allez fabriquer</h2>
+        <ul class="mt-5 grid gap-5 sm:grid-cols-3">
+          {
+            p.benefices.map((b) => (
+              <li class="rounded-carte border border-bordure bg-carte p-5">
+                <h3 class="text-[16px] font-semibold">{b.titre}</h3>
+                <p class="mt-2 text-[15px] text-gris">{b.texte}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <!-- 9. Description (intertitres H2 de la fiche) -->
+      <section aria-label="Description" class="prose-boutique">
+        <Content />
+      </section>
+
+      <!-- 10. Vidéo du mécanisme (jamais en lecture automatique) -->
+      {
+        p.video && (
+          <figure>
+            <video controls muted playsinline preload="none" poster={p.video.poster} class="w-full rounded-carte bg-encart">
+              <source src={p.video.src} type="video/mp4" />
+            </video>
+            <figcaption class="mt-2 text-[14px] text-gris-fort">
+              {p.demo ? 'Animation de démonstration. ' : ''}
+              {p.video.description}
+            </figcaption>
+          </figure>
+        )
+      }
+
+      <!-- 11. Caractéristiques -->
+      <Caracteristiques produit={produit} />
+
+      <!-- 12. Contenu de la boîte -->
+      <section aria-labelledby="titre-boite">
+        <h2 id="titre-boite" class="flex items-center gap-2.5 text-[22px] font-semibold md:text-[28px]">
+          <Package size={22} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+          Contenu de la boîte
+        </h2>
+        <ul class="mt-4 list-disc space-y-1.5 pl-5 text-[15px]">
+          {
+            p.contenu_boite.map((c) => (
+              <li>
+                <Donnee v={c} />
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-3 text-[15px]">
+          <a href="#vue-boite" class="text-bleu-nuit underline underline-offset-4">Voir la vue « Dans la boîte »</a>
+        </p>
+      </section>
+
+      <!-- 13. Sécurité du produit (toujours ouvert) -->
+      <BlocSecurite produit={produit} />
+
+      <!-- 14. Marque (produit de marque authentique seulement, audit point 20) -->
+      {
+        p.marque && (
+          <section aria-labelledby="titre-marque">
+            <h2 id="titre-marque" class="text-[22px] font-semibold">Marque</h2>
+            <p class="mt-3 text-[15px]">
+              Maquette de la marque {p.marque.nom}, achetée auprès de {p.marque.fournisseur_officiel}. Rouage &amp; Laiton est un revendeur
+              indépendant : nous ne sommes ni la marque, ni son représentant, ni son partenaire.
+            </p>
+          </section>
+        )
+      }
+
+      <!-- 15. Livraison et retours -->
+      <section aria-labelledby="titre-livraison">
+        <h2 id="titre-livraison" class="text-[22px] font-semibold md:text-[28px]">Livraison et retours</h2>
+        <ul class="mt-4 space-y-2 text-[15px]">
+          <li><span class="font-medium">Zone :</span> {boutique.livraison.zone}</li>
+          <li>
+            <span class="font-medium">Délai :</span> reçue en <Donnee v={p.delai_livraison_min_jours} note="délai minimum" /> à {p.delai_livraison_max_jours} jours
+            après votre commande
+          </li>
+          <li>
+            <span class="font-medium">Frais :</span>{' '}
+            <Donnee
+              v={p.frais_livraison_ttc}
+              note="frais de livraison"
+              format={(f: number) => (f === 0 ? 'livraison offerte' : `${formatPrix(f)} par commande, quel que soit le nombre de maquettes`)}
+            />
+          </li>
+          <li>
+            <span class="font-medium">Droit de rétractation :</span> 14 jours à compter de la réception. Frais de retour :{' '}
+            <Valeur v={fraisRetour} note="frais de retour" />
+          </li>
+        </ul>
+        <p class="mt-3 text-[15px]">
+          <a href="/livraison-et-retours/" class="text-bleu-nuit underline underline-offset-4">Tout savoir sur la livraison et les retours</a>
+        </p>
+      </section>
+
+      <!-- 16. FAQ du produit -->
+      {
+        faqVisibles.length > 0 && (
+          <section aria-labelledby="titre-faq">
+            <h2 id="titre-faq" class="text-[22px] font-semibold md:text-[28px]">Questions sur ce modèle</h2>
+            <div class="mt-3 border-t border-bordure">
+              {faqVisibles.map((f) => (
+                <Accordeon titre={f.question}>
+                  <p class="text-[15px]">
+                    <Donnee v={f.reponse} />
+                  </p>
+                </Accordeon>
+              ))}
+            </div>
+          </section>
+        )
+      }
+      <!-- 17. Avis : absent tant qu'il n'y a pas de vrais avis. -->
+    </div>
+
+    <!-- 18. Pour aller plus loin (aucun bouton principal) -->
+    {
+      (apres || autres.length > 0) && (
+        <section aria-labelledby="titre-plus-loin" class="mt-20">
+          <h2 id="titre-plus-loin" class="titre-serif text-[34px] leading-none md:text-[44px]">
+            Pour aller <em>plus loin.</em>
+          </h2>
+          <ul class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {apres && (
+              <li>
+                <p class="mb-2 text-[14px] font-medium text-gris-fort">
+                  Après celle-ci : niveau {niveau(apres.data.difficulte).libelle}, {apres.data.temps_assemblage_heures_max} h
+                </p>
+                <CarteProduit produit={apres} />
+              </li>
+            )}
+            {autres.map((x) => (
+              <li>
+                <p class="mb-2 text-[14px] font-medium text-gris-fort">Dans la collection {principale.nom}</p>
+                <CarteProduit produit={x} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </div>
+
+  <Zoom />
+  <BarreAchatMobile produit={produit} lienAchat={achat.lienAchat} libelleDesactive={achat.libelleDesactive} />
+
+  <DonneesStructurees
+    donnees={{
+      '@type': 'Product',
+      name: p.nom,
+      description: p.seo.description,
+      image: VUES.map((v) => cheminVue(p.slug, v, 1600)),
+      ...(p.marque ? { brand: { '@type': 'Brand', name: p.marque.nom } } : {}),
+      // Aucune Offer pour un produit de démonstration (§5.1) ; les offres réelles (prix, livraison,
+      // retours) seront ajoutées avec le premier vrai produit en vente.
+    }}
+  />
+
+  {
+    achat.lienAchat && (
+      <script>
+        // Recopie utm_source, utm_medium, utm_campaign de l'adresse de la page vers le lien de paiement (§5.2),
+        // filtrés (lettres, chiffres, tirets, soulignés, 150 caractères). Aucun stockage.
+        const page = new URLSearchParams(location.search);
+        document.querySelectorAll<HTMLAnchorElement>('[data-lien-paiement]').forEach((lien) => {
+          const url = new URL(lien.href);
+          for (const cle of ['utm_source', 'utm_medium', 'utm_campaign']) {
+            const v = page.get(cle);
+            if (v && /^[\w-]{1,150}$/.test(v)) url.searchParams.set(cle, v);
+          }
+          lien.href = url.href;
+        });
+      </script>
+    )
+  }
+</Base>

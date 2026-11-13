@@ -1,0 +1,74 @@
+---
+/**
+ * Héros de collection (§4.3, section 1), registre sombre, 80svh.
+ * Kicker « Collection », H1 serif + ligne italique laiton, phrase, ligne calculée, visuel animé.
+ * Mobile : visuel en haut à 40 % d'opacité derrière le texte (au-dessus du texte pour Miniatures), H1 44 px.
+ * Sans JS / sans animation : tout est visible et fixe (états masqués seulement sous html.js-anim).
+ */
+import Pause from '@lucide/astro/icons/pause';
+import Play from '@lucide/astro/icons/play';
+import FilAriane from '../produit/FilAriane.astro';
+import VisuelCollection from './VisuelCollection.astro';
+import { ligneStatistiques, type Collection } from '../../lib/catalogue';
+import type { Produit } from '../../lib/donnees';
+
+interface Props {
+  collection: Collection;
+  produits: Produit[];
+}
+
+const { collection, produits } = Astro.props;
+const miniatures = collection.slug === 'miniatures';
+---
+
+<section
+  data-heros-collection
+  class="grain relative -mt-14 flex min-h-[80svh] flex-col overflow-hidden pt-14 md:-mt-16 md:pt-16"
+  style="background: radial-gradient(55% 55% at 72% 45%, rgba(200,161,90,.15), transparent 70%), radial-gradient(80% 80% at 15% 95%, rgba(30,58,95,.45), transparent 70%), var(--fond-nuit);"
+>
+  <div class="conteneur relative z-[1] flex flex-1 flex-col pt-6 pb-16 md:pt-8">
+    <FilAriane registre="sombre" etapes={[{ libelle: 'Accueil', href: '/' }, { libelle: 'Maquettes', href: '/maquettes/' }, { libelle: collection.nom }]} />
+
+    <div class={`grid flex-1 items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] ${miniatures ? '' : ''}`}>
+      <div class={`relative z-[1] ${miniatures ? 'order-2 lg:order-1' : ''}`}>
+        <p class="kicker text-laiton" data-revele-heros>Collection</p>
+        <h1 class="titre-serif mt-5 text-[44px] leading-[0.95] md:text-[clamp(56px,7vw,104px)]">
+          <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block">{collection.nom}</span></span>
+          <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block"><em>{collection.ligneItalique}</em></span></span>
+        </h1>
+        <p class="mt-6 max-w-[460px] text-[16px] text-creme-secondaire" data-revele-heros>{collection.phrase}</p>
+        <p class="mt-4 text-[14px] tracking-[0.04em] text-creme" data-revele-heros>{ligneStatistiques(produits)}</p>
+      </div>
+
+      <div
+        class={miniatures
+          ? 'order-1 aspect-[4/5] max-h-[46svh] w-full max-w-[420px] justify-self-center lg:order-2 lg:max-h-[70svh]'
+          : 'pointer-events-none absolute inset-x-0 top-10 h-[46svh] opacity-40 lg:static lg:h-[min(62svh,560px)] lg:opacity-100'}
+      >
+        <VisuelCollection slug={collection.slug} produitImage={produits[0]?.data.slug} />
+      </div>
+    </div>
+
+    <button
+      type="button"
+      data-pause-animations
+      aria-pressed="false"
+      hidden
+      class="mt-6 inline-flex min-h-11 items-center gap-2 self-start rounded-full border border-bordure-sombre px-4 text-[13px] text-creme-secondaire transition-colors hover:border-laiton hover:text-laiton"
+    >
+      <Pause data-icone-pause size={16} stroke-width={1.75} aria-hidden="true" />
+      <Play data-icone-lecture size={16} stroke-width={1.75} aria-hidden="true" class="hidden" />
+      <span data-libelle>Mettre en pause les animations</span>
+    </button>
+  </div>
+</section>
+
+<style is:global>
+  html.js-anim [data-heros-collection] [data-ligne] > span {
+    transform: translateY(110%);
+  }
+  html.js-anim [data-heros-collection] [data-revele-heros] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+</style>

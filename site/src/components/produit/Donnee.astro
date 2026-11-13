@@ -1,0 +1,39 @@
+---
+/**
+ * Affiche une donnée de fiche produit. Les fiches de démonstration contiennent des « À VÉRIFIER »
+ * (y compris dans des champs numériques ou booléens) : ils deviennent un marqueur « [À VALIDER] »
+ * surligné (composant Valeur), jamais un chiffre inventé.
+ * - Valeur entière inconnue : « [À VALIDER : note] ».
+ * - Texte qui contient « À VÉRIFIER » au milieu (« Notice d'assemblage : À VÉRIFIER. ») :
+ *   la partie connue est gardée, chaque « À VÉRIFIER » devient le marqueur.
+ */
+import Valeur from '../ui/Valeur.astro';
+
+interface Props {
+  v: unknown;
+  note?: string;
+  /** Mise en forme d'une valeur connue (nombre, booléen, objet). */
+  format?: (valeur: any) => string;
+}
+
+const { v, note, format } = Astro.props;
+const MARQUEUR = 'À VÉRIFIER';
+
+const inconnu = v === null || v === undefined || (typeof v === 'string' && (v.trim() === '' || v.trim() === MARQUEUR));
+const morceaux = typeof v === 'string' && !inconnu ? v.split(MARQUEUR) : null;
+---
+
+{
+  inconnu ? (
+    <Valeur v="" note={note} />
+  ) : morceaux && morceaux.length > 1 ? (
+    morceaux.map((m, i) => (
+      <Fragment>
+        {m}
+        {i < morceaux.length - 1 && <Valeur v="" />}
+      </Fragment>
+    ))
+  ) : (
+    <Fragment>{format ? format(v) : String(v)}</Fragment>
+  )
+}

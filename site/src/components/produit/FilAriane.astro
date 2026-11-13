@@ -1,0 +1,43 @@
+---
+/**
+ * Fil d'Ariane visible + données structurées BreadcrumbList.
+ * `masquerMobile` : masqué sous 360 px (fiche produit, §5.2 bloc 1), gardé en données structurées.
+ */
+import DonneesStructurees from './DonneesStructurees.astro';
+
+interface Props {
+  etapes: { libelle: string; href?: string }[];
+  registre?: 'clair' | 'sombre';
+  masquerMobile?: boolean;
+}
+
+const { etapes, registre = 'clair', masquerMobile = false } = Astro.props;
+const couleur = registre === 'clair' ? 'text-gris-fort' : 'text-creme-secondaire';
+---
+
+<nav aria-label="Fil d'Ariane" class={`text-[14px] ${couleur} ${masquerMobile ? 'max-[359px]:hidden' : ''}`}>
+  <ol class="flex flex-wrap gap-1.5">
+    {
+      etapes.map((e, i) => (
+        <li>
+          {e.href && i < etapes.length - 1 ? (
+            <Fragment>
+              <a href={e.href} class="underline-offset-4 hover:underline">
+                {e.libelle}
+              </a>{' '}
+              <span aria-hidden="true">›</span>
+            </Fragment>
+          ) : (
+            <span aria-current="page">{e.libelle}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+<DonneesStructurees
+  donnees={{
+    '@type': 'BreadcrumbList',
+    itemListElement: etapes.map((e, i) => ({ '@type': 'ListItem', position: i + 1, name: e.libelle, ...(e.href ? { item: e.href } : {}) })),
+  }}
+/>

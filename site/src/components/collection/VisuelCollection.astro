@@ -1,0 +1,163 @@
+---
+/**
+ * Visuel animé du héros de collection (§4.3, section 1). Tout est dessiné à la construction :
+ * sans JavaScript ou sans animation, le visuel est fixe et complet.
+ * - mecanique : chaîne d'engrenages (rotation pilotée par scripts/collection.ts) ;
+ * - vehicules : roue + bielle + piston, bielle recalculée à chaque image ;
+ * - miniatures : rendu en calques (image, lumière chaude, vignettage) avec parallaxe ;
+ * - pour-debuter : planche dont les pièces se détachent puis se replacent ;
+ * - idees-cadeaux : étiquette kraft suspendue qui oscille.
+ * Décoratif : aria-hidden. Les rendus restent des démonstrations (audit N3) : aucun lien vers une fiche.
+ */
+import { chaineEngrenages } from '../../lib/engrenages';
+import { cheminVue, type SlugCollection } from '../../lib/catalogue';
+
+interface Props {
+  slug: SlugCollection;
+  /** Produit dont le rendu « situation » sert de visuel (Miniatures). */
+  produitImage?: string;
+}
+
+const { slug, produitImage } = Astro.props;
+
+const roues = chaineEngrenages({ x: 250, y: 250 }, [32, 16, 24, 12], [10, 40, -30], 12);
+
+// Véhicules : roue de rayon 150 en (380, 300), maneton à 95, bielle de 260 vers un piston à gauche.
+const vehicule = { cx: 380, cy: 300, R: 150, r: 95, L: 260 };
+const angle0 = 0;
+const pinX = vehicule.cx + vehicule.r * Math.cos(angle0);
+const pinY = vehicule.cy + vehicule.r * Math.sin(angle0);
+const pistonX = pinX - Math.sqrt(vehicule.L ** 2 - (pinY - vehicule.cy) ** 2);
+---
+
+<div class={`visuel-collection visuel-${slug} pointer-events-none h-full w-full`} data-visuel={slug} aria-hidden="true">
+  {
+    slug === 'mecanique' && (
+      <svg viewBox="0 0 1000 720" class="h-full w-full" data-engrenages>
+        <defs>
+          <linearGradient id="laiton-degrade" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#E3C88E" />
+            <stop offset=".5" stop-color="#C8A15A" />
+            <stop offset="1" stop-color="#8A6A3A" />
+          </linearGradient>
+        </defs>
+        {roues.map((r, i) => (
+          <g transform={`translate(${r.cx.toFixed(2)} ${r.cy.toFixed(2)})`}>
+            <path
+              d={r.trace}
+              fill-rule="evenodd"
+              fill={i % 2 === 0 ? 'url(#laiton-degrade)' : 'rgba(200,161,90,.18)'}
+              stroke="#C8A15A"
+              stroke-opacity=".55"
+              stroke-width="1.5"
+              transform={`rotate(${r.phase.toFixed(3)})`}
+              data-roue
+              data-phase={r.phase.toFixed(4)}
+              data-rapport={r.rapport.toFixed(6)}
+            />
+          </g>
+        ))}
+      </svg>
+    )
+  }
+
+  {
+    slug === 'vehicules' && (
+      <svg viewBox="0 0 700 600" class="h-full w-full" data-bielle={JSON.stringify(vehicule)}>
+        <rect x="20" y={vehicule.cy - 34} width="190" height="68" rx="10" fill="none" stroke="#C8A15A" stroke-opacity=".5" stroke-width="2" />
+        <line x1="20" y1={vehicule.cy + 60} x2="680" y2={vehicule.cy + 160} stroke="#C8A15A" stroke-opacity=".2" stroke-width="2" />
+        <g data-roue-vehicule transform={`rotate(0 ${vehicule.cx} ${vehicule.cy})`}>
+          <circle cx={vehicule.cx} cy={vehicule.cy} r={vehicule.R} fill="none" stroke="#C8A15A" stroke-width="14" />
+          <circle cx={vehicule.cx} cy={vehicule.cy} r={vehicule.R - 18} fill="none" stroke="#C8A15A" stroke-opacity=".35" stroke-width="2" />
+          {Array.from({ length: 12 }, (_, i) => {
+            const a = (i * Math.PI) / 6;
+            return (
+              <line
+                x1={vehicule.cx}
+                y1={vehicule.cy}
+                x2={(vehicule.cx + (vehicule.R - 10) * Math.cos(a)).toFixed(2)}
+                y2={(vehicule.cy + (vehicule.R - 10) * Math.sin(a)).toFixed(2)}
+                stroke="#C8A15A"
+                stroke-opacity=".6"
+                stroke-width="5"
+              />
+            );
+          })}
+          <circle cx={vehicule.cx} cy={vehicule.cy} r="26" fill="#C8A15A" />
+        </g>
+        <line data-tige x1={pinX} y1={pinY} x2={pistonX} y2={vehicule.cy} stroke="#E3C88E" stroke-width="12" stroke-linecap="round" />
+        <circle data-maneton cx={pinX} cy={pinY} r="12" fill="#0A0F1A" stroke="#E3C88E" stroke-width="5" />
+        <rect data-piston x={pistonX - 60} y={vehicule.cy - 26} width="60" height="52" rx="6" fill="#C8A15A" />
+      </svg>
+    )
+  }
+
+  {
+    slug === 'miniatures' && produitImage && (
+      <div class="relative h-full w-full overflow-hidden rounded-[24px]">
+        <img
+          data-calque-image
+          src={cheminVue(produitImage, 'situation', 800)}
+          srcset={`${cheminVue(produitImage, 'situation', 800)} 800w, ${cheminVue(produitImage, 'situation', 1600)} 1600w`}
+          sizes="(min-width: 1024px) 45vw, 100vw"
+          width="800"
+          height="1000"
+          alt=""
+          fetchpriority="high"
+          class="absolute inset-x-0 top-[-6%] h-[112%] w-full object-cover"
+        />
+        <div data-calque-lumiere class="absolute inset-0 opacity-0" style="background: radial-gradient(60% 50% at 50% 40%, rgba(255,170,80,.55), transparent 70%); mix-blend-mode: soft-light;" />
+        <div class="absolute inset-0" style="background: radial-gradient(90% 80% at 50% 50%, transparent 55%, rgba(10,15,26,.75));" />
+      </div>
+    )
+  }
+
+  {
+    slug === 'pour-debuter' && (
+      <svg viewBox="0 0 700 520" class="h-full w-full">
+        <rect x="40" y="60" width="620" height="400" rx="14" fill="rgba(200,161,90,.10)" stroke="#C8A15A" stroke-opacity=".5" stroke-width="2" />
+        <g fill="none" stroke="#C8A15A" stroke-opacity=".35" stroke-width="2" stroke-dasharray="6 6">
+          <circle cx="200" cy="230" r="90" />
+          <rect x="350" y="130" width="230" height="70" rx="8" />
+          <circle cx="470" cy="340" r="60" />
+        </g>
+        <g data-piece>
+          <path transform="translate(200 230)" d={chaineEngrenages({ x: 0, y: 0 }, [18], [], 10)[0].trace} fill-rule="evenodd" fill="#C8A15A" />
+        </g>
+        <g data-piece>
+          <rect x="350" y="130" width="230" height="70" rx="8" fill="#E3C88E" />
+          <circle cx="385" cy="165" r="10" fill="#0A0F1A" />
+          <circle cx="545" cy="165" r="10" fill="#0A0F1A" />
+        </g>
+        <g data-piece>
+          <circle cx="470" cy="340" r="60" fill="#8A6A3A" />
+          <circle cx="470" cy="340" r="12" fill="#0A0F1A" />
+        </g>
+      </svg>
+    )
+  }
+
+  {
+    slug === 'idees-cadeaux' && (
+      <svg viewBox="0 0 600 640" class="h-full w-full">
+        <g data-etiquette style="transform-origin: 300px 40px; transform-box: view-box;">
+          <path d="M300 40 C 298 90, 304 130, 300 170" stroke="#E3C88E" stroke-width="3" fill="none" />
+          <path d="M210 210 L 300 170 L 390 210 L 390 560 Q 390 580 370 580 L 230 580 Q 210 580 210 560 Z" fill="#C9A77A" stroke="#8A6A3A" stroke-width="3" />
+          <circle cx="300" cy="215" r="14" fill="#0A0F1A" stroke="#8A6A3A" stroke-width="3" />
+          <g stroke="#8A6A3A" stroke-width="3" stroke-linecap="round" opacity=".7">
+            <line x1="245" y1="300" x2="355" y2="300" />
+            <line x1="245" y1="340" x2="335" y2="340" />
+            <line x1="245" y1="380" x2="345" y2="380" />
+          </g>
+          <path
+            transform="translate(300 470)"
+            d={chaineEngrenages({ x: 0, y: 0 }, [14], [], 8)[0].trace}
+            fill-rule="evenodd"
+            fill="#8A6A3A"
+          />
+        </g>
+        <circle cx="300" cy="36" r="8" fill="#C8A15A" />
+      </svg>
+    )
+  }
+</div>

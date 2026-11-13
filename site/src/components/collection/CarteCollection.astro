@@ -1,0 +1,50 @@
+---
+/**
+ * Carte compacte d'une collection (§4.3 section 4, d'après §4.1.5) : visuel, nom en serif,
+ * phrase, ligne calculée. Toute la carte est un lien « Voir la collection [nom] ».
+ * Survol ou focus : carte −6 px, ombre légère, léger zoom du visuel, flèche qui glisse
+ * (transitions CSS ; immobile sans animation). Les animations propres à chaque collection
+ * de l'accueil (§4.1.5) seront ajoutées avec l'accueil (T35).
+ */
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import { cheminVue, ligneStatistiques, type Collection } from '../../lib/catalogue';
+import type { Produit } from '../../lib/donnees';
+
+interface Props {
+  collection: Collection;
+  produits: Produit[];
+}
+
+const { collection, produits } = Astro.props;
+const illustration = produits[0];
+---
+
+<a
+  href={`/collections/${collection.slug}/`}
+  aria-label={`Voir la collection ${collection.nom}`}
+  class="carte-collection group flex h-full flex-col overflow-hidden rounded-carte border border-bordure bg-carte text-encre transition-[transform,box-shadow] duration-400 ease-sortie hover:-translate-y-1.5 hover:shadow-survol focus-visible:-translate-y-1.5"
+>
+  <div class="relative aspect-[16/10] overflow-hidden bg-nuit">
+    {
+      illustration && (
+        <img
+          src={cheminVue(illustration.data.slug, collection.visuel, 800)}
+          width="800"
+          height="1000"
+          alt=""
+          loading="lazy"
+          decoding="async"
+          class="h-full w-full object-cover transition-transform duration-600 ease-sortie group-hover:scale-[1.04]"
+        />
+      )
+    }
+  </div>
+  <div class="flex flex-1 flex-col gap-2 p-5">
+    <h3 class="titre-serif text-[30px] leading-none">{collection.nom}</h3>
+    <p class="text-[15px] text-gris">{collection.phrase}</p>
+    <p class="mt-auto flex items-center justify-between gap-3 pt-2 text-[14px] text-gris-fort">
+      <span>{ligneStatistiques(produits)}</span>
+      <ArrowRight size={18} stroke-width={1.75} aria-hidden="true" class="shrink-0 text-encre transition-transform duration-250 group-hover:translate-x-[3px]" />
+    </p>
+  </div>
+</a>

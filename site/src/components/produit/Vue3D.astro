@@ -1,0 +1,39 @@
+---
+/**
+ * Emplacement de la vue 3D tournante (§5.3, décision « oui, chargée au clic » de knowledge/decisions.md).
+ * N'apparaît que si la fiche renseigne `modele_3d`. Aujourd'hui, aucune fiche n'a de modèle .glb
+ * et Three.js n'est pas encore une dépendance du site : la visionneuse n'est pas construite.
+ * [À VALIDER] : ajouter three (version figée, servi depuis notre domaine, import dynamique au clic),
+ * GLTFLoader + OrbitControls, et un fichier .glb ≤ 1,5 Mo par produit. Aucune requête réseau tierce.
+ * Légendes imposées (audit N19) : démonstration « Modèle 3D de démonstration » ; vrai produit
+ * « Modèle 3D réalisé d'après le produit réel. Les photos montrent le produit tel que vous le recevrez. »
+ * Jamais « non contractuel » (audit N22).
+ */
+import Rotate3d from '@lucide/astro/icons/rotate-3d';
+import type { Produit } from '../../lib/donnees';
+
+interface Props {
+  produit: Produit;
+}
+
+const { produit } = Astro.props;
+const p = produit.data;
+const legende = p.demo
+  ? 'Modèle 3D de démonstration'
+  : "Modèle 3D réalisé d'après le produit réel. Les photos montrent le produit tel que vous le recevrez.";
+---
+
+{
+  p.modele_3d.trim() !== '' && (
+    <div class="mt-4 rounded-carte border border-dashed border-bordure p-4 text-[15px]">
+      <p class="flex items-center gap-2 font-medium">
+        <Rotate3d size={20} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+        Voir en 3D
+      </p>
+      <p class="mt-1 text-gris">
+        <mark class="a-valider">[À VALIDER : visionneuse 3D à intégrer, chargée au clic]</mark>
+      </p>
+      <p class="mt-1 text-[14px] text-gris-fort">{legende}</p>
+    </div>
+  )
+}

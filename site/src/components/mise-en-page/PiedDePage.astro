@@ -3,6 +3,7 @@
  * Pied de page de toutes les pages (§4.0), registre sombre.
  * - Bouton « Renoncer au contrat ici » toujours visible, au-dessus des colonnes, jamais dans un accordéon (§6.2).
  * - Colonnes Boutique / Aide / Informations légales ; sur mobile, accordéons natifs <details>.
+ * - Lien `existe: false` (page d'une étape suivante) : texte non cliquable « (bientôt) », jamais de lien vers une page absente.
  * - Ligne finale : identité du vendeur et mention de TVA (boutique.yaml).
  */
 import FileX from '@lucide/astro/icons/file-x';
@@ -42,9 +43,13 @@ const annee = new Date().getFullYear();
               <ul class="mt-4 space-y-2.5 text-[14px]">
                 {colonne.liens.map((lien) => (
                   <li>
-                    <a href={lien.href} class="text-creme-secondaire transition-colors duration-200 hover:text-creme">
-                      {lien.libelle}
-                    </a>
+                    {lien.existe ? (
+                      <a href={lien.href} class="text-creme-secondaire transition-colors duration-200 hover:text-creme">
+                        {lien.libelle}
+                      </a>
+                    ) : (
+                      <span class="text-creme-secondaire italic">{lien.libelle} (bientôt)</span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -58,9 +63,13 @@ const annee = new Date().getFullYear();
               <ul class="space-y-1 pb-4 text-[15px]">
                 {colonne.liens.map((lien) => (
                   <li>
-                    <a href={lien.href} class="flex min-h-11 items-center text-creme-secondaire hover:text-creme">
-                      {lien.libelle}
-                    </a>
+                    {lien.existe ? (
+                      <a href={lien.href} class="flex min-h-11 items-center text-creme-secondaire hover:text-creme">
+                        {lien.libelle}
+                      </a>
+                    ) : (
+                      <span class="flex min-h-11 items-center text-creme-secondaire italic">{lien.libelle} (bientôt)</span>
+                    )}
                   </li>
                 ))}
               </ul>

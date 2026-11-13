@@ -1,0 +1,32 @@
+---
+/**
+ * Grille de cartes produit (§4.2, 3) : 1 colonne mobile ; 2 dès 640 px ; 3 dès 1024 px ; 4 dès 1280 px.
+ * `revele` : entrée en cascade R3 (pages cinématiques qui chargent le système de mouvement).
+ * Chaque élément porte data-niveau pour le filtre des pages de collection.
+ */
+import CarteProduit from './CarteProduit.astro';
+import type { Produit } from '../../lib/donnees';
+
+interface Props {
+  produits: Produit[];
+  niveauTitre?: 'h2' | 'h3';
+  revele?: boolean;
+  colonnesMax?: 3 | 4;
+  id?: string;
+  /** Nombre de cartes chargées en priorité (premier écran). */
+  prioritaires?: number;
+}
+
+const { produits, niveauTitre = 'h3', revele = false, colonnesMax = 4, id, prioritaires = 0 } = Astro.props;
+const colonnes = colonnesMax === 4 ? 'sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' : 'sm:grid-cols-2 lg:grid-cols-3';
+---
+
+<ul id={id} class={`grid grid-cols-1 gap-5 ${colonnes}`} data-revele={revele ? 'cartes' : undefined} data-grille-produits>
+  {
+    produits.map((produit, i) => (
+      <li data-niveau={produit.data.difficulte}>
+        <CarteProduit produit={produit} niveauTitre={niveauTitre} prioritaire={i < prioritaires} />
+      </li>
+    ))
+  }
+</ul>

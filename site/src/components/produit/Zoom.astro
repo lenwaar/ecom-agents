@@ -1,0 +1,163 @@
+---
+/**
+ * Zoom plein écran (§5.3) : <dialog> modal, fond nuit à 96 %, image 1600 px.
+ * - Ouverture : clic, toucher ou Entrée sur une image de la galerie ([data-zoom]).
+ *   Sans JavaScript, ce composant ne sert pas : l'image est un lien vers le fichier 1600 px.
+ * - Dans le zoom : clic ou toucher = bascule ×2 centrée sur le point touché ; en ×2, l'image suit
+ *   la souris ou le doigt ; pincement natif autorisé (touch-action: pinch-zoom).
+ * - Navigation : flèches ← / →, balayage horizontal (si non agrandi), compteur,
+ *   bouton fermer 44 px, Échap (natif) ; focus piégé par le dialog modal ;
+ *   retour du focus sur l'image d'origine à la fermeture.
+ * - Ouverture en fondu court (instantanée sans animation) ; l'agrandissement FLIP de la spec
+ *   est remplacé par ce fondu (écart noté dans le rapport).
+ */
+import X from '@lucide/astro/icons/x';
+import ChevronLeft from '@lucide/astro/icons/chevron-left';
+import ChevronRight from '@lucide/astro/icons/chevron-right';
+---
+
+<dialog
+  data-zoom-dialog
+  aria-label="Image agrandie"
+  class="zoom m-0 h-dvh max-h-none w-screen max-w-none bg-nuit/96 p-0 text-creme backdrop:bg-transparent"
+>
+  <div class="relative flex h-full w-full items-center justify-center overflow-hidden" data-zoom-scene>
+    <img data-zoom-image alt="" width="1600" height="2000" class="zoom-image max-h-full max-w-full select-none object-contain" draggable="false" />
+  </div>
+  <p class="absolute top-4 left-4 rounded-full bg-nuit-2/80 px-3 py-1.5 text-[14px]" aria-live="polite" data-zoom-compteur></p>
+  <button type="button" data-zoom-fermer class="absolute top-3 right-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-nuit-2/80">
+    <X size={22} stroke-width={1.75} aria-hidden="true" />
+    <span class="sr-only">Fermer l'image agrandie</span>
+  </button>
+  <button type="button" data-zoom-precedent class="absolute top-1/2 left-3 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-nuit-2/80 disabled:opacity-30">
+    <ChevronLeft size={22} stroke-width={1.75} aria-hidden="true" />
+    <span class="sr-only">Image précédente</span>
+  </button>
+  <button type="button" data-zoom-suivant class="absolute top-1/2 right-3 inline-flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-nuit-2/80 disabled:opacity-30">
+    <ChevronRight size={22} stroke-width={1.75} aria-hidden="true" />
+    <span class="sr-only">Image suivante</span>
+  </button>
+  <p class="sr-only">Touchez ou cliquez sur l'image pour l'agrandir deux fois. Flèches gauche et droite pour changer d'image, Échap pour fermer.</p>
+</dialog>
+
+<style>
+  .zoom[open] {
+    display: block;
+    opacity: 1;
+    transition: opacity 250ms var(--courbe-sortie);
+  }
+  @starting-style {
+    .zoom[open] {
+      opacity: 0;
+    }
+  }
+  .zoom-image {
+    touch-action: pinch-zoom;
+    cursor: zoom-in;
+    transition: transform 300ms var(--courbe-sortie);
+  }
+  .zoom-image.agrandie {
+    transform: scale(2);
+    cursor: zoom-out;
+    transition: transform 300ms var(--courbe-sortie), transform-origin 0ms;
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-zoom-dialog]');
+  const liens = [...document.querySelectorAll<HTMLAnchorElement>('[data-zoom]')];
+  if (dialog && liens.length > 0) {
+    const image = dialog.querySelector<HTMLImageElement>('[data-zoom-image]')!;
+    const compteur = dialog.querySelector<HTMLElement>('[data-zoom-compteur]')!;
+    const precedent = dialog.querySelector<HTMLButtonElement>('[data-zoom-precedent]')!;
+    const suivant = dialog.querySelector<HTMLButtonElement>('[data-zoom-suivant]')!;
+    const galerie = document.querySelector<HTMLElement>('[data-galerie]');
+    let actuel = 0;
+    let origine: HTMLElement | null = null;
+    let departX: number | null = null;
+    let deplace = false;
+
+    const agrandie = () => image.classList.contains('agrandie');
+    const reduire = () => image.classList.remove('agrandie');
+    const centrerSur = (x: number, y: number) => {
+      const r = image.getBoundingClientRect();
+      // Coordonnées relatives à l'image non transformée (la transformation est centrée sur l'origine).
+      const px = Math.max(0, Math.min(100, ((x - r.left) / r.width) * 100));
+      const py = Math.max(0, Math.min(100, ((y - r.top) / r.height) * 100));
+      image.style.transformOrigin = `${px}% ${py}%`;
+    };
+
+    const afficher = (i: number) => {
+      actuel = Math.max(0, Math.min(liens.length - 1, i));
+      const lien = liens[actuel];
+      const vignette = lien.querySelector('img');
+      reduire();
+      image.src = lien.dataset.srcZoom ?? lien.href;
+      image.alt = vignette?.alt ?? '';
+      compteur.textContent = `${actuel + 1} / ${liens.length}`;
+      precedent.disabled = actuel === 0;
+      suivant.disabled = actuel === liens.length - 1;
+    };
+
+    liens.forEach((lien, i) =>
+      lien.addEventListener('click', (e) => {
+        e.preventDefault();
+        origine = lien;
+        afficher(i);
+        dialog.showModal();
+      }),
+    );
+
+    precedent.addEventListener('click', () => afficher(actuel - 1));
+    suivant.addEventListener('click', () => afficher(actuel + 1));
+    dialog.querySelector('[data-zoom-fermer]')!.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') afficher(actuel - 1);
+      if (e.key === 'ArrowRight') afficher(actuel + 1);
+    });
+
+    // Bascule ×2 au clic ou au toucher, centrée sur le point touché.
+    image.addEventListener('click', (e) => {
+      if (deplace) return;
+      if (agrandie()) reduire();
+      else {
+        centrerSur(e.clientX, e.clientY);
+        image.classList.add('agrandie');
+      }
+    });
+
+    // En ×2 : l'image suit la souris ou le doigt. Non agrandie : balayage = image suivante / précédente.
+    const scene = dialog.querySelector<HTMLElement>('[data-zoom-scene]')!;
+    scene.addEventListener('pointerdown', (e) => {
+      departX = e.clientX;
+      deplace = false;
+    });
+    scene.addEventListener('pointermove', (e) => {
+      if (agrandie() && (e.pointerType === 'mouse' || departX !== null)) {
+        image.style.transformOrigin = `${(e.clientX / window.innerWidth) * 100}% ${(e.clientY / window.innerHeight) * 100}%`;
+        if (departX !== null && Math.abs(e.clientX - departX) > 8) deplace = true;
+      }
+    });
+    scene.addEventListener('pointerup', (e) => {
+      if (departX !== null && !agrandie()) {
+        const dx = e.clientX - departX;
+        if (Math.abs(dx) > 50) {
+          deplace = true;
+          afficher(actuel + (dx < 0 ? 1 : -1));
+        }
+      }
+      departX = null;
+      setTimeout(() => (deplace = false), 0);
+    });
+    // Clic sur le fond (hors image) : fermeture.
+    scene.addEventListener('click', (e) => {
+      if (e.target === scene && !deplace) dialog.close();
+    });
+
+    dialog.addEventListener('close', () => {
+      reduire();
+      galerie?.dispatchEvent(new CustomEvent('galerie:aller', { detail: actuel }));
+      (liens[actuel] ?? origine)?.focus();
+    });
+  }
+</script>

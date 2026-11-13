@@ -1,0 +1,81 @@
+---
+/**
+ * Barre d'achat collante mobile (§5.2) : apparaît quand le bouton d'achat ([data-zone-achat])
+ * sort de l'écran, disparaît quand il revient ou que le pied de page est visible.
+ * Vignette 40 px, nom court, prix, même bouton que la fiche (désactivé en démonstration).
+ * Sans JavaScript : pas de barre (attribut hidden retiré par le script).
+ */
+import Bouton from '../ui/Bouton.astro';
+import { cheminVue } from '../../lib/catalogue';
+import { formatPrix, type Produit } from '../../lib/donnees';
+
+interface Props {
+  produit: Produit;
+  lienAchat?: string;
+  libelleDesactive: string;
+}
+
+const { produit, lienAchat, libelleDesactive } = Astro.props;
+const p = produit.data;
+---
+
+<div
+  data-barre-achat
+  hidden
+  class="barre-achat fixed inset-x-0 bottom-0 z-40 border-t border-bordure bg-papier/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:!hidden"
+>
+  <div class="conteneur flex h-16 items-center gap-3">
+    <img src={cheminVue(p.slug, 'face', 800)} alt="" width="40" height="50" loading="lazy" class="h-[50px] w-10 rounded-md object-cover" />
+    <p class="min-w-0 flex-1 leading-tight">
+      <span class="block truncate text-[14px] font-medium">{p.nom_court}</span>
+      <span class="block text-[15px] font-semibold">{formatPrix(p.prix_ttc)}</span>
+    </p>
+    {
+      lienAchat ? (
+        <Bouton href={lienAchat} class="!min-h-11 !px-4" data-lien-paiement>
+          Acheter
+        </Bouton>
+      ) : (
+        <Bouton desactive fleche={false} class="!min-h-11 !px-4 !text-[13px]">
+          <span class="max-w-[150px] text-center">{libelleDesactive}</span>
+        </Bouton>
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .barre-achat {
+    transform: translateY(100%);
+    transition: transform 250ms var(--courbe-sortie);
+  }
+  .barre-achat.visible {
+    transform: translateY(0);
+  }
+</style>
+
+<script>
+  const barre = document.querySelector<HTMLElement>('[data-barre-achat]');
+  const zone = document.querySelector('[data-zone-achat]');
+  const pied = document.getElementById('pied-de-page');
+  if (barre && zone && 'IntersectionObserver' in window) {
+    barre.hidden = false;
+    let zoneVisible = true;
+    let piedVisible = false;
+    const maj = () => {
+      const montrer = !zoneVisible && !piedVisible && zone.getBoundingClientRect().top < 0;
+      barre.classList.toggle('visible', montrer);
+      barre.inert = !montrer;
+    };
+    new IntersectionObserver(([e]) => {
+      zoneVisible = e.isIntersecting;
+      maj();
+    }).observe(zone);
+    if (pied)
+      new IntersectionObserver(([e]) => {
+        piedVisible = e.isIntersecting;
+        maj();
+      }).observe(pied);
+    maj();
+  }
+</script>

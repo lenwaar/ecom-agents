@@ -1,0 +1,20 @@
+---
+/**
+ * Catalogue /maquettes/ (§4.2). Texte du H1 corrigé par l'audit N7
+ * (« pour adultes, à partir de 14 ans », pas « ados »).
+ */
+import PageCatalogue from '../../layouts/PageCatalogue.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+
+const produits = await getProduitsPublies();
+---
+
+<PageCatalogue
+  titre="Maquettes en bois à monter"
+  intro="Maquettes mécaniques, véhicules et miniatures, pour adultes, à partir de 14 ans. Chaque fiche indique le temps d'assemblage et la difficulté."
+  titreSeo="Maquettes en bois à monter | Rouage & Laiton"
+  description="Maquettes mécaniques en bois à assembler, véhicules et miniatures, pour adultes, à partir de 14 ans. Temps d'assemblage et difficulté sur chaque fiche."
+  chemin="/maquettes/"
+  ariane={[{ libelle: 'Accueil', href: '/' }, { libelle: 'Maquettes' }]}
+  produits={produits}
+/>

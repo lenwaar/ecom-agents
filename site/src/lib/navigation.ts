@@ -1,6 +1,6 @@
 // Liens de navigation et du pied de page (§4.0 de la spécification v2).
 // Une seule source pour la barre, le panneau mobile et le pied de page.
-// `existe: false` = page prévue à une étape suivante (catalogue, collections, questionnaire, atelier).
+// `existe: false` = page prévue à une étape suivante (questionnaire, atelier : T35) : affichée en texte non cliquable.
 
 export interface Lien {
   libelle: string;
@@ -9,8 +9,8 @@ export interface Lien {
 }
 
 export const LIENS_NAVIGATION: Lien[] = [
-  { libelle: 'Maquettes', href: '/maquettes/', existe: false },
-  { libelle: 'Idées cadeaux', href: '/collections/idees-cadeaux/', existe: false },
+  { libelle: 'Maquettes', href: '/maquettes/', existe: true },
+  { libelle: 'Idées cadeaux', href: '/collections/idees-cadeaux/', existe: true },
   { libelle: "L'atelier", href: '/atelier/', existe: false },
   { libelle: 'Aide', href: '/faq/', existe: true },
 ];
@@ -26,8 +26,8 @@ export const COLONNES_PIED_DE_PAGE: { titre: string; liens: Lien[] }[] = [
   {
     titre: 'Boutique',
     liens: [
-      { libelle: 'Maquettes', href: '/maquettes/', existe: false },
-      { libelle: 'Collections', href: '/collections/mecanique/', existe: false },
+      { libelle: 'Maquettes', href: '/maquettes/', existe: true },
+      { libelle: 'Collections', href: '/collections/mecanique/', existe: true },
       { libelle: 'Trouver ma maquette', href: '/trouver-ma-maquette/', existe: false },
       { libelle: "L'atelier", href: '/atelier/', existe: false },
       { libelle: 'À propos', href: '/a-propos/', existe: true },
@@ -53,3 +53,13 @@ export const COLONNES_PIED_DE_PAGE: { titre: string; liens: Lien[] }[] = [
     ],
   },
 ];
+
+/**
+ * Vrai si le lien mène à une page construite. Les liens inconnus de cette liste
+ * (pages produit, collections, niveaux) sont considérés comme existants.
+ */
+export function pageExiste(href: string): boolean {
+  const tous = [...LIENS_NAVIGATION, ...LIENS_PANNEAU_MOBILE, ...COLONNES_PIED_DE_PAGE.flatMap((c) => c.liens)];
+  const lien = tous.find((l) => l.href === href);
+  return lien ? lien.existe : true;
+}

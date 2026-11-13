@@ -1,0 +1,66 @@
+---
+/**
+ * Réassurance compacte (§4.1.11, repris au §4.2 point 5 et §4.3 section 5) : 4 éléments
+ * formulés comme des droits (audit point 26, N31).
+ * - « Livraison suivie » seulement si le suivi est confirmé pour tous les produits publiés (audit N8).
+ * - Délais chiffrés seulement s'ils sont connus pour les produits en vente ; sinon texte sans chiffre.
+ * Suivi par l'encart « Trouver ma maquette » (§4.2 point 6) seulement quand cette page existe.
+ */
+import Truck from '@lucide/astro/icons/truck';
+import LockKeyhole from '@lucide/astro/icons/lock-keyhole';
+import RotateCcw from '@lucide/astro/icons/rotate-ccw';
+import Wrench from '@lucide/astro/icons/wrench';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import { getDelaisEnVente, getProduitsPublies } from '../../lib/donnees';
+import { pageExiste } from '../../lib/navigation';
+
+const produits = await getProduitsPublies();
+const delais = await getDelaisEnVente();
+const suivie = produits.length > 0 && produits.every((p) => p.data.suivi === true);
+
+const elements = [
+  {
+    icone: Truck,
+    titre: suivie ? 'Livraison suivie' : 'Livraison en France métropolitaine',
+    texte: delais
+      ? `Délai affiché sur chaque fiche, avant le paiement : ${delais.min} à ${delais.max} jours.`
+      : 'Délai affiché sur chaque fiche, avant le paiement.',
+  },
+  { icone: LockKeyhole, titre: 'Paiement sécurisé', texte: 'Par carte bancaire, sur la page de paiement de Stripe.' },
+  { icone: RotateCcw, titre: 'Droit de rétractation', texte: '14 jours à compter de la réception, comme le prévoit la loi.' },
+  {
+    icone: Wrench,
+    titre: 'Pièce manquante ou abîmée à la réception ?',
+    texte: "C'est couvert par la garantie légale de conformité. Une photo par email suffit pour nous le signaler.",
+  },
+];
+const questionnaire = '/trouver-ma-maquette/';
+---
+
+<section aria-labelledby="titre-reassurance" class="border-t border-bordure pt-12">
+  <h2 id="titre-reassurance" class="sr-only">Vos droits et la livraison</h2>
+  <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    {
+      elements.map(({ icone: Icone, titre, texte }) => (
+        <li class="flex gap-3">
+          <Icone size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+          <p class="text-[15px] leading-snug">
+            <span class="block font-semibold">{titre}</span>
+            <span class="mt-1 block text-gris">{texte}</span>
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+  {
+    pageExiste(questionnaire) && (
+      <p class="mt-10 rounded-carte border border-bordure bg-carte p-5 text-[15px]">
+        Vous hésitez ?{' '}
+        <a href={questionnaire} class="inline-flex items-center gap-1.5 font-medium text-bleu-nuit underline-offset-4 hover:underline">
+          Trouver ma maquette en 3 questions
+          <ArrowRight size={16} stroke-width={1.75} aria-hidden="true" />
+        </a>
+      </p>
+    )
+  }
+</section>

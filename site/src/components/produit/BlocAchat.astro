@@ -1,0 +1,142 @@
+---
+/**
+ * Colonne d'achat de la fiche (§5.2, blocs 3 à 7) : titre et badges, prix, livraison,
+ * bouton d'achat, réassurance. Collante à droite sur ordinateur.
+ * - Démonstration (§5.1, V11, V15) : bouton désactivé « Non disponible : produit de démonstration »,
+ *   sans lien ; prix avec la mention « Prix indicatif de démonstration » (audit N17).
+ * - Rupture : bouton désactivé « Indisponible pour le moment » (« Bientôt de retour » si reassort_prevu).
+ * - Vente : lien Payment Link seulement si statut en-vente, demo false et lien https://buy.stripe.com/
+ *   (aucune intégration Stripe active : un simple lien public, jamais de clé).
+ * - « Livraison suivie » seulement si `suivi: true` (audit N8). Aucune valeur inventée :
+ *   les inconnues s'affichent « [À VALIDER] ».
+ */
+import Clock from '@lucide/astro/icons/clock';
+import Truck from '@lucide/astro/icons/truck';
+import LockKeyhole from '@lucide/astro/icons/lock-keyhole';
+import RotateCcw from '@lucide/astro/icons/rotate-ccw';
+import Wrench from '@lucide/astro/icons/wrench';
+import Gift from '@lucide/astro/icons/gift';
+import Mail from '@lucide/astro/icons/mail';
+import Badge from '../ui/Badge.astro';
+import Bouton from '../ui/Bouton.astro';
+import Valeur from '../ui/Valeur.astro';
+import Donnee from './Donnee.astro';
+import JaugeNiveau from './JaugeNiveau.astro';
+import { etatAchat, formatHeures, estConnu } from '../../lib/catalogue';
+import { formatPrix, getBoutique, lienEmail, type Produit } from '../../lib/donnees';
+import { getEntry } from 'astro:content';
+
+interface Props {
+  produit: Produit;
+}
+
+const { produit } = Astro.props;
+const p = produit.data;
+const boutique = await getBoutique();
+const reglages = (await getEntry('reglages', 'accueil'))?.data as { offrir?: { message_cadeau_actif?: boolean } } | undefined;
+const messageCadeau = reglages?.offrir?.message_cadeau_actif === true;
+
+const { lienAchat, libelleDesactive } = etatAchat(produit);
+
+const fraisFormat = (f: number) => (f === 0 ? 'offerte' : `${formatPrix(f)} par commande, quel que soit le nombre de maquettes`);
+const mailto = lienEmail(boutique.vendeur.email, `Question sur ${p.nom_court}`);
+---
+
+<div class="flex flex-col gap-6">
+  <!-- 3. Titre et badges -->
+  <div>
+    <h1 class="titre-serif text-[34px] leading-[1.05] md:text-[44px]">{p.nom}</h1>
+    {p.accroche && <p class="mt-3 text-[16px] text-gris">{p.accroche}</p>}
+    <div class="mt-4 flex flex-wrap items-center gap-2">
+      <Badge>{p.age_minimum} ans et plus</Badge>
+      <Badge><JaugeNiveau difficulte={p.difficulte} /></Badge>
+      <Badge>
+        <Clock size={16} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+        <span class="sr-only">Temps d'assemblage :</span>
+        {formatHeures(p.temps_assemblage_heures_min, p.temps_assemblage_heures_max)}
+      </Badge>
+      {p.demo && <Badge variante="demo">Démonstration</Badge>}
+    </div>
+  </div>
+
+  <!-- 4. Prix -->
+  <div>
+    <p class="text-[28px] leading-tight font-semibold">{formatPrix(p.prix_ttc)}</p>
+    <p class="mt-1 text-[14px] text-gris-fort">Prix final. {boutique.tva_mention}</p>
+    {p.demo && <p class="mt-1 text-[14px] font-medium text-gris-fort">Prix indicatif de démonstration</p>}
+  </div>
+
+  <!-- 5. Livraison -->
+  <div class="flex gap-3 text-[15px]">
+    <Truck size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+    <p>
+      {p.suivi === true ? 'Livraison suivie' : 'Livraison'} :{' '}
+      <Donnee v={p.frais_livraison_ttc} note="frais de livraison" format={fraisFormat} /> · reçue en{' '}
+      <Donnee v={p.delai_livraison_min_jours} note="délai minimum" /> à {p.delai_livraison_max_jours} jours après votre commande
+      {
+        estConnu(p.expedie_depuis) && (
+          <span class="block text-gris">Expédiée depuis {p.expedie_depuis}</span>
+        )
+      }
+    </p>
+  </div>
+
+  <!-- 6. Bouton d'achat -->
+  <div data-zone-achat>
+    {
+      lienAchat ? (
+        <Bouton href={lienAchat} pleineLargeur data-lien-paiement>
+          Acheter
+        </Bouton>
+      ) : (
+        <Bouton desactive pleineLargeur fleche={false}>
+          {libelleDesactive}
+        </Bouton>
+      )
+    }
+    {
+      !p.demo && p.statut === 'rupture' && (
+        <p class="mt-3 text-[15px]">
+          <a href="/maquettes/" class="text-bleu-nuit underline underline-offset-4">
+            Voir les autres maquettes
+          </a>
+        </p>
+      )
+    }
+    <p class="mt-3 flex gap-2 text-[14px] text-gris-fort">
+      <LockKeyhole size={16} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+      <span>Paiement sur la page sécurisée de Stripe, notre prestataire. Nous ne voyons jamais vos données bancaires.</span>
+    </p>
+    <p class="mt-2 flex gap-4 text-[14px]">
+      <a href="/cgv/" class="text-bleu-nuit underline underline-offset-4">CGV</a>
+      <a href="/livraison-et-retours/" class="text-bleu-nuit underline underline-offset-4">Livraison et retours</a>
+    </p>
+  </div>
+
+  <!-- 7. Réassurance (droits formulés comme des droits, audit point 26 et N31) -->
+  <ul class="flex flex-col gap-3 border-t border-bordure pt-5 text-[15px]">
+    <li class="flex gap-3">
+      <RotateCcw size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+      <span>Droit de rétractation : 14 jours après réception, comme le prévoit la loi pour les achats à distance</span>
+    </li>
+    <li class="flex gap-3">
+      <Wrench size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+      <span>Pièce manquante ou abîmée à la réception : garantie légale de conformité, une photo par email suffit</span>
+    </li>
+    {
+      messageCadeau && (
+        <li class="flex gap-3">
+          <Gift size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+          <span>Message cadeau possible au paiement</span>
+        </li>
+      )
+    }
+    <li class="flex gap-3">
+      <Mail size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+      <span>
+        Une question ?{' '}
+        {mailto ? <a href={mailto} class="text-bleu-nuit underline underline-offset-4">{boutique.vendeur.email}</a> : <Valeur v={boutique.vendeur.email} note="email de la boutique" />}
+      </span>
+    </li>
+  </ul>
+</div>

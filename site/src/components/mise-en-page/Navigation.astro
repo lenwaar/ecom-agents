@@ -7,6 +7,7 @@
  * Mobile : « Maquettes » + bouton Menu qui ouvre un panneau latéral (<dialog> modal :
  * focus piégé, Échap, clic hors panneau). Sans JavaScript, le bouton mène au pied de page.
  * Pas d'icône panier ni de recherche au lancement.
+ * Les liens `existe: false` (pages des étapes suivantes) sont masqués : aucun lien vers une page absente.
  */
 import Menu from '@lucide/astro/icons/menu';
 import X from '@lucide/astro/icons/x';
@@ -17,6 +18,8 @@ interface Props {
 }
 
 const { registre } = Astro.props;
+const liensBarre = LIENS_NAVIGATION.filter((l) => l.existe);
+const liensPanneau = [...LIENS_NAVIGATION, ...LIENS_PANNEAU_MOBILE].filter((l) => l.existe);
 const cheminActuel = Astro.url.pathname;
 const estActif = (href: string) => cheminActuel === href || (href !== '/' && cheminActuel.startsWith(href));
 
@@ -39,7 +42,7 @@ const lienSecondaire = registre === 'clair' ? 'text-gris-fort hover:text-encre' 
 
     <ul class="hidden items-center gap-7 text-[14px] md:flex">
       {
-        LIENS_NAVIGATION.map((lien) => (
+        liensBarre.map((lien) => (
           <li>
             <a
               href={lien.href}
@@ -85,7 +88,7 @@ const lienSecondaire = registre === 'clair' ? 'text-gris-fort hover:text-encre' 
     </div>
     <ul class="flex flex-col px-5 py-4 text-[17px]">
       {
-        [...LIENS_NAVIGATION, ...LIENS_PANNEAU_MOBILE].map((lien) => (
+        liensPanneau.map((lien) => (
           <li class="border-b border-bordure last:border-b-0">
             <a href={lien.href} aria-current={estActif(lien.href) ? 'page' : undefined} class="flex min-h-12 items-center py-2 aria-[current=page]:font-semibold">
               {lien.libelle}

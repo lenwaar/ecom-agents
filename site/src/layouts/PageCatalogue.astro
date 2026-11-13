@@ -1,0 +1,68 @@
+---
+/**
+ * Gabarit du catalogue (§4.2), registre clair, sans GSAP (budget ≤ 30 Ko de JS) :
+ * fil d'Ariane, H1 + texte, filtres-liens, grille, réassurance compacte.
+ * Utilisé par /maquettes/ et /maquettes/niveau/[niveau]/.
+ */
+import Base from './Base.astro';
+import FilAriane from '../components/produit/FilAriane.astro';
+import FiltresCatalogue from '../components/produit/FiltresCatalogue.astro';
+import GrilleProduits from '../components/produit/GrilleProduits.astro';
+import ReassuranceCompacte from '../components/produit/ReassuranceCompacte.astro';
+import DonneesStructurees from '../components/produit/DonneesStructurees.astro';
+import type { Produit } from '../lib/donnees';
+
+interface Props {
+  titre: string;
+  intro: string;
+  titreSeo: string;
+  description: string;
+  chemin: string;
+  ariane: { libelle: string; href?: string }[];
+  produits: Produit[];
+}
+
+const { titre, intro, titreSeo, description, chemin, ariane, produits } = Astro.props;
+---
+
+<Base titre={titreSeo} description={description}>
+  <div class="conteneur pt-8 pb-20 md:pt-12">
+    <FilAriane etapes={ariane} />
+    <h1 class="titre-serif mt-4 text-[40px] leading-none md:text-[64px]">{titre}</h1>
+    <p class="mt-4 max-w-[60ch] text-[16px] text-gris">{intro}</p>
+    <slot name="apres-intro" />
+
+    <div class="mt-8">
+      <FiltresCatalogue actif={chemin} />
+    </div>
+
+    <p class="mt-6 text-[14px] text-gris-fort" aria-live="polite">
+      {produits.length} maquette{produits.length > 1 ? 's' : ''}
+    </p>
+    <div class="mt-3">
+      {
+        produits.length > 0 ? (
+          <GrilleProduits produits={produits} niveauTitre="h2" prioritaires={2} />
+        ) : (
+          <p class="rounded-carte border border-bordure bg-carte p-6">
+            Aucune maquette dans cette sélection pour le moment.{' '}
+            <a href="/maquettes/" class="text-bleu-nuit underline underline-offset-4">
+              Voir toutes les maquettes
+            </a>
+          </p>
+        )
+      }
+    </div>
+
+    <div class="mt-16">
+      <ReassuranceCompacte />
+    </div>
+  </div>
+  <DonneesStructurees
+    donnees={{
+      '@type': 'ItemList',
+      name: titre,
+      itemListElement: produits.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `/maquettes/${p.data.slug}/`, name: p.data.nom_court })),
+    }}
+  />
+</Base>

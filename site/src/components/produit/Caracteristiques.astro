@@ -1,0 +1,105 @@
+---
+/**
+ * Caractéristiques (§5.2 bloc 11) : niveau (avec la définition de notre échelle), temps,
+ * nombre de pièces, dimensions monté, poids, matériaux, mécanisme, colle, outils.
+ * Une valeur inconnue (« À VÉRIFIER ») s'affiche « [À VALIDER] » : aucun chiffre inventé.
+ */
+import Donnee from './Donnee.astro';
+import JaugeNiveau from './JaugeNiveau.astro';
+import { LIBELLES_MECANISME, formatHeures, niveau } from '../../lib/catalogue';
+import type { Produit } from '../../lib/donnees';
+
+interface Props {
+  produit: Produit;
+}
+
+const { produit } = Astro.props;
+const p = produit.data;
+const n = niveau(p.difficulte);
+
+const ouiNon = (b: boolean) => (b ? 'Oui' : 'Non');
+const dimensions = (d: { longueur: number; largeur: number; hauteur: number }) =>
+  `${d.longueur} × ${d.largeur} × ${d.hauteur} cm (L × l × h)`;
+const liste = (valeurs: string[]) => (valeurs.length === 0 ? ['Aucun'] : valeurs);
+---
+
+<section aria-labelledby="titre-caracteristiques">
+  <h2 id="titre-caracteristiques" class="text-[22px] font-semibold md:text-[28px]">Caractéristiques</h2>
+  <dl class="mt-4 divide-y divide-bordure border-y border-bordure text-[15px]">
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Niveau</dt>
+      <dd>
+        <JaugeNiveau difficulte={p.difficulte} />
+        <span class="mt-1 block text-gris">
+          {n.definition}{' '}
+          <a href={`/maquettes/niveau/${p.difficulte}/`} class="text-bleu-nuit underline underline-offset-4">
+            Voir les modèles de niveau {n.libelle}
+          </a>
+        </span>
+      </dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Temps d'assemblage</dt>
+      <dd>Environ {formatHeures(p.temps_assemblage_heures_min, p.temps_assemblage_heures_max)}</dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Nombre de pièces</dt>
+      <dd><Donnee v={p.nombre_pieces} note="nombre de pièces" /></dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Dimensions une fois monté</dt>
+      <dd><Donnee v={p.dimensions_cm} note="dimensions" format={dimensions} /></dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Poids</dt>
+      <dd><Donnee v={p.poids_g} note="poids" format={(g: number) => `${g} g`} /></dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Matériaux</dt>
+      <dd>
+        {
+          p.materiaux.length === 0 ? (
+            <Donnee v="" note="matériaux" />
+          ) : (
+            p.materiaux.map((m, i) => (
+              <Fragment>
+                {i > 0 && ', '}
+                <Donnee v={m} />
+              </Fragment>
+            ))
+          )
+        }
+      </dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Mécanisme</dt>
+      <dd><Donnee v={p.mecanisme} note="mécanisme" format={(m: string) => LIBELLES_MECANISME[m] ?? m} /></dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Colle nécessaire</dt>
+      <dd><Donnee v={p.colle_necessaire} note="colle" format={ouiNon} /></dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Outils nécessaires</dt>
+      <dd>
+        {liste(p.outils_necessaires).map((o, i) => (
+          <Fragment>
+            {i > 0 && ', '}
+            <Donnee v={o} note="outils nécessaires" />
+          </Fragment>
+        ))}
+      </dd>
+    </div>
+    <div class="grid gap-1 py-3 sm:grid-cols-[200px_1fr] sm:gap-4">
+      <dt class="font-medium text-gris-fort">Outils fournis</dt>
+      <dd>
+        {liste(p.outils_fournis).map((o, i) => (
+          <Fragment>
+            {i > 0 && ', '}
+            <Donnee v={o} note="outils fournis" />
+          </Fragment>
+        ))}
+      </dd>
+    </div>
+  </dl>
+</section>
