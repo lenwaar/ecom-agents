@@ -23,7 +23,7 @@ Lance `studio-visuel` avec la demande de `tests/scenarios/studio-visuel.md`.
 Si c'est trop long en une fois : d'abord l'atelier (`studio/lib/`, matériaux, éclairage, script de rendu) + 2 produits, montre la planche contact dans le compte rendu, puis les 8 autres.
 Commit `feat(studio): visuels 3D des produits de démonstration`.
 
-### T33 · Construction du site, étape 1 : fondations · `à faire`
+### T33 · Construction du site, étape 1 : fondations · `fait`
 Lance `developpeur-web` :
 ```
 Utilise l'agent developpeur-web : étape 1 du site selon la spécification v2 (2 fichiers dans outputs/). Crée site/ (Astro, Tailwind, polices auto-hébergées, icônes Lucide, GSAP), le thème (couleurs et typographies de knowledge/marque.md), les composants de base façon shadcn/ui (bouton, carte, badge, accordéon, navigation, pied de page), la mise en page commune, et toutes les pages légales et d'aide avec les textes de knowledge/politiques.md ([À VALIDER] là où une valeur manque). Pas encore l'accueil animé. npm run build doit passer.
