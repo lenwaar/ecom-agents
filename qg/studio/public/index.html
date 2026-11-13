@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QG en direct</title>
+<link rel="preload" href="polices/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="qg.css">
+<script src="direct.js" defer></script>
+<script src="qg-direct.js" defer></script>
+<script src="qg.js" defer></script>
+</head><body>
+
+<div class="page">
+  <header class="tete">
+    <div>
+      <h1>QG <em>en direct</em></h1>
+      <p>Toute l'équipe de Rouage &amp; Laiton, pièce par pièce, et ce qu'ils se passent entre eux.</p>
+    </div>
+    <div class="outils-tete">
+      <nav class="onglets" aria-label="Pages du tableau de bord"><a href="/" aria-current="page">QG</a><a href="/studio">Studio</a></nav>
+      <span class="etat-lien" id="etat-lien" role="status">connexion…</span>
+      <div class="modes" role="group" aria-label="Mode d'affichage">
+        <button id="m-reel" type="button" aria-pressed="true">En direct</button>
+        <button id="m-sim" type="button" aria-pressed="false">Simulation d'une journée</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="kpis" aria-label="Indicateurs">
+    <div class="panneau kpi"><div class="etiq">Agents au travail</div><div class="v" id="k-actifs">0</div><div class="s" id="k-actifs-s">sur 15 agents</div></div>
+    <div class="panneau kpi"><div class="etiq">Attend ton accord</div><div class="v" id="k-ok" style="color:var(--laiton-vif)">—</div><div class="s">rien ne sort sans toi</div></div>
+    <div class="panneau kpi"><div class="etiq" id="k-liv-t">Livrables du jour</div><div class="v" id="k-liv">—</div><div class="s" id="k-liv-s">datés d'aujourd'hui dans outputs/</div></div>
+    <div class="panneau kpi"><div class="etiq">Pièces actives</div><div class="v" id="k-pieces">0</div><div class="s">sur 12</div></div>
+    <div class="panneau kpi"><div class="etiq">Ventes, chiffre</div><div class="v" id="k-ventes" style="color:var(--doux)">—</div><div class="s">boutique pas encore ouverte</div></div>
+  </section>
+
+  <div class="corps">
+    <aside class="panneau equipe" aria-label="L'équipe">
+      <div class="etiq">L'équipe <b id="nb-agents">15 agents</b></div>
+      <div class="filtres" id="filtres" role="group" aria-label="Filtrer par état ou par pôle"></div>
+      <div class="liste" id="liste"></div>
+      <div class="nonplaces" id="nonplaces" hidden></div>
+    </aside>
+
+    <main class="panneau" aria-label="L'étage du QG">
+      <div class="etiq">L'étage <b id="en-cours">au repos</b></div>
+      <div class="etage" id="etage"></div>
+      <div class="legende"><span>Bulle allumée : il travaille</span><span style="color:var(--laiton-vif)">Bulle laiton : il attend ta validation</span><span>Carte qui vole : un livrable change de pièce</span><span>Poste pâle : agent prêt, pas encore utilisé</span><span>Poste gris : pas encore installé</span></div>
+    </main>
+
+    <aside style="display:grid;gap:14px;min-width:0">
+      <section class="panneau" aria-label="À valider">
+        <div class="etiq">À valider <b id="nb-ok">—</b></div>
+        <div class="oks" id="oks"></div>
+      </section>
+      <section class="panneau" aria-label="Journal en direct">
+        <div class="etiq">Journal en direct <b id="src-journal">journal-direct.jsonl</b></div>
+        <div class="journal" id="journal" aria-live="polite"></div>
+      </section>
+    </aside>
+  </div>
+
+  <section class="panneau" aria-label="Synchro en cours">
+    <div class="etiq">Synchro en cours <b id="nom-synchro">—</b></div>
+    <p class="compte-synchro" id="compte-synchro"></p>
+    <div class="synchro" id="synchro"></div>
+  </section>
+  <p class="note-bas">Tableau de bord local : il lit le journal de Claude Code, les livrables de outputs/, les agents de .claude/agents/ et la synchro de coordination/de-cowork.md. Le seul bouton qui écrit est « Valider » : il change le statut d'un livrable, rien d'autre. Publier, envoyer, payer ou activer une pub reste à faire par toi ou par Cowork sur ton accord.</p>
+</div>
+
+</body></html>

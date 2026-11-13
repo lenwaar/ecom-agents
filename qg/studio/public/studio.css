@@ -34,6 +34,11 @@ header p { margin: 4px 0 0; color: var(--doux); font-size: 13px; }
 .modes button { border: 0; background: transparent; color: var(--doux); font: 600 12.5px/1 var(--ui); padding: 9px 12px; border-radius: 9px; cursor: pointer; }
 .modes button[aria-pressed="true"] { background: var(--laiton); color: #120E05; }
 button:focus-visible { outline: 2px solid var(--laiton-vif); outline-offset: 2px; }
+.onglets { display: flex; gap: 4px; background: var(--panneau); border: 1px solid var(--trait); border-radius: 12px; padding: 4px; }
+.onglets a { color: var(--doux); font: 600 12.5px/1 var(--ui); padding: 9px 12px; border-radius: 9px; text-decoration: none; }
+.onglets a[aria-current="page"] { color: var(--laiton-vif); background: rgba(200,161,90,.14); }
+.onglets a:hover { color: var(--texte); }
+.onglets a:focus-visible { outline: 2px solid var(--laiton-vif); outline-offset: 2px; }
 .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
 .kpi { padding: 12px 14px; }
 .kpi .v { font: 700 26px/1.1 var(--ui); font-variant-numeric: tabular-nums; margin-top: 6px; }

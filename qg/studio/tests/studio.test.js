@@ -81,7 +81,7 @@ test("étape 1 : six événements font passer Théo au travail puis au repos", a
   const page = await navigateur.newPage({ viewport: { width: 1440, height: 1000 } });
   const requetesExternes = [];
   page.on("request", r => { if (!r.url().startsWith(ORIGINE) && !r.url().startsWith("data:")) requetesExternes.push(r.url()); });
-  await page.goto(ORIGINE + "/");
+  await page.goto(ORIGINE + "/studio");
   await page.waitForSelector("body[data-pret=oui]");
   const theo = page.locator("#poste-montage");
   const piper = page.locator("#poste-voix");
@@ -117,7 +117,7 @@ test("étape 1 : six événements font passer Théo au travail puis au repos", a
 test("étape 2 : le bouton Valider change seulement l'en-tête du faux livrable", async () => {
   const page = await navigateur.newPage({ viewport: { width: 1440, height: 1000 } });
   page.on("dialog", d => { d.dismiss(); throw new Error("boîte de dialogue du navigateur interdite"); });
-  await page.goto(ORIGINE + "/");
+  await page.goto(ORIGINE + "/studio");
   await page.waitForSelector("body[data-pret=oui]");
   const item = page.locator(`.ok-item[data-fichier="${FAUX}"]`);
   await item.waitFor();
@@ -161,7 +161,7 @@ test("étape 3 : indicateurs, calendrier, dernière vidéo ; captures finales", 
   const mp4 = fs.readdirSync(path.join(RACINE, "medias")).filter(n => n.toLowerCase().endsWith(".mp4")).length;
   for (const [nom, viewport] of [["ordinateur", { width: 1440, height: 1000 }], ["mobile", { width: 390, height: 844 }]]) {
     const page = await navigateur.newPage({ viewport });
-    await page.goto(ORIGINE + "/");
+    await page.goto(ORIGINE + "/studio");
     await page.waitForSelector("body[data-pret=oui]");
     await page.waitForFunction(() => document.getElementById("k-videos").textContent !== "—" || !document.querySelector("#vign video"));
     assert.strictEqual(await page.locator("#k-videos").textContent(), String(mp4));
@@ -178,7 +178,7 @@ test("étape 3 : indicateurs, calendrier, dernière vidéo ; captures finales", 
 
 test("T57-3 : un fichier écrit par Cowork dans coordination/ met Cowork au travail", async () => {
   const page = await navigateur.newPage({ viewport: { width: 1440, height: 1000 } });
-  await page.goto(ORIGINE + "/");
+  await page.goto(ORIGINE + "/studio");
   await page.waitForSelector("body[data-pret=oui]");
   // Écrit par Claude Code (journalisé juste après) : Cowork reste au repos.
   fs.writeFileSync(path.join(COORDINATION, "vers-cowork.md"), "compte rendu");
@@ -201,7 +201,7 @@ test("T57-3 : un fichier écrit par Cowork dans coordination/ met Cowork au trav
 
 test("mode Simulation toujours disponible", async () => {
   const page = await navigateur.newPage({ viewport: { width: 1440, height: 1000 } });
-  await page.goto(ORIGINE + "/");
+  await page.goto(ORIGINE + "/studio");
   await page.waitForSelector("body[data-pret=oui]");
   await page.click("#m-sim");
   await page.waitForSelector('#poste-veille[data-etat="actif"]', { timeout: 5000 });

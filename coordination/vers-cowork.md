@@ -1,17 +1,31 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
-## 2026-11-13 · Synchro n°15 (T61 à T68) : en cours
+## 2026-11-13 · Synchro n°15 (T61 à T68) : terminée
 
-Synchro transmise par l'humain (collée dans la conversation), recopiée dans `de-cowork.md` ; l'ancienne T60 (QG en direct) est reprise dans T67. T67 tourne en arrière-plan (`developpeur-web`) pendant T61 à T66.
+Synchro transmise par l'humain (collée dans la conversation), recopiée dans `de-cowork.md` ; l'ancienne T60 (QG en direct) est reprise dans T67. T67 a tourné en arrière-plan (`developpeur-web`) pendant T61 à T66 : premier essai de la règle « travail en parallèle », sans conflit. **Commits poussés** : `feat(agents): vitesse et qualité (...)` (T61 à T66) et `feat(qg): QG en direct pour toute l'équipe` (T67, T68). Vérificateur : 0 erreur, 1 avertissement connu.
+
+**Rapport produit**
+- `outputs/2026-11-13-developpeur-web-qg-en-direct.md` (à-valider, 1 page) : page QG sur `/` (12 pièces, 15 agents, filtres par pôle et par état, synchro lue dans `de-cowork.md` et mise à jour en direct), Studio sur `/studio`, Valider ne change que le statut. `npm test` 37/37 (revérifié par Claude Code). Cause de l'échec du départ : `synchro.js` ne lisait pas un titre de synchro sans parenthèses. Ajouts : compteur d'agents installés, indicateur en direct / simulation, case Ventes « — ».
+
+**Remarques pour toi (Cowork)**
+- Le rapport T67 est arrivé avec `statut: validé`, `valide_par: humain` : l'humain ne l'avait pas validé (sans doute un clic sur Valider pendant la vérification de l'agent sur les vrais fichiers). Claude Code l'a remis en `à-valider`. Aucun autre livrable touché.
+- Les agents modifiés (T62 à T66) ne sont chargés qu'au redémarrage de Claude Code.
+
+**🔔 ACTION HUMAINE**
+1. Redémarrer Claude Code (nouveaux modèles, fiche-mémo, rapports courts).
+2. Ouvrir le QG : arrêter l'ancien studio (`Ctrl+C`), puis `cd qg/studio` et `npm start`, http://127.0.0.1:4178/ (Studio : `/studio`).
+3. Relire `knowledge/memo.md` (1,6 Ko) : c'est désormais ce que chaque agent lit en premier.
+4. Toujours ouvert : vérification du nom « Rouage & Laiton » (INPI), seul point qui bloque la publication.
 
 ### Suivi en direct
-- T67 `lancé` (developpeur-web, en arrière-plan) : reprend le QG en direct commencé dans une session précédente (fichiers non commités dans `qg/studio/`) ; au départ `npm test` 36/37 (échec : la synchro qui suit `de-cowork.md` en direct). Consigne : ne toucher qu'à `qg/studio/` et `outputs/`.
+- T67 `fait` (developpeur-web, en arrière-plan) : QG en direct terminé à partir du travail commencé dans une session précédente, `npm test` 37/37 (36/37 au départ : titre de synchro sans parenthèses mal lu par `synchro.js`). Rapport `outputs/2026-11-13-developpeur-web-qg-en-direct.md`, captures `outputs/qg/qg-direct-*.png`. Statut du rapport remis en `à-valider` (voir plus haut).
 - T61 `fait` : règle « Travail en parallèle » ajoutée dans `CLAUDE.md` et en étape 1 de `.claude/commands/cowork.md` (`py` au lieu de `python` à l'étape 5). La règle « un agent à la fois » n'était écrite dans aucun des deux (seulement dans l'ancienne synchro n°8 de `de-cowork.md`, laissée telle quelle) : la nouvelle règle dit qu'elle la remplace. `/marketing` garde « l'un après l'autre » (étapes dépendantes, hors périmètre).
 - T62 `fait` : `model: sonnet` pour redacteur-catalogue, createur-contenu, service-client, crm-email, gestion-commandes, media-acquisition ; les 9 autres en `inherit`.
 - T63 `fait` : `knowledge/memo.md` (1,6 Ko) : boutique, ton, chiffres, démonstration, légal, équipe. Les 15 agents et le modèle lisent d'abord `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`, puis seulement les fichiers utiles à leur tâche (leurs listes « surtout ... » sont gardées). Ligne ajoutée dans `CLAUDE.md`.
 - T64 `fait` : section « Rapport court » (1 page de résultats et de décisions, détail en annexe sur demande, l'emporte sur les autres consignes de format) dans le modèle et les 15 agents.
 - T65 `fait` : `docs/exemples/` (copies + `README.md` qui dit pourquoi) : audit = contre-audit A1-A10 du site, fiche = `boite-a-musique-manivelle`, script vidéo = `medias/voix/de-la-planche-a-l-objet.md`, veille = licences du studio vidéo. Ligne « Inspire-toi de `docs/exemples/` » dans « Avant d'agir » de chaque agent et du modèle.
 - T66 `fait` : `docs/studio/BRIEF-STUDIO.md` §11 « Mode brouillon, puis version finale » (essais 540×960 + Whisper `small`, final 1080×1920 + `large-v3`, grille §5 et LUFS sur le final) ; étape 9 de `studio-video`. Licence de `small` notée `À VÉRIFIER` (essais seulement).
+- T68 `fait` : vérificateur 0 erreur, commit et push.
 
 ## 2026-11-13 · Synchro n°14 (T56 à T59) : terminée
 

@@ -276,7 +276,9 @@
     return changes;
   }
 
-  const api = { EQUIPE, POSTE_DE_L_AGENT, creerEtat, appliquer, appliquerLivrables, appliquerCowork, court, propre, decrireFichier, decrireCommande };
+  const api = { EQUIPE, POSTE_DE_L_AGENT, creerEtat, appliquer, appliquerLivrables, appliquerCowork, court, propre, decrireFichier, decrireCommande,
+    // Réutilisés par le QG (qg-direct.js) pour traduire le journal en phrases.
+    predicatOutil, phraseDemande, phraseNotification, entree, texteSansAgent, majuscule, minuscule, OUTILS_VOIX };
   if (typeof module === "object" && module.exports) module.exports = api;
   else racine.Direct = api;
 })(typeof window !== "undefined" ? window : globalThis);

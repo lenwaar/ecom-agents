@@ -1,5 +1,6 @@
-// Studio en direct : serveur local du tableau de bord des agents vidéo.
-// Node seul, sans framework ni dépendance. Écoute uniquement sur 127.0.0.1.
+// QG et Studio en direct : serveur local du tableau de bord de l'équipe (page QG « / »)
+// et des agents vidéo (page Studio « /studio »). Node seul, sans framework ni dépendance.
+// Écoute uniquement sur 127.0.0.1.
 //
 // Variables d'environnement (toutes facultatives) :
 //   STUDIO_PORT     port d'écoute (4178 par défaut)
@@ -8,12 +9,16 @@
 //   STUDIO_OUTPUTS  dossier des livrables (outputs/ par défaut)
 //   STUDIO_CALENDRIER, STUDIO_MEDIAS  calendrier éditorial et dossier des vidéos
 //   STUDIO_COORDINATION  dossier surveillé pour savoir quand Cowork travaille (coordination/ par défaut)
+//   STUDIO_DE_COWORK  consignes de Cowork lues pour la synchro en cours (de-cowork.md du dossier de coordination par défaut)
+//   STUDIO_AGENTS   dossier des agents installés (.claude/agents/ par défaut)
 "use strict";
 const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const { entete, estAValider, texteValide } = require("./livrables.js");
 const { creerSuivi } = require("./cowork.js");
+const { listerAgents, lireLivrables, resumeLivrables } = require("./equipe.js");
+const { lireSynchro } = require("./synchro.js");
 
 const HOTE = "127.0.0.1";
 const PORT = Number(process.env.STUDIO_PORT) || 4178;
@@ -23,6 +28,8 @@ const OUTPUTS = path.resolve(process.env.STUDIO_OUTPUTS || path.join(RACINE, "ou
 const CALENDRIER = path.resolve(process.env.STUDIO_CALENDRIER || path.join(RACINE, "marketing", "calendrier.md"));
 const MEDIAS = path.resolve(process.env.STUDIO_MEDIAS || path.join(RACINE, "medias"));
 const COORDINATION = path.resolve(process.env.STUDIO_COORDINATION || path.join(RACINE, "coordination"));
+const DE_COWORK = path.resolve(process.env.STUDIO_DE_COWORK || path.join(COORDINATION, "de-cowork.md"));
+const AGENTS = path.resolve(process.env.STUDIO_AGENTS || path.join(RACINE, ".claude", "agents"));
 const PUBLIC = path.join(__dirname, "public");
 const HISTORIQUE = 300;      // nombre d'événements renvoyés à l'ouverture de la page
 const ORIGINE = `http://${HOTE}:${PORT}`;
@@ -91,18 +98,20 @@ fs.watchFile(JOURNAL, { interval: 400 }, lireNouveautes);       // surveillance 
 try { fs.watch(path.dirname(JOURNAL), () => lireNouveautes()); } catch { /* dossier absent : watchFile suffit */ }
 
 // ---------- Livrables, calendrier, vidéos ----------
-function livrablesAValider() {
-  let noms = [];
-  try { noms = fs.readdirSync(OUTPUTS).filter(n => n.endsWith(".md")); } catch { return []; }
-  const liste = [];
-  for (const nom of noms) {
-    const p = path.join(OUTPUTS, nom);
-    const h = entete(lireTexte(p) || "");
-    if (!h || !estAValider(h.champs.statut)) continue;
-    const titre = /^#\s+(.+)$/m.exec(lireTexte(p).slice(h.fin));
-    liste.push({ fichier: nom, agent: h.champs.agent || "", date: h.champs.date || nom.slice(0, 10), titre: titre ? titre[1].trim() : nom });
-  }
-  return liste.sort((a, b) => b.fichier.localeCompare(a.fichier));
+function livrablesAValider(tous) {
+  return tous.filter(l => l.aValider).map(l => ({ fichier: l.fichier, agent: l.agent, date: l.date, titre: l.titre }));
+}
+
+// ---------- QG : agents installés, livrables par agent, synchro en cours ----------
+function equipe(tous) {
+  const agents = listerAgents(AGENTS);
+  const { parAgent, duJour } = resumeLivrables(tous, dateDuJour());
+  return { agents, parAgent, duJour };
+}
+function synchro(agents) {
+  const texte = lireTexte(DE_COWORK);
+  if (texte === null) return { source: false, synchro: null };
+  return { source: true, synchro: lireSynchro(texte, (agents || []).map(a => a.nom)) };
 }
 
 function calendrier() {
@@ -138,8 +147,12 @@ function rapportStudioVideo() {
 }
 
 function etat() {
+  const tous = lireLivrables(OUTPUTS);
+  const eq = equipe(tous);
   return {
-    livrables: livrablesAValider(),
+    livrables: livrablesAValider(tous),
+    equipe: eq,
+    synchro: synchro(eq.agents),
     calendrier: calendrier(),
     videos: videos(),
     rapportVideo: rapportStudioVideo(),
@@ -147,16 +160,19 @@ function etat() {
     // Aucune source réelle pour l'instant : le client affiche « — ».
     cout: null,
     abonnes: null,
-    sources: { journal: path.relative(RACINE, JOURNAL) || JOURNAL, outputs: path.relative(RACINE, OUTPUTS) || OUTPUTS }
+    sources: { journal: path.relative(RACINE, JOURNAL) || JOURNAL, outputs: path.relative(RACINE, OUTPUTS) || OUTPUTS, deCowork: path.basename(DE_COWORK) }
   };
 }
 
 // Prévenir la page quand les livrables, le calendrier ou les vidéos changent.
 let signature = "";
-setInterval(() => {
+function pousserSiChange() {
   const s = JSON.stringify(etat());
   if (s !== signature) { signature = s; for (const res of abonnes) envoyer(res, "etat", JSON.parse(s)); }
-}, 2000).unref();
+}
+setInterval(pousserSiChange, 2000).unref();
+// La synchro en cours change dès que Cowork (ou Claude Code) modifie de-cowork.md.
+fs.watchFile(DE_COWORK, { interval: 400 }, pousserSiChange);
 
 // ---------- Validation d'un livrable ----------
 // Change seulement « statut: à-valider » en « statut: validé » dans l'en-tête,
@@ -244,16 +260,20 @@ const serveur = http.createServer((req, res) => {
     if (!/\.(mp4|png|jpg|webp)$/i.test(url.pathname)) { res.writeHead(403); return res.end(); }
     return fichierStatique(req, res, MEDIAS, url.pathname.slice("/medias/".length));
   }
+  if (url.pathname === "/studio" || url.pathname === "/studio/") return fichierStatique(req, res, PUBLIC, "studio.html");
   return fichierStatique(req, res, PUBLIC, url.pathname === "/" ? "index.html" : url.pathname.slice(1));
 });
 
 serveur.listen(PORT, HOTE, () => {
-  console.log(`Studio en direct : ${ORIGINE}/`);
+  console.log(`QG en direct : ${ORIGINE}/`);
+  console.log(`Studio en direct : ${ORIGINE}/studio`);
   console.log(`Journal lu en continu : ${JOURNAL}`);
   console.log(`Livrables : ${OUTPUTS}`);
   console.log(`Coordination (Cowork) : ${COORDINATION}`);
+  console.log(`Synchro en cours : ${DE_COWORK}`);
+  console.log(`Agents installés : ${AGENTS}`);
   console.log("Arrêt : Ctrl+C");
 });
-function arret() { fs.unwatchFile(JOURNAL); serveur.close(); for (const r of abonnes) r.end(); process.exit(0); }
+function arret() { fs.unwatchFile(JOURNAL); fs.unwatchFile(DE_COWORK); serveur.close(); for (const r of abonnes) r.end(); process.exit(0); }
 process.on("SIGINT", arret);
 process.on("SIGTERM", arret);

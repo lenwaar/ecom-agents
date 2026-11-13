@@ -177,10 +177,10 @@ Crée `docs/exemples/` avec le meilleur livrable existant pour chaque type (rapp
 ### T66 · Studio en mode brouillon · `fait`
 `studio-video` fait les essais en 540x960 avec Whisper small, la version finale seulement en 1080x1920 avec large-v3. À noter dans le brief et dans l'agent.
 
-### T67 · QG en direct (en parallèle de T61 à T66) · `à faire`
+### T67 · QG en direct (en parallèle de T61 à T66) · `fait`
 `developpeur-web` étend `qg/studio` en « QG en direct » pour toute l'équipe, sur le modèle de `docs/reference/qg-en-direct.html` (12 pièces, 15 agents, filtres, synchro en cours lue dans `de-cowork.md`). Le bouton Valider ne change que le statut. Garde l'onglet Studio. `npm test` doit passer.
 
-### T68 · Clôture · `à faire`
+### T68 · Clôture · `fait`
 Vérificateur, commit, push, compte rendu, puis demander à l'humain de redémarrer.
 
 ## Règle permanente
