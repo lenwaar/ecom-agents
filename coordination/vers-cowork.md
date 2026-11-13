@@ -1,6 +1,31 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
-## 2026-11-13 · Synchros n°9 + n°10 : en cours (suivi en direct)
+## 2026-11-13 · Synchros n°9 + n°10 : terminées (T37 à T42)
+
+**Ordre suivi** : T37, T38, T38b, T39, T41, T40, T42 (changements demandés par l'humain). **Commits poussés** : `d44a5f4` (T37), `4f4f641` (T38), `150c430` (T38b), `4995358` (T41 + rapport développeur), plus le commit de fin (audit, compte rendu, `docs/qg/`, `tests/scenarios/createur-contenu.md` arrivés de ton côté pendant la synchro).
+Vérificateur `py tools/verifier_livrables.py` : 0 erreur, 1 avertissement connu.
+
+**Rapport T39 · conformite-qa audit du site** : `outputs/2026-11-13-conformite-qa-audit-site.md` · **verdict : À CORRIGER** (4 bloquants pour l'ouverture, 10 corrections avant aperçu protégé A1-A10, 13 avant ouverture, 26 points conformes)
+1. Mode démo bien verrouillé (V11/V15 bloquent le build, achat désactivé y compris mobile, pas d'`offers`, ni « À VÉRIFIER », ni ressource externe, ni stockage, ni cookie).
+2. Formulaire R221-1 comparé mot pour mot à Légifrance : identique sauf le titre et « Je/nous » (A2) ; « Renoncer au contrat ici » conforme à D221-5, en un clic partout.
+3. Avant aperçu : textes qui promettent un « accusé de réception immédiat » alors que le formulaire est désactivé (A1) ; « Prix indicatif de démonstration » absent des fourchettes des collections et de l'accueil (A3) ; masquer les `[À VALIDER]` des héros de collection sur les démos (A4) ; mention « Rendus 3D de démonstration » absente de la galerie (A5) ; À propos : « comme pour tout achat en ligne » (N31) et « un objet qui bouge », faux pour le book nook (A6, A7).
+4. Bloquants pour l'ouverture : B1 données boutique `[À VALIDER]` ; B2 encadré D.211-2 à recopier dans les CGV ; B3 rétractation en ligne à rendre fonctionnelle avec accusé horodaté (L221-21, D221-5, en vigueur depuis le 19/06/2026) ; B4 politique de confidentialité incomplète (bases légales, durées, prestataires, transferts hors UE). CGV aussi : archivage 10 ans (D213-2), choix réparation/remplacement sous 30 jours (L217-9/10), colis multiples (L221-18) ; brancher V6 et V10 dans le build.
+5. Limites : agent sans outil shell (ni build ni vérificateur lancés par lui ; je l'ai lancé ensuite : 0 erreur) ; contrastes et clavier non mesurés ; lancé avec l'ancienne version de l'agent (sans `Edit`), sur accord de l'humain.
+
+**Remarques pour toi (Cowork)**
+- Le texte du bloc Sécurité des démos de `decisions.md` (« affichées dès la mise en vente de ce produit ») contredit les CGV (« jamais vendus ») : l'audit propose une formulation en A8, `knowledge/` non modifié.
+- `tests/scenarios/createur-contenu.md` est apparu pendant la synchro : commité, l'avertissement du vérificateur a disparu.
+- `python` sur ce PC = raccourci Microsoft Store ; utiliser `py` dans les demandes tant que l'humain n'a pas changé ce réglage.
+- Il n'y a pas de script de vérification des liens dans le dépôt (scripts temporaires hors dépôt, d'où 4 242 vs 3 937 liens selon le script) : à ajouter dans `site/` ou `tools/` si tu veux un contrôle reproductible.
+- `coordination/a-installer/` est laissé en place (copies installées) : à vider si tu le souhaites.
+
+**🔔 ACTION HUMAINE**
+1. **Redémarre Claude Code** (`/exit` puis `claude`) : charge `createur-contenu`, les 7 nouveaux agents, et `Edit` pour `architecte-web` et `conformite-qa`.
+2. Décider : formulation du bloc Sécurité des démos (A8 de l'audit) ; garder ou non « Maquettes mécaniques en bois » pour toute la boutique alors que le book nook n'a pas de mécanisme (B15).
+3. Facultatif : désactiver l'alias `python.exe` (Paramètres > Applications > Paramètres avancés des applications > Alias d'exécution d'application) pour que `python tools/verifier_livrables.py` marche comme écrit dans `CLAUDE.md`.
+4. Toujours en attente (bloquant B1) : identité de l'EI, SIREN/RCS, adresse, email, téléphone, hébergeur, identifiants REP, médiateur, frais et délais de livraison, transporteur, frais de retour ; relecture juriste (dépréciation, juridiction, bouton « Payer » Stripe L221-14, durées RGPD) et expert-comptable (TVA, facturation).
+
+### Suivi en direct des synchros n°9 et n°10
 
 Copiées dans `de-cowork.md` avec les changements de l'humain (T37 partiel, T38 élargi, T38b + 2 règles `CLAUDE.md`, T39 précédé d'un rapport `developpeur-web`, T41 avant T40).
 - T37 `fait` : `createur-contenu.md` copié dans `.claude/agents/` (identique, vérifié par `cmp`). Supprimés de `prochaine-synchro/` : `createur-contenu.md`, `de-cowork-synchro-9.md`, `de-cowork-synchro-10.md` (tous utilisés) ; dossier gardé avec un `.gitkeep`. **Non lancé.** Il n'existe pas de `tests/scenarios/createur-contenu.md` (règle « un agent = au moins un scénario » de `CLAUDE.md`) : à écrire.

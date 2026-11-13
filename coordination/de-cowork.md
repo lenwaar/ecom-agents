@@ -62,10 +62,10 @@ Corrige aussi : l'image d'ambiance `comparateur-planches` (presque vide, on voit
 - Ajoute à la commande `/cowork` (`.claude/commands/cowork.md`), juste avant l'étape de commit : « Lance `python tools/verifier_livrables.py` ; s'il y a des erreurs, corrige-les avant de commiter. »
 - Donne l'outil `Edit` à `architecte-web` et `conformite-qa` (ligne `tools:` du frontmatter), comme prévu dans `knowledge/decisions.md`.
 
-### T39 · Audit de conformité du site · `à faire`
+### T39 · Audit de conformité du site · `fait`
 Demande d'abord à `developpeur-web` un court rapport `outputs/` sur le site (T33-T35). Puis lance `conformite-qa` en mode audit sur le site construit (`site/`) : pages légales, fiche produit type, accueil, mentions de démonstration, bouton de rétractation, cookies. Lis les fichiers par tranches.
 
-### T40 · Commit, push, compte rendu · `à faire`
+### T40 · Commit, push, compte rendu · `fait`
 Compte rendu dans `vers-cowork.md` avec les 🔔 ACTION HUMAINE. Puis demande à l'humain de redémarrer Claude Code (pour `createur-contenu`).
 
 ## Synchro n°10 (préparée le 2026-11-12) : organisation à 100 rôles, 7 nouveaux agents
@@ -79,7 +79,7 @@ Ajoute dans `docs/architecture.md` une ligne qui renvoie vers `docs/organisation
 Lance `python tools/verifier_livrables.py` (0 erreur attendue).
 Commit `feat(agents): organisation à 100 rôles et 7 nouveaux agents`.
 
-### T42 · Compte rendu et redémarrage · `à faire`
+### T42 · Compte rendu et redémarrage · `fait`
 Une ligne dans `vers-cowork.md`, puis demande à l'humain de redémarrer Claude Code.
 Ne lance aucun de ces agents dans cette session. `gestion-commandes`, `service-client`, `crm-email` et `pilotage-finance` ne seront utilisés qu'avant le lancement ; `media-acquisition` après le lancement.
 
