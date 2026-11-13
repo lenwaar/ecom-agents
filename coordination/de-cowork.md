@@ -30,7 +30,7 @@ Utilise l'agent developpeur-web : étape 1 du site selon la spécification v2 (2
 ```
 Commit `feat(site): fondations, thème, composants, pages légales`.
 
-### T34 · Construction du site, étape 2 : catalogue et fiches · `à faire`
+### T34 · Construction du site, étape 2 : catalogue et fiches · `fait`
 Lance `developpeur-web` : catalogue, pages de collection, fiche produit (galerie des 6 vues, zoom, bandeau démonstration, achat désactivé si `demo: true`), à partir des fiches de T31 et des images de T32.
 Commit `feat(site): catalogue, collections, fiches produits`.
 
