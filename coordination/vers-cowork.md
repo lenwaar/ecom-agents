@@ -1,12 +1,33 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
-## 2026-11-13 · Synchro n°11 (T43 à T47) : en cours
+## 2026-11-13 · Synchro n°11 : terminée (T43 à T47)
+
+**Ordre suivi** : T43, T44, T45, T46, T47. **Commit poussé** : `9ee2584` (toute la synchro), plus un commit de correction : ce compte rendu et les statuts T46/T47 avaient été oubliés (une commande de clôture avait échoué). Vérificateur `py tools/verifier_livrables.py` : 0 erreur, 1 avertissement connu. `npm run build` : OK, 58 pages, 4 255 liens internes, 0 cassé.
+
+**Rapports produits**
+- `outputs/2026-11-13-developpeur-web-corrections-a1-a10.md` : A1-A10 corrigés point par point, collection Automates, script de liens `tools/verifier_liens.py` lancé en `postbuild`.
+- `outputs/2026-11-13-conformite-qa-contre-audit-a1-a10.md` · **verdict CONFORME** : les 10 points sont corrigés (sources et `dist/`) ; A8 s'accorde avec les CGV art. 3 ; fiche automate conforme (« Rendus 3D de démonstration », prix indicatif, aucun « À VÉRIFIER » visible, plus de book nook ni de miniatures). Hors périmètre : `cgv.astro` l. 122 annonce un accusé de réception sans condition (à conditionner comme A1, couvert par B3) ; FAQ « kit de remplacement : c'est la garantie légale » des 8 fiches à reformuler (le consommateur choisit d'abord, L217-9), à valider par un juriste.
+- Sections ajoutées : `outputs/2026-11-12-redacteur-catalogue-fiches-demo.md` (mise à jour synchro n°11), `outputs/2026-11-12-studio-visuel-rendus-demo.md` (section 8).
+
+**Remarques pour toi (Cowork)**
+- Collection « Miniatures » remplacée par « Automates » : choix de ma part, pour ne pas laisser une collection vide.
+- Sujet de l'automate (voilier sur les vagues) choisi par studio-visuel ; la fiche garde `scene_representee: "À VÉRIFIER"` et ne décrit pas la scène.
+- A7 : « un objet en bois » s'affiche sur À propos tant que la locomotive a `partie_mobile: "À VÉRIFIER"`.
+- `coordination/a-installer/` vidé en T47 (7 copies identiques aux agents installés, vérifié par `cmp`).
+- Synchro n°12 copiée dans `de-cowork.md` à la demande de l'humain (non exécutée).
+
+**🔔 ACTION HUMAINE**
+1. Valider (ou changer) : la collection « Automates » à la place de « Miniatures », et le sujet « voilier » de l'automate de démonstration.
+2. Avant tout aperçu en ligne : protéger l'accès (Cloudflare Access ou mot de passe), point A10.
+3. Toujours en attente (bloquant B1) : identité de l'EI, SIREN/RCS, adresse, email, téléphone, hébergeur, identifiants REP, médiateur, livraison et retours ; relecture juriste (dont la FAQ garantie légale et la phrase des CGV l. 122) et expert-comptable.
 
 ### Suivi en direct
 - T43 `fait` : `knowledge/decisions.md` : bloc sécurité des démos = « Produit de démonstration, non vendu : il n'a pas de fabricant. » ; nouvelle section « Positionnement du catalogue » (boutique « maquettes mécaniques en bois », book nook retiré, remplacé par l'« Automate à manivelle »). `knowledge/catalogue-demo.md` : ligne 8 remplacée (Automate, Moyen, 8 h, 49,90 € indicatif repris du book nook), règle « mécanisme ou partie mobile » ajoutée. **Choix de ma part** : la collection « Miniatures » devenait vide, je l'ai remplacée par « Automates » (moulin à vent + automate) ; à changer si tu préfères autre chose.
 - T44 (1/2) `fait` (redacteur-catalogue) : fiche `site/src/content/produits/automate-manivelle.md` (demo, ordre 80, moyen, 8 h, 49,90 € indicatif, `mecanisme: manivelle`, `partie_mobile: true`, `collections: [automates, idees-cadeaux]`, champ `scene_representee: "À VÉRIFIER"` : le sujet de la scène n'est défini nulle part). Fiche book nook supprimée (par moi, l'agent n'a pas d'outil de suppression). Section « Mise à jour 2026-11-13 » ajoutée à `outputs/2026-11-12-redacteur-catalogue-fiches-demo.md`. Le build échouera tant que developpeur-web n'a pas ajouté `automates` (T45).
 - T44 (2/2) `fait` (studio-visuel) : scène `studio/scenes/automate-manivelle.js` (caisson ouvert, arbre à cames en laiton, 3 cames et 3 poussoirs calculés sur le profil réel des cames, manivelle à droite ; sujet choisi : voilier entre deux vagues, soleil découpé, inventé pour la démo). 6 vues dans `site/public/produits/automate-manivelle/` (1600 et 800 px, 497 Ko). Supprimés : images, scène et cache du book nook, fonction `standingBook` de `studio/lib/rigs.js`. Planche contact `outputs/planches/2026-11-12-studio-visuel-planche-contact.jpg` refaite, regardée par moi : sols propres, cames visibles en vue détail. Limites : cames vues par la tranche en vue face, vue dessus peu parlante. Rapport : section 8 de `outputs/2026-11-12-studio-visuel-rendus-demo.md`.
 - T45 `fait` (developpeur-web) : collection `automates` à la place de `miniatures` partout (schéma, `catalogue.ts`, composants, scripts, pages ; moulin en `[mecanique, automates]`, nouvelle animation de carte d'accueil came/manivelle/poussoir). A1 à A10 corrigés (A1 : `retractation.en_ligne_active: false` dans `boutique.yaml` ; A8 : bloc Sécurité = phrase exacte de T43, 3 autres endroits selon l'audit ; A10 : `site/public/_headers`). Nouveau `tools/verifier_liens.py`, lancé en `postbuild` par `site/outils/verifier-liens.mjs` (essaie `py`, `python3`, `python`), doc dans `docs/site-technique.md`. Build revérifié par moi : 58 pages, 4 255 liens internes, 0 cassé. A7 : « un objet en bois » s'affiche car la locomotive a `partie_mobile: "À VÉRIFIER"`. Rapport : `outputs/2026-11-13-developpeur-web-corrections-a1-a10.md`.
+- T46 `fait` (conformite-qa) : contre-audit **CONFORME**, `outputs/2026-11-13-conformite-qa-contre-audit-a1-a10.md`.
+- T47 `fait` : `coordination/a-installer/` vidé, vérificateur 0 erreur, commit `9ee2584` poussé.
 
 ## 2026-11-13 · Synchros n°9 + n°10 : terminées (T37 à T42)
 
