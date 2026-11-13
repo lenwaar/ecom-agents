@@ -1,0 +1,16 @@
+{
+  "name": "studio-en-direct",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tableau de bord local des agents vidéo (pièce F du QG). Écoute uniquement sur 127.0.0.1.",
+  "scripts": {
+    "start": "node serveur.js",
+    "test": "node --test --test-concurrency=1 tests/"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright-core": "1.65.0"
+  }
+}

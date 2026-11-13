@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio en direct</title>
+<link rel="preload" href="polices/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="studio.css">
+<script src="direct.js" defer></script>
+<script src="app.js" defer></script>
+</head><body>
+
+<div class="page">
+  <header class="tete">
+    <div>
+      <h1>Studio <em>en direct</em></h1>
+      <p id="sous-titre">Les agents qui fabriquent les vidéos de Rouage &amp; Laiton, et ce qu'ils se passent entre eux.</p>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <span class="etat-lien" id="etat-lien" role="status">connexion…</span>
+      <div class="modes" role="group" aria-label="Mode d'affichage">
+        <button id="m-reel" type="button" aria-pressed="true">En direct</button>
+        <button id="m-sim" type="button" aria-pressed="false">Simulation d'un cycle</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="kpis" aria-label="Indicateurs">
+    <div class="panneau kpi"><div class="etiq">Vidéos produites</div><div class="v" id="k-videos">—</div><div class="s" id="k-videos-s">fichiers MP4 dans medias/</div></div>
+    <div class="panneau kpi"><div class="etiq">Agents au travail</div><div class="v" id="k-actifs">0</div><div class="s">sur 8 au studio</div></div>
+    <div class="panneau kpi"><div class="etiq">Attend ton accord</div><div class="v" id="k-ok" style="color:var(--laiton-vif)">—</div><div class="s" id="k-ok-s">livrables à valider</div></div>
+    <div class="panneau kpi"><div class="etiq">Coût du studio</div><div class="v" id="k-cout" style="color:var(--doux)">—</div><div class="s" id="k-cout-s">aucune dépense enregistrée</div></div>
+    <div class="panneau kpi"><div class="etiq">Abonnés, vues</div><div class="v" id="k-abonnes" style="color:var(--doux)">—</div><div class="s">comptes pas encore ouverts</div></div>
+  </section>
+
+  <div class="corps">
+    <aside class="panneau equipe" aria-label="Équipe du studio">
+      <div class="etiq">L'équipe <b id="nb-en-ligne">8 postes</b></div>
+      <div class="liste" id="liste"></div>
+    </aside>
+
+    <main class="panneau" aria-label="Salle de production">
+      <div class="etiq">Chaîne de production <b id="en-cours">au repos</b></div>
+      <div class="plateformes">
+        <div class="plat" style="--c:#25F4EE"><div class="t">TikTok</div><div class="v"><span id="p-tiktok">—</span><small>au calendrier</small></div></div>
+        <div class="plat" style="--c:#F25FA0"><div class="t">Reels</div><div class="v"><span id="p-reels">—</span><small>au calendrier</small></div></div>
+        <div class="plat" style="--c:#F2645A"><div class="t">Shorts</div><div class="v"><span id="p-shorts">—</span><small>au calendrier</small></div></div>
+        <div class="plat" style="--c:#E8C06E"><div class="t">Pinterest</div><div class="v"><span id="p-pin">—</span><small>au calendrier</small></div></div>
+      </div>
+      <div class="salle" id="salle">
+        <div class="rangee" id="r1"></div>
+        <div class="rangee" id="r2"></div>
+      </div>
+      <div class="legende-salle"><span>Bulle allumée : l'agent travaille</span><span style="color:var(--laiton-vif)">Bulle laiton : il attend ta validation</span><span>Carte qui vole : un livrable passe d'un agent à l'autre</span></div>
+    </main>
+
+    <aside style="display:grid;gap:14px;min-width:0">
+      <section class="panneau" aria-label="À valider">
+        <div class="etiq">À valider <b id="nb-ok">—</b></div>
+        <div class="ok-liste" id="oks"></div>
+      </section>
+      <section class="panneau" aria-label="Journal en direct">
+        <div class="etiq">Journal en direct <b id="src-journal">journal-direct.jsonl</b></div>
+        <div class="journal" id="journal" aria-live="polite"></div>
+      </section>
+    </aside>
+  </div>
+
+  <div class="bas">
+    <section class="panneau" aria-label="Cette semaine">
+      <div class="etiq">Cette semaine <b id="nb-creneaux">—</b></div>
+      <div class="semaine" id="semaine"></div>
+    </section>
+    <section class="panneau" aria-label="Dernière vidéo">
+      <div class="etiq">Dernière vidéo <b id="statut-video">aucune</b></div>
+      <div class="video">
+        <div class="vign" id="vign"><span>Rendus 3D de démonstration</span></div>
+        <div><h3 id="titre-video">Aucune vidéo</h3><p id="info-video">Aucun fichier MP4 dans medias/.</p></div>
+      </div>
+    </section>
+  </div>
+  <p class="note-bas">Tableau de bord local : il lit le journal de Claude Code, les livrables de outputs/, le calendrier et les vidéos. Le seul bouton qui écrit est « Valider » : il change le statut d'un livrable, rien d'autre. Publier, envoyer, payer ou activer une pub reste à faire par toi ou par Cowork sur ton accord.</p>
+</div>
+
+</body></html>

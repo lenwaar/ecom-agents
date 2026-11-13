@@ -4,6 +4,7 @@
 
 ### Suivi en direct
 - T52 `fait` : `coordination/journal-direct.jsonl` ajouté au `.gitignore` ; les hooks le remplissent (vérifié : une ligne JSON par demande et par outil, à côté de `journal-direct.md`). Commit `chore(coordination): journal v2 (jsonl ignoré)`.
+- T53 `fait` (developpeur-web) : `qg/studio/` (Node seul, 127.0.0.1:4178, SSE sur le journal JSONL, polices locales, mode simulation gardé). Bouton Valider : seulement `statut` → `validé` + `valide_par: humain` + `date_validation` (le champ `date` existait déjà) ; chemins hors `outputs/` refusés. `npm test` : 10/10 (Théo au travail puis au repos, validation sur faux livrable). Captures `outputs/qg/`, rapport `outputs/2026-11-13-developpeur-web-studio-en-direct.md`. Lancement : `cd qg/studio` puis `npm start`, ouvrir http://127.0.0.1:4178/. Commit `feat(qg): studio en direct`.
 
 ## 2026-11-13 · Synchro n°12 (T48 à T51) : terminée
 

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Studio en direct</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Plan : salle de production vue de face, encadrée par l'équipe à gauche et les validations à droite ; bandeau d'indicateurs en haut, semaine et dernière vidéo en bas. Néon sur fond Nuit, laiton pour ce qui attend l'humain. */
+:root {
+  --nuit: #070B14;
+  --panneau: #0F1626;
+  --panneau-2: #141D31;
+  --trait: rgba(200,161,90,.16);
+  --texte: #E9E4D8;
+  --doux: #8D93A6;
+  --laiton: #C8A15A;
+  --laiton-vif: #E8C06E;
+  --vert: #5BD69A;
+  --rouge: #F2645A;
+  --display: "Cormorant Garamond", Georgia, serif;
+  --ui: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: radial-gradient(1200px 600px at 50% -10%, #1A1530 0%, var(--nuit) 60%) fixed, var(--nuit); color: var(--texte); font-family: var(--ui); margin: 0; }
+.page { max-width: 1480px; margin: 0 auto; padding-block: 18px 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; }
+.panneau { background: linear-gradient(180deg, var(--panneau-2), var(--panneau)); border: 1px solid var(--trait); border-radius: 16px; padding: 14px; min-width: 0; }
+.etiq { font: 600 10.5px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--doux); display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+.etiq b { color: var(--laiton); font-weight: 600; }
+header.tete { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; justify-content: space-between; }
+header h1 { font: 600 30px/1 var(--display); margin: 0; letter-spacing: .01em; }
+header h1 em { color: var(--laiton); }
+header p { margin: 4px 0 0; color: var(--doux); font-size: 13px; }
+.modes { display: flex; gap: 6px; background: var(--panneau); border: 1px solid var(--trait); border-radius: 12px; padding: 4px; }
+.modes button { border: 0; background: transparent; color: var(--doux); font: 600 12.5px/1 var(--ui); padding: 9px 12px; border-radius: 9px; cursor: pointer; }
+.modes button[aria-pressed="true"] { background: var(--laiton); color: #120E05; }
+button:focus-visible { outline: 2px solid var(--laiton-vif); outline-offset: 2px; }
+.kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.kpi { padding: 12px 14px; }
+.kpi .v { font: 700 26px/1.1 var(--ui); font-variant-numeric: tabular-nums; margin-top: 6px; }
+.kpi .s { font: 400 11.5px/1.3 var(--mono); color: var(--doux); margin-top: 4px; }
+.kpi .etiq { margin: 0; }
+.corps { display: grid; grid-template-columns: 290px minmax(0, 1fr) 320px; gap: 14px; align-items: start; }
+/* Équipe */
+.membre { display: grid; grid-template-columns: 34px 1fr auto; gap: 10px; align-items: center; padding: 9px 10px; border-radius: 12px; border: 1px solid transparent; margin-bottom: 6px; background: rgba(255,255,255,.02); transition: border-color .3s, background .3s; }
+.membre.actif { border-color: var(--c); background: color-mix(in srgb, var(--c) 10%, transparent); box-shadow: 0 0 18px -6px var(--c); }
+.membre.attend { border-color: var(--laiton); }
+.pastille { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--c) 22%, #0B1020); }
+.pastille svg { width: 26px; height: 26px; }
+.membre .n { font: 600 13.5px/1.2 var(--ui); display: flex; gap: 8px; align-items: baseline; }
+.membre .n small { font: 400 11px var(--mono); color: var(--doux); }
+.membre .st { font: 400 11.5px/1.3 var(--mono); color: var(--c); margin-top: 3px; min-height: 15px; }
+.membre .barre { height: 3px; border-radius: 3px; background: rgba(255,255,255,.07); margin-top: 6px; overflow: hidden; }
+.membre .barre i { display: block; height: 100%; width: 0; background: var(--c); transition: width .4s; }
+.voyant { width: 8px; height: 8px; border-radius: 50%; background: #3A4155; }
+.membre.actif .voyant { background: var(--vert); box-shadow: 0 0 8px var(--vert); }
+.membre.attend .voyant { background: var(--laiton); box-shadow: 0 0 8px var(--laiton); }
+/* Plateformes */
+.plateformes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+.plat { border-radius: 12px; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--c) 55%, transparent); background: linear-gradient(135deg, color-mix(in srgb, var(--c) 22%, transparent), transparent); }
+.plat .t { font: 600 11px/1 var(--mono); color: color-mix(in srgb, var(--c) 70%, white); }
+.plat .v { font: 700 20px/1.1 var(--ui); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.plat .v small { font: 500 11px var(--mono); color: var(--doux); margin-left: 4px; }
+/* Salle */
+.salle { position: relative; border-radius: 14px; padding: 18px 12px 10px; background: linear-gradient(180deg, #1A1433 0%, #120F24 55%, #0F0C1D 100%); overflow: hidden; }
+.salle::before { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 46%; background: repeating-linear-gradient(90deg, rgba(200,161,90,.05) 0 2px, transparent 2px 70px), linear-gradient(180deg, rgba(200,161,90,.07), transparent); pointer-events: none; }
+.rangee { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; position: relative; }
+.rangee + .rangee { margin-top: 6px; }
+.poste { position: relative; display: grid; justify-items: center; padding-top: 34px; }
+.bulle { position: absolute; top: 2px; left: 50%; transform: translateX(-50%); max-width: 96%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font: 600 10.5px/1 var(--mono); padding: 6px 8px; border-radius: 7px; color: var(--c); border: 1px solid var(--c); background: color-mix(in srgb, var(--c) 14%, #0B0A18); opacity: .25; transition: opacity .3s; }
+.poste.actif .bulle, .poste.attend .bulle { opacity: 1; }
+.poste.attend .bulle { color: var(--laiton-vif); border-color: var(--laiton); background: rgba(200,161,90,.12); }
+.poste svg.scene { width: 100%; max-width: 190px; height: auto; display: block; }
+.nom { font: 700 11.5px/1 var(--ui); padding: 5px 10px; border-radius: 8px; margin-top: -4px; border: 1px solid var(--c); color: var(--c); background: #0B0A18; position: relative; }
+.poste .ecran-fond { fill: #0A0C18; stroke: var(--c); stroke-width: 2; }
+.poste.actif .ecran-fond { filter: drop-shadow(0 0 6px var(--c)); }
+.poste .contenu { opacity: .25; }
+.poste.actif .contenu { opacity: 1; }
+.poste .corps-perso { transform-origin: 95px 120px; }
+.poste.actif .corps-perso { animation: travaille 1.2s ease-in-out infinite; }
+.poste.attend .corps-perso { animation: attend 2.4s ease-in-out infinite; }
+@keyframes travaille { 0%,100% { transform: translateY(0) } 50% { transform: translateY(1.5px) } }
+@keyframes attend { 0%,100% { transform: rotate(0) } 50% { transform: rotate(-3deg) } }
+.anim-barres rect { transform-box: fill-box; transform-origin: bottom; }
+.poste.actif .anim-barres rect { animation: barre 1.4s ease-in-out infinite; }
+.poste.actif .anim-barres rect:nth-child(2) { animation-delay: .2s } .poste.actif .anim-barres rect:nth-child(3) { animation-delay: .4s } .poste.actif .anim-barres rect:nth-child(4) { animation-delay: .6s }
+@keyframes barre { 0%,100% { transform: scaleY(.4) } 50% { transform: scaleY(1) } }
+.poste.actif .anim-lignes rect { animation: tape 2s steps(8) infinite; transform-box: fill-box; transform-origin: left; }
+.poste.actif .anim-lignes rect:nth-child(2) { animation-delay: .5s } .poste.actif .anim-lignes rect:nth-child(3) { animation-delay: 1s }
+@keyframes tape { 0% { transform: scaleX(0) } 70%,100% { transform: scaleX(1) } }
+.poste.actif .anim-tourne { animation: tourne 3s linear infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes tourne { to { transform: rotate(360deg) } }
+.poste.actif .anim-tete { animation: glisse 2s linear infinite; }
+@keyframes glisse { from { transform: translateX(0) } to { transform: translateX(46px) } }
+.poste.actif .anim-pulse { animation: pulse 1.2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes pulse { 0%,100% { transform: scale(.85); opacity: .6 } 50% { transform: scale(1.1); opacity: 1 } }
+.paquet { position: fixed; z-index: 20; pointer-events: none; font: 600 10.5px/1 var(--mono); padding: 6px 9px; border-radius: 7px; background: var(--laiton); color: #120E05; box-shadow: 0 0 16px rgba(232,192,110,.6); transition: transform 1.1s cubic-bezier(.6,.05,.3,1), opacity .3s; white-space: nowrap; }
+.legende-salle { font: 400 11px var(--mono); color: var(--doux); margin-top: 10px; display: flex; flex-wrap: wrap; gap: 14px; }
+/* Validations et journal */
+.ok-item { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 10px; border-radius: 10px; background: rgba(200,161,90,.07); border: 1px solid rgba(200,161,90,.25); margin-bottom: 8px; font-size: 13px; line-height: 1.35; }
+.ok-item small { display: block; color: var(--doux); font: 400 11px var(--mono); margin-top: 3px; }
+.ok-item.pulse { animation: halo 1.6s ease-in-out infinite; }
+@keyframes halo { 0%,100% { box-shadow: 0 0 0 rgba(232,192,110,0) } 50% { box-shadow: 0 0 18px rgba(232,192,110,.45) } }
+.btn { border: 0; border-radius: 9px; padding: 9px 13px; font: 700 12.5px/1 var(--ui); cursor: pointer; background: var(--laiton); color: #120E05; }
+.btn.fantome { background: transparent; color: var(--doux); border: 1px solid var(--trait); }
+.vide { color: var(--doux); font: 400 12px/1.5 var(--mono); padding: 6px 2px; }
+.journal { font: 400 11.5px/1.45 var(--mono); max-height: 330px; overflow: auto; display: grid; gap: 6px; }
+.ev { display: grid; grid-template-columns: 44px 1fr; gap: 8px; padding: 6px 8px; border-radius: 8px; background: rgba(255,255,255,.025); animation: entre .4s ease-out; }
+.ev time { color: var(--doux); }
+.ev b { color: var(--c, var(--texte)); font-weight: 600; }
+@keyframes entre { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: none } }
+.bas { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 14px; }
+.semaine { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.jour { border-radius: 10px; padding: 8px 6px; background: rgba(255,255,255,.025); border: 1px solid rgba(255,255,255,.05); min-height: 92px; }
+.jour.auj { border-color: var(--laiton); }
+.jour h4 { margin: 0 0 6px; font: 600 11px var(--mono); color: var(--doux); }
+.creneau { font: 600 10.5px/1 var(--mono); padding: 5px 6px; border-radius: 6px; margin-bottom: 4px; border: 1px solid var(--c); color: var(--c); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.video { display: grid; grid-template-columns: 96px 1fr; gap: 12px; align-items: center; }
+.video .vign { width: 96px; aspect-ratio: 9 / 16; border-radius: 10px; overflow: hidden; background: #0A0C18; border: 1px solid var(--trait); position: relative; }
+.video .vign img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.video .vign span { position: absolute; left: 4px; right: 4px; bottom: 4px; font: 600 8.5px/1.2 var(--mono); background: rgba(0,0,0,.65); color: #fff; padding: 3px 4px; border-radius: 4px; }
+.video h3 { font: 600 20px/1.15 var(--display); margin: 0; }
+.video p { margin: 6px 0 0; font: 400 12px/1.5 var(--mono); color: var(--doux); }
+.note-bas { color: var(--doux); font-size: 12px; line-height: 1.5; text-align: center; }
+@media (max-width: 1180px) { .corps { grid-template-columns: minmax(0, 1fr) 300px; } .equipe { grid-column: 1 / -1; } .equipe .liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px; } .membre { margin: 0; } }
+@media (max-width: 860px) { .equipe { order: 3; } .corps, .bas { grid-template-columns: minmax(0, 1fr); } .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kpis .kpi:last-child { grid-column: 1 / -1; } .rangee { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 10px; } .plateformes { grid-template-columns: repeat(2, minmax(0, 1fr)); } .semaine { grid-template-columns: repeat(7, minmax(64px, 1fr)); overflow-x: auto; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head><body>
+
+<div class="page">
+  <header class="tete">
+    <div>
+      <h1>Studio <em>en direct</em></h1>
+      <p id="sous-titre">Les agents qui fabriquent les vidéos de Rouage &amp; Laiton, et ce qu'ils se passent entre eux.</p>
+    </div>
+    <div class="modes" role="group" aria-label="Mode d'affichage">
+      <button id="m-reel" aria-pressed="false">État réel</button>
+      <button id="m-sim" aria-pressed="true">Simulation d'un cycle</button>
+    </div>
+  </header>
+
+  <section class="kpis" aria-label="Indicateurs">
+    <div class="panneau kpi"><div class="etiq">Vidéos produites</div><div class="v" id="k-videos">0</div><div class="s" id="k-videos-s">dans ce cycle</div></div>
+    <div class="panneau kpi"><div class="etiq">Agents au travail</div><div class="v" id="k-actifs">0</div><div class="s">sur 8 au studio</div></div>
+    <div class="panneau kpi"><div class="etiq">Attend ton accord</div><div class="v" id="k-ok" style="color:var(--laiton-vif)">0</div><div class="s">rien ne sort sans toi</div></div>
+    <div class="panneau kpi"><div class="etiq">Coût du studio</div><div class="v">0 €</div><div class="s">par mois (outils libres)</div></div>
+    <div class="panneau kpi"><div class="etiq">Abonnés, vues</div><div class="v" style="color:var(--doux)">—</div><div class="s">comptes pas encore ouverts</div></div>
+  </section>
+
+  <div class="corps">
+    <aside class="panneau equipe" aria-label="Équipe du studio">
+      <div class="etiq">L'équipe <b id="nb-en-ligne">8 agents</b></div>
+      <div class="liste" id="liste"></div>
+    </aside>
+
+    <main class="panneau" aria-label="Salle de production">
+      <div class="etiq">Chaîne de production <b id="en-cours">au repos</b></div>
+      <div class="plateformes">
+        <div class="plat" style="--c:#25F4EE"><div class="t">TikTok</div><div class="v"><span id="p-tiktok">0</span><small>programmée</small></div></div>
+        <div class="plat" style="--c:#F25FA0"><div class="t">Reels</div><div class="v"><span id="p-reels">0</span><small>programmée</small></div></div>
+        <div class="plat" style="--c:#F2645A"><div class="t">Shorts</div><div class="v"><span id="p-shorts">0</span><small>programmée</small></div></div>
+        <div class="plat" style="--c:#E8C06E"><div class="t">Pinterest</div><div class="v"><span id="p-pin">0</span><small>épingle</small></div></div>
+      </div>
+      <div class="salle" id="salle">
+        <div class="rangee" id="r1"></div>
+        <div class="rangee" id="r2"></div>
+      </div>
+      <div class="legende-salle"><span>Bulle allumée : l'agent travaille</span><span style="color:var(--laiton-vif)">Bulle laiton : il attend ta validation</span><span>Carte qui vole : un livrable passe d'un agent à l'autre</span></div>
+    </main>
+
+    <aside style="display:grid;gap:14px;min-width:0">
+      <section class="panneau" aria-label="À valider">
+        <div class="etiq">À valider <b id="nb-ok">0</b></div>
+        <div id="oks"></div>
+      </section>
+      <section class="panneau" aria-label="Journal en direct">
+        <div class="etiq">Journal en direct <b id="src-journal">simulation</b></div>
+        <div class="journal" id="journal" aria-live="polite"></div>
+      </section>
+    </aside>
+  </div>
+
+  <div class="bas">
+    <section class="panneau" aria-label="Cette semaine">
+      <div class="etiq">Cette semaine <b id="nb-creneaux">0 prévu</b></div>
+      <div class="semaine" id="semaine"></div>
+    </section>
+    <section class="panneau" aria-label="Dernière vidéo">
+      <div class="etiq">Dernière vidéo <b id="statut-video">aucune</b></div>
+      <div class="video">
+        <div class="vign"><img alt="Rendu 3D de la boîte à musique à manivelle" src="data:image/webp;base64,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"><span>Visuel de démonstration</span></div>
+        <div><h3 id="titre-video">De la planche à l'objet</h3><p id="info-video">20 s, 9:16. Prévue à la synchro n°13 : pas encore produite.</p></div>
+      </div>
+    </section>
+  </div>
+  <p class="note-bas">Maquette du tableau de bord. Dans la version installée sur ton PC, il lira en direct le journal de Claude Code, les livrables et le calendrier, et le bouton Valider changera vraiment le statut du fichier.</p>
+</div>
+
+<script>
+(() => {
+// ---------- L'équipe du studio ----------
+const EQUIPE = [
+  { id: "veille", prenom: "Margaux", role: "Veille", agent: "analyste-marche", c: "#5AA8F2", ecran: "barres", cheveux: "#5B3A1E" },
+  { id: "script", prenom: "Jade", role: "Scénariste", agent: "createur-contenu", c: "#A98BF5", ecran: "lignes", cheveux: "#2A1E14" },
+  { id: "visuels", prenom: "Iris", role: "Visuels 3D", agent: "studio-visuel", c: "#F29A4A", ecran: "cube", cheveux: "#C0633F" },
+  { id: "montage", prenom: "Théo", role: "Monteur", agent: "studio-video", c: "#F25FA0", ecran: "timeline", cheveux: "#1C1C24" },
+  { id: "voix", prenom: "Piper", role: "Voix et sous-titres", agent: "outil local, piloté par Théo", c: "#3FD0C9", ecran: "onde", cheveux: "#3A3A44", robot: true },
+  { id: "controle", prenom: "Louise", role: "Contrôle", agent: "conformite-qa", c: "#6BD58A", ecran: "coches", cheveux: "#8A5A2E" },
+  { id: "pubs", prenom: "Malo", role: "Pubs", agent: "media-acquisition", c: "#F2645A", ecran: "courbe", cheveux: "#4A2C16" },
+  { id: "pub", prenom: "Cowork", role: "Publication", agent: "avec ton accord", c: "#E8C06E", ecran: "envoi", cheveux: "#C8A15A" }
+];
+const etat = {}; EQUIPE.forEach(a => etat[a.id] = { e: "repos", st: "", p: 0 });
+
+function ecranSVG(type) {
+  switch (type) {
+    case "barres": return `<g class="anim-barres"><rect x="70" y="52" width="9" height="22" rx="2" fill="#5AA8F2"/><rect x="83" y="52" width="9" height="22" rx="2" fill="#5AA8F2"/><rect x="96" y="52" width="9" height="22" rx="2" fill="#5AA8F2"/><rect x="109" y="52" width="9" height="22" rx="2" fill="#5AA8F2"/></g>`;
+    case "lignes": return `<g class="anim-lignes"><rect x="68" y="50" width="52" height="5" rx="2" fill="#A98BF5"/><rect x="68" y="60" width="44" height="5" rx="2" fill="#A98BF5"/><rect x="68" y="70" width="34" height="5" rx="2" fill="#A98BF5"/></g>`;
+    case "cube": return `<g class="anim-tourne"><rect x="84" y="50" width="22" height="22" rx="3" fill="none" stroke="#F29A4A" stroke-width="3"/><circle cx="95" cy="61" r="4" fill="#F29A4A"/></g>`;
+    case "timeline": return `<rect x="66" y="52" width="56" height="7" rx="2" fill="#F25FA0" opacity=".5"/><rect x="66" y="64" width="38" height="7" rx="2" fill="#3FD0C9" opacity=".6"/><g class="anim-tete"><rect x="68" y="47" width="2.5" height="30" fill="#fff"/></g>`;
+    case "onde": return `<g class="anim-barres"><rect x="72" y="54" width="6" height="18" rx="2" fill="#3FD0C9"/><rect x="82" y="54" width="6" height="18" rx="2" fill="#3FD0C9"/><rect x="92" y="54" width="6" height="18" rx="2" fill="#3FD0C9"/><rect x="102" y="54" width="6" height="18" rx="2" fill="#3FD0C9"/></g>`;
+    case "coches": return `<path d="M70 56l4 4 7-8M70 70l4 4 7-8" stroke="#6BD58A" stroke-width="3" fill="none" stroke-linecap="round"/><rect x="86" y="54" width="32" height="5" rx="2" fill="#6BD58A" opacity=".6"/><rect x="86" y="68" width="26" height="5" rx="2" fill="#6BD58A" opacity=".6"/>`;
+    case "courbe": return `<path d="M68 74 L80 66 L90 70 L102 56 L118 50" stroke="#F2645A" stroke-width="3" fill="none" stroke-linecap="round"/><g class="anim-pulse"><circle cx="118" cy="50" r="3.5" fill="#F2645A"/></g>`;
+    case "envoi": return `<g class="anim-pulse"><path d="M80 66 L110 52 L100 74 L95 66 Z" fill="#E8C06E"/></g>`;
+  }
+  return "";
+}
+function posteSVG(a) {
+  const peau = "#EBCF9F";
+  const tete = a.robot
+    ? `<rect x="80" y="70" width="30" height="24" rx="7" fill="#C9CFDA"/><circle cx="89" cy="82" r="3" fill="#3FD0C9"/><circle cx="101" cy="82" r="3" fill="#3FD0C9"/><rect x="93" y="62" width="4" height="8" fill="#C9CFDA"/>`
+    : `<circle cx="95" cy="82" r="13" fill="${peau}" stroke="rgba(110,78,36,.5)"/><path d="M82 80 Q84 66 95 67 Q107 66 108 80 Q102 73 95 74 Q88 73 82 80Z" fill="${a.cheveux}"/><circle cx="94" cy="84" r="1.6" fill="#2A1E14"/><circle cx="103" cy="84" r="1.6" fill="#2A1E14"/>`;
+  return `<svg class="scene" viewBox="0 0 190 150" aria-hidden="true">
+    <rect x="38" y="96" width="114" height="10" rx="5" fill="#2A2347"/>
+    <rect x="125" y="84" width="8" height="12" fill="#2A2347"/>
+    <rect x="92" y="40" width="74" height="44" rx="6" class="ecran-fond"/>
+    <g class="contenu" transform="translate(34,0)">${ecranSVG(a.ecran)}</g>
+    <g transform="translate(-36,0)"><g class="corps-perso"><rect x="74" y="92" width="42" height="34" rx="12" fill="${a.c}" opacity=".9"/>${tete}</g></g>
+    <rect x="22" y="112" width="146" height="14" rx="4" fill="#2C2550"/>
+    <rect x="30" y="118" width="40" height="3" rx="1.5" fill="${a.c}" opacity=".7"/><rect x="120" y="118" width="40" height="3" rx="1.5" fill="${a.c}" opacity=".7"/>
+    <rect x="30" y="126" width="6" height="18" fill="#221C40"/><rect x="154" y="126" width="6" height="18" fill="#221C40"/>
+    <path d="M150 106 q4 -10 10 -6 q-2 6 -10 6z" fill="#5E8C5A"/><rect x="151" y="104" width="10" height="8" rx="2" fill="#7A5C33"/>
+  </svg>`;
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function construire() {
+  const r1 = document.getElementById("r1"), r2 = document.getElementById("r2"), liste = document.getElementById("liste");
+  EQUIPE.forEach((a, i) => {
+    const d = document.createElement("div"); d.className = "poste"; d.id = "poste-" + a.id; d.style.setProperty("--c", a.c);
+    d.innerHTML = `<div class="bulle" id="bulle-${a.id}">${esc(a.role)}</div>${posteSVG(a)}<div class="nom">${esc(a.prenom)}</div>`;
+    (i < 4 ? r1 : r2).appendChild(d);
+    const m = document.createElement("div"); m.className = "membre"; m.id = "membre-" + a.id; m.style.setProperty("--c", a.c);
+    m.innerHTML = `<div class="pastille"><svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="10" r="6" fill="${a.robot ? "#C9CFDA" : "#EBCF9F"}"/><rect x="6" y="16" width="14" height="9" rx="4" fill="${a.c}"/></svg></div>
+      <div style="min-width:0"><div class="n">${esc(a.prenom)} <small>${esc(a.role)}</small></div><div class="st" id="st-${a.id}">au repos</div><div class="barre"><i id="barre-${a.id}"></i></div></div><span class="voyant" title="état"></span>`;
+    liste.appendChild(m);
+  });
+}
+function majAgent(id, e, st, p) {
+  const s = etat[id]; s.e = e; if (st !== undefined) s.st = st; if (p !== undefined) s.p = p;
+  const a = EQUIPE.find(x => x.id === id);
+  ["poste-", "membre-"].forEach(pre => { const el = document.getElementById(pre + id); el.classList.toggle("actif", e === "actif"); el.classList.toggle("attend", e === "attend"); });
+  document.getElementById("bulle-" + id).textContent = s.st || a.role;
+  document.getElementById("st-" + id).textContent = e === "repos" ? (s.st || "au repos") : s.st;
+  document.getElementById("st-" + id).style.color = e === "attend" ? "var(--laiton-vif)" : e === "repos" ? "var(--doux)" : "";
+  document.getElementById("barre-" + id).style.width = (s.p || 0) + "%";
+  const actifs = Object.values(etat).filter(x => x.e === "actif").length;
+  document.getElementById("k-actifs").textContent = actifs;
+  const enCours = EQUIPE.filter(x => etat[x.id].e === "actif").map(x => x.prenom);
+  document.getElementById("en-cours").textContent = enCours.length ? enCours.join(", ") + " au travail" : "au repos";
+}
+function journal(qui, texte, heure) {
+  const j = document.getElementById("journal"), a = EQUIPE.find(x => x.id === qui);
+  const d = document.createElement("div"); d.className = "ev"; if (a) d.style.setProperty("--c", a.c);
+  const h = heure || new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  d.innerHTML = `<time>${esc(h)}</time><div>${a ? `<b>${esc(a.prenom)}</b> · ` : (qui === "toi" ? `<b style="color:var(--laiton-vif)">Toi</b> · ` : "")}${esc(texte)}</div>`;
+  j.prepend(d); while (j.children.length > 40) j.lastChild.remove();
+}
+function paquet(de, vers, texte) {
+  return new Promise(res => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return res();
+    const a = document.getElementById("poste-" + de).getBoundingClientRect(), b = document.getElementById("poste-" + vers).getBoundingClientRect();
+    const p = document.createElement("div"); p.className = "paquet"; p.textContent = texte; document.body.appendChild(p);
+    const x0 = a.left + a.width / 2, y0 = a.top + a.height * .35, x1 = b.left + b.width / 2, y1 = b.top + b.height * .35;
+    p.style.left = x0 + "px"; p.style.top = y0 + "px"; p.style.transform = "translate(-50%,-50%) scale(.6)";
+    requestAnimationFrame(() => requestAnimationFrame(() => { p.style.transform = `translate(calc(-50% + ${x1 - x0}px), calc(-50% + ${y1 - y0}px)) scale(1)`; }));
+    setTimeout(() => { p.style.opacity = "0"; setTimeout(() => { p.remove(); res(); }, 300); }, 1150);
+  });
+}
+// ---------- Validations ----------
+let oks = [];
+function rendreOks() {
+  const z = document.getElementById("oks");
+  z.innerHTML = oks.length ? "" : `<div class="vide">Rien à valider pour l'instant.</div>`;
+  oks.forEach(o => {
+    const d = document.createElement("div"); d.className = "ok-item" + (o.pulse ? " pulse" : "");
+    d.innerHTML = `<div>${esc(o.texte)}<small>${esc(o.sous || "")}</small></div>` + (o.bouton === false ? "" : `<button class="btn">${esc(o.libelle || "Valider")}</button>`);
+    const b = d.querySelector("button"); if (b) b.onclick = () => { oks = oks.filter(x => x !== o); rendreOks(); o.ok && o.ok(); };
+    z.appendChild(d);
+  });
+  document.getElementById("nb-ok").textContent = oks.length; document.getElementById("k-ok").textContent = oks.length;
+}
+function demander(o) { return new Promise(res => { o.ok = res; oks.push(o); rendreOks(); }); }
+// ---------- Semaine ----------
+const JOURS = ["Lun", "Mar", "Mer", "Jeu", "Ven", "Sam", "Dim"];
+let creneaux = [];
+function rendreSemaine() {
+  const s = document.getElementById("semaine"); s.innerHTML = "";
+  const auj = (new Date().getDay() + 6) % 7;
+  JOURS.forEach((j, i) => {
+    const d = document.createElement("div"); d.className = "jour" + (i === auj ? " auj" : "");
+    d.innerHTML = `<h4>${j}${i === auj ? " · auj." : ""}</h4>` + creneaux.filter(c => c.j === i).map(c => `<div class="creneau" style="--c:${c.c}" title="${esc(c.t)}">${esc(c.h)} ${esc(c.t)}</div>`).join("");
+    s.appendChild(d);
+  });
+  document.getElementById("nb-creneaux").textContent = creneaux.length + (creneaux.length > 1 ? " prévus" : " prévu");
+}
+// ---------- Simulation d'un cycle ----------
+let jeton = 0;
+const pause = ms => new Promise((res, rej) => { const j = jeton; setTimeout(() => j === jeton ? res() : rej("stop"), ms); });
+const SUJETS = [
+  { titre: "De la planche à l'objet", produit: "boîte à musique", sujets: "fête des pères, son du bois, vue éclatée" },
+  { titre: "Trois cames, un voilier", produit: "automate à manivelle", sujets: "Noël, objets qui bougent, ASMR mécanique" }
+];
+let tour = 0, videos = 0;
+async function progression(id, texte, de, a, ms) { const pas = 8; for (let i = 1; i <= pas; i++) { majAgent(id, "actif", texte, Math.round(de + (a - de) * i / pas)); await pause(ms / pas); } }
+async function cycle() {
+  const S = SUJETS[tour % SUJETS.length]; tour++;
+  document.getElementById("titre-video").textContent = S.titre;
+  document.getElementById("statut-video").textContent = "en préparation";
+  document.getElementById("info-video").textContent = `20 s, 9:16 · ${S.produit} · rendus 3D de démonstration.`;
+  journal(null, `Nouveau cycle lancé par /marketing : « ${S.titre} »`);
+  await progression("veille", "Repère les tendances", 0, 100, 3200);
+  journal("veille", `3 pistes de la semaine : ${S.sujets}.`);
+  majAgent("veille", "repos", "Tendances livrées", 100);
+  await paquet("veille", "script", "3 pistes");
+  await progression("script", "Écrit le script · 20 s", 0, 100, 3600);
+  journal("script", `Script prêt : accroche en 1,5 s, 7 plans, appel à l'action. Il attend ta validation.`);
+  majAgent("script", "attend", "Attend ta validation", 100);
+  await demander({ texte: `Valider le script « ${S.titre} »`, sous: "createur-contenu · 7 plans · 20 s", pulse: true });
+  journal("toi", `Script validé.`);
+  majAgent("script", "repos", "Script validé", 100);
+  await paquet("script", "visuels", "script validé");
+  await progression("visuels", "Rend l'orbite et la vue éclatée", 0, 100, 3600);
+  journal("visuels", `6 plans 3D rendus (orbite, éclatée, planche à objet), mention « Visuel de démonstration ».`);
+  majAgent("visuels", "repos", "6 plans livrés", 100);
+  await paquet("visuels", "montage", "6 plans 3D");
+  majAgent("montage", "actif", "Monte les plans", 10);
+  await pause(1200);
+  majAgent("voix", "actif", "Voix fr_FR-siwis, puis sous-titres mot à mot", 0);
+  await progression("voix", "Voix et sous-titres mot à mot", 0, 100, 2800);
+  journal("voix", `Voix générée en local, 52 mots minutés pour les sous-titres. Crédits SIWIS notés.`);
+  majAgent("voix", "repos", "Voix livrée", 100);
+  await paquet("voix", "montage", "voix + .srt");
+  await progression("montage", "Montage · sous-titres · bruitages", 20, 100, 4200);
+  journal("montage", `Vidéo rendue : 1080×1920, 30 i/s, 20 s. Grille de qualité : 10 sur 10.`);
+  majAgent("montage", "repos", "Vidéo rendue", 100);
+  await paquet("montage", "controle", "vidéo 9:16");
+  await progression("controle", "Vérifie mentions, droits, crédits", 0, 100, 3000);
+  journal("controle", `Conforme : « Visuel de démonstration » visible, licences notées, aucune promesse chiffrée.`);
+  majAgent("controle", "repos", "Conforme", 100);
+  videos++; document.getElementById("k-videos").textContent = videos;
+  document.getElementById("statut-video").textContent = "prête, attend ton accord";
+  majAgent("pub", "attend", "Attend ton accord pour publier", 0);
+  await demander({ texte: `Publier « ${S.titre} » sur TikTok et Reels`, sous: "Cowork programme, toi tu décides", libelle: "Publier", pulse: true });
+  journal("toi", `Publication approuvée.`);
+  await progression("pub", "Programme TikTok et Reels", 0, 100, 2400);
+  const j = ((new Date().getDay() + 6) % 7 + tour) % 7;
+  creneaux.push({ j, h: "18:30", t: S.titre, c: "#25F4EE" }, { j: (j + 1) % 7, h: "12:30", t: S.titre, c: "#F25FA0" }); rendreSemaine();
+  ["p-tiktok", "p-reels"].forEach(id => { const el = document.getElementById(id); el.textContent = +el.textContent + 1; });
+  journal("pub", `Programmée : TikTok ${JOURS[j]} 18:30, Reels ${JOURS[(j + 1) % 7]} 12:30 (simulation, rien n'est publié).`);
+  majAgent("pub", "repos", "Programmée", 100);
+  document.getElementById("statut-video").textContent = "programmée";
+  await paquet("pub", "pubs", "vidéo publiée");
+  await progression("pubs", "Prépare une pub en pause", 0, 100, 2600);
+  journal("pubs", `Pub Meta préparée en pause : 5 € par jour, 7 jours, 18 ans et plus, arrêt si coût par vente > marge.`);
+  majAgent("pubs", "attend", "Pub en pause, à toi d'activer", 100);
+  oks.push({ texte: `Activer la pub « ${S.titre} » (5 € par jour)`, sous: "jamais activée sans toi · après le lancement seulement", bouton: false }); rendreOks();
+  await pause(4000);
+  majAgent("pubs", "repos", "Pub en pause", 100);
+  oks = oks.filter(o => o.bouton !== false); rendreOks();
+  await pause(1500);
+  EQUIPE.forEach(a => majAgent(a.id, "repos", "au repos", 0));
+  return cycle();
+}
+// ---------- État réel (lu le 13 nov. à 12 h 09 dans le journal de Claude Code) ----------
+function etatReel() {
+  jeton++; oks = []; creneaux = []; rendreSemaine();
+  document.getElementById("journal").innerHTML = "";
+  document.getElementById("src-journal").textContent = "journal du 13 nov.";
+  document.getElementById("k-videos").textContent = "0"; document.getElementById("k-videos-s").textContent = "pour l'instant";
+  ["p-tiktok", "p-reels", "p-shorts", "p-pin"].forEach(id => document.getElementById(id).textContent = "0");
+  EQUIPE.forEach(a => majAgent(a.id, "repos", "au repos", 0));
+  majAgent("montage", "repos", "Studio installé, prêt", 100);
+  majAgent("voix", "repos", "Piper installé (2 voix autorisées)", 100);
+  majAgent("veille", "repos", "Licences vérifiées (veille-outils)", 100);
+  [["11:40", null, "Synchro n°12 lancée : installation du studio."], ["11:44", null, "veille-outils : licences vérifiées, studio à 0 € par mois."], ["11:56", "montage", "Rendu de test HyperFrames, 3 s, vertical : correct."], ["12:01", "voix", "faster-whisper et Piper installés."], ["12:07", null, "Synchro n°12 terminée, commit e101cab."]].forEach(([h, q, t]) => journal(q, t, h));
+  oks = [{ texte: "Lancer la synchro n°13 : première vidéo", sous: "à coller dans Claude Code (voir la conversation)", bouton: false }, { texte: "Choisir la voix : Piper gratuite ou ElevenLabs Starter", sous: "6 $ HT par mois, usage commercial", bouton: false }];
+  rendreOks();
+  document.getElementById("titre-video").textContent = "De la planche à l'objet";
+  document.getElementById("statut-video").textContent = "pas encore produite";
+  document.getElementById("info-video").textContent = "20 s, 9:16. Prévue à la synchro n°13, avec une version sous-titrée et une version voix Piper.";
+}
+function simulation() {
+  jeton++; oks = []; rendreOks(); creneaux = []; rendreSemaine(); videos = 0;
+  document.getElementById("journal").innerHTML = "";
+  document.getElementById("src-journal").textContent = "simulation";
+  document.getElementById("k-videos").textContent = "0"; document.getElementById("k-videos-s").textContent = "dans cette simulation";
+  ["p-tiktok", "p-reels", "p-shorts", "p-pin"].forEach(id => document.getElementById(id).textContent = "0");
+  EQUIPE.forEach(a => majAgent(a.id, "repos", "au repos", 0));
+  cycle().catch(() => {});
+}
+const bR = document.getElementById("m-reel"), bS = document.getElementById("m-sim");
+bR.onclick = () => { bR.setAttribute("aria-pressed", "true"); bS.setAttribute("aria-pressed", "false"); etatReel(); };
+bS.onclick = () => { bS.setAttribute("aria-pressed", "true"); bR.setAttribute("aria-pressed", "false"); simulation(); };
+construire(); rendreSemaine(); rendreOks(); simulation();
+})();
+</script>
+
+</body></html>

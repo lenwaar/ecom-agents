@@ -17,3 +17,6 @@ studio/video/node_modules/
 medias/brouillons/
 studio/video/**/renders/
 studio/video/**/.hyperframes/
+
+# Studio en direct (qg/studio, synchro n°13)
+qg/studio/node_modules/

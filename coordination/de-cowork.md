@@ -130,7 +130,7 @@ Dans l'ordre, une ligne dans `vers-cowork.md` après chaque tâche, `py` au lieu
 ### T52 · Journal v2 · `fait`
 `tools/journal_claude.py` a été mis à jour par Cowork (il écrit aussi `coordination/journal-direct.jsonl`). Ajoute ce fichier au `.gitignore`, vérifie que les hooks le remplissent, commit.
 
-### T53 · Studio en direct · `à faire`
+### T53 · Studio en direct · `fait`
 Lance `developpeur-web` sur `docs/studio/BRIEF-STUDIO-DIRECT.md`, étapes 1 à 3, en partant de `docs/reference/studio-en-direct.html`. Commit `feat(qg): studio en direct`. Dis à l'humain la commande pour l'ouvrir.
 
 ### T54 · Première vidéo · `à faire`
