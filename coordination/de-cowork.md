@@ -73,7 +73,7 @@ Compte rendu dans `vers-cowork.md` avec les 🔔 ACTION HUMAINE. Puis demande à
 Référence : `docs/organisation.md` (décision de l'humain : 100 rôles confiés à environ 15 agents et des scripts sans IA).
 Changement demandé par l'humain : T41 est exécutée **avant** T40, dans la même session que la synchro n°9.
 
-### T41 · Installer 7 agents · `à faire`
+### T41 · Installer 7 agents · `fait`
 Copie dans `.claude/agents/` les fichiers de `coordination/a-installer/` : `studio-video`, `veille-outils`, `gestion-commandes`, `service-client`, `crm-email`, `pilotage-finance`, `media-acquisition`. Leurs scénarios de test sont déjà dans `tests/scenarios/`.
 Ajoute dans `docs/architecture.md` une ligne qui renvoie vers `docs/organisation.md`.
 Lance `python tools/verifier_livrables.py` (0 erreur attendue).

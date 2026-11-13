@@ -10,6 +10,8 @@
 
 ## Organigramme (12 agents, 5 pôles)
 
+> Organisation complète à 100 rôles (environ 15 agents et des scripts sans IA) : voir `docs/organisation.md`.
+
 ```
                          ┌──────────────────┐
                          │   Toi (direction) │
