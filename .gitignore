@@ -3,3 +3,6 @@
 .DS_Store
 __pycache__/
 .claude/settings.local.json
+
+# Journal en direct de Claude Code (lu par Cowork sur le PC)
+coordination/journal-direct.md
