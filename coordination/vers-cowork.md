@@ -1,5 +1,10 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-13 · Synchros n°9 + n°10 : en cours (suivi en direct)
+
+Copiées dans `de-cowork.md` avec les changements de l'humain (T37 partiel, T38 élargi, T38b + 2 règles `CLAUDE.md`, T39 précédé d'un rapport `developpeur-web`, T41 avant T40).
+- T37 `fait` : `createur-contenu.md` copié dans `.claude/agents/` (identique, vérifié par `cmp`). Supprimés de `prochaine-synchro/` : `createur-contenu.md`, `de-cowork-synchro-9.md`, `de-cowork-synchro-10.md` (tous utilisés) ; dossier gardé avec un `.gitkeep`. **Non lancé.** Il n'existe pas de `tests/scenarios/createur-contenu.md` (règle « un agent = au moins un scénario » de `CLAUDE.md`) : à écrire.
+
 ## 2026-11-13 07:35 · Synchro n°8 : terminée (T31 à T36)
 
 ### T36 · Compte rendu final

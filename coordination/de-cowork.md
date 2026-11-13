@@ -42,5 +42,46 @@ Commit `feat(site): accueil cinématique`.
 Dans `vers-cowork.md` : ce qui marche, ce qui manque, la commande exacte pour que l'humain voie le site sur son PC (`cd site && npm install && npm run dev`, adresse locale), et les 🔔 ACTION HUMAINE.
 Ne lance pas `conformite-qa` sur le site : Cowork le planifiera après sa propre revue.
 
+---
+
+## Synchro n°9 (préparée par Cowork, copiée le 2026-11-13 avec les changements demandés par l'humain)
+
+Ordre d'exécution demandé par l'humain : T37, T38, T38b, T39, T41, T40, T42 (T41 avant T40), une ligne dans `vers-cowork.md` après chaque tâche, puis demander à l'humain de redémarrer.
+
+### T37 · Installer createur-contenu · `fait`
+Copie `coordination/prochaine-synchro/createur-contenu.md` vers `.claude/agents/createur-contenu.md`, puis supprime **seulement les fichiers déjà utilisés** de `coordination/prochaine-synchro/` (pas tout le dossier). Ne le lance pas (règle permanente).
+
+### T38 · Retouche des rendus 3D · `à faire`
+Lance `studio-visuel` : sur les vues catalogue (`face`, `trois-quarts`, `dessus`), le sol présente des **taches grises irrégulières** autour du produit (ombre bruitée, visible sur la grue et la voiture). Corrige l'ombre de contact (plus douce, sans bruit, ou fond parfaitement uni avec une seule ombre portée floue), puis régénère toutes les vues concernées. Corrige aussi le petit engrenage en haut à droite de la boîte « Initiation », qui touche à peine les autres.
+Corrige aussi : l'image d'ambiance `comparateur-planches` (presque vide, on voit surtout le bureau) et les ombres tachées des vues « dessus » (boîte à musique, planétaire).
+
+### T38b · Contrôle qualité automatique · `à faire`
+- Les fichiers `tools/verifier_livrables.py`, `docs/retours-experience.md`, `CLAUDE.md` et `docs/templates/agent-template.md` ont été écrits ou mis à jour par Cowork : commite-les.
+- `CLAUDE.md` a été remis à l'ancienne version : rajoute ces 2 règles après « Gros livrables » : « Lire docs/retours-experience.md avant de commencer : chaque erreur déjà corrigée y est notée. » et « Avant chaque commit : python tools/verifier_livrables.py doit afficher 0 erreur. »
+- Lance `python tools/verifier_livrables.py` et corrige ce qu'il signale (un seul avertissement connu : statut « brouillon » du premier rapport analyste-marche, à laisser tel quel, c'est l'historique).
+- Ajoute à la commande `/cowork` (`.claude/commands/cowork.md`), juste avant l'étape de commit : « Lance `python tools/verifier_livrables.py` ; s'il y a des erreurs, corrige-les avant de commiter. »
+- Donne l'outil `Edit` à `architecte-web` et `conformite-qa` (ligne `tools:` du frontmatter), comme prévu dans `knowledge/decisions.md`.
+
+### T39 · Audit de conformité du site · `à faire`
+Demande d'abord à `developpeur-web` un court rapport `outputs/` sur le site (T33-T35). Puis lance `conformite-qa` en mode audit sur le site construit (`site/`) : pages légales, fiche produit type, accueil, mentions de démonstration, bouton de rétractation, cookies. Lis les fichiers par tranches.
+
+### T40 · Commit, push, compte rendu · `à faire`
+Compte rendu dans `vers-cowork.md` avec les 🔔 ACTION HUMAINE. Puis demande à l'humain de redémarrer Claude Code (pour `createur-contenu`).
+
+## Synchro n°10 (préparée le 2026-11-12) : organisation à 100 rôles, 7 nouveaux agents
+
+Référence : `docs/organisation.md` (décision de l'humain : 100 rôles confiés à environ 15 agents et des scripts sans IA).
+Changement demandé par l'humain : T41 est exécutée **avant** T40, dans la même session que la synchro n°9.
+
+### T41 · Installer 7 agents · `à faire`
+Copie dans `.claude/agents/` les fichiers de `coordination/a-installer/` : `studio-video`, `veille-outils`, `gestion-commandes`, `service-client`, `crm-email`, `pilotage-finance`, `media-acquisition`. Leurs scénarios de test sont déjà dans `tests/scenarios/`.
+Ajoute dans `docs/architecture.md` une ligne qui renvoie vers `docs/organisation.md`.
+Lance `python tools/verifier_livrables.py` (0 erreur attendue).
+Commit `feat(agents): organisation à 100 rôles et 7 nouveaux agents`.
+
+### T42 · Compte rendu et redémarrage · `à faire`
+Une ligne dans `vers-cowork.md`, puis demande à l'humain de redémarrer Claude Code.
+Ne lance aucun de ces agents dans cette session. `gestion-commandes`, `service-client`, `crm-email` et `pilotage-finance` ne seront utilisés qu'avant le lancement ; `media-acquisition` après le lancement.
+
 ## Règle permanente
 Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.
