@@ -4,6 +4,7 @@ description: Synchronise avec Claude Cowork : lit les tâches de coordination/de
 
 Tu travailles en binôme avec Claude Cowork (l'architecte du projet, qui tourne dans l'application Claude). Cowork écrit directement dans ce dossier.
 
+0. Fais `git pull` pour récupérer les tâches que Cowork a écrites sur GitHub.
 1. Lis `coordination/de-cowork.md`. Exécute toutes les tâches de statut `à faire`. **Travail en parallèle** : les tâches qui ne touchent pas les mêmes fichiers se lancent en parallèle (agents en arrière-plan) ; on n'attend que pour les tâches qui dépendent d'une autre (ou si la synchro impose un ordre). Cette règle remplace l'ancienne consigne « un agent à la fois ».
 2. Respecte `CLAUDE.md` : rien n'est publié, envoyé, payé ou commandé sans accord explicite de l'humain.
 3. Après chaque tâche, passe-la en `fait` (ou `bloqué` avec la raison) dans `coordination/de-cowork.md`.
