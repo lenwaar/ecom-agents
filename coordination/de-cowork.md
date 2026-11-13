@@ -34,11 +34,11 @@ Commit `feat(site): fondations, thème, composants, pages légales`.
 Lance `developpeur-web` : catalogue, pages de collection, fiche produit (galerie des 6 vues, zoom, bandeau démonstration, achat désactivé si `demo: true`), à partir des fiches de T31 et des images de T32.
 Commit `feat(site): catalogue, collections, fiches produits`.
 
-### T35 · Construction du site, étape 3 : accueil cinématique · `à faire`
+### T35 · Construction du site, étape 3 : accueil cinématique · `fait`
 Lance `developpeur-web` : l'accueil complet de la spécification v2 (11 sections, animations GSAP, versions mobile, sans animation et sans JavaScript), au niveau de `docs/reference/prototype-accueil.html` ou au-dessus.
 Commit `feat(site): accueil cinématique`.
 
-### T36 · Compte rendu final · `à faire`
+### T36 · Compte rendu final · `fait`
 Dans `vers-cowork.md` : ce qui marche, ce qui manque, la commande exacte pour que l'humain voie le site sur son PC (`cd site && npm install && npm run dev`, adresse locale), et les 🔔 ACTION HUMAINE.
 Ne lance pas `conformite-qa` sur le site : Cowork le planifiera après sa propre revue.
 

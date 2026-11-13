@@ -1,11 +1,52 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
-## 2026-11-12 · Synchro n°8 : en cours (suivi en direct)
+## 2026-11-13 07:35 · Synchro n°8 : terminée (T31 à T36)
+
+### T36 · Compte rendu final
+
+**Commits poussés** : `5e8fa87` (T31), `36bb2e1` (T32), `22b3658` (T33), `6a96e14` (T34), `8f26527` (T35), plus les commits `chore(coordination)` de suivi.
+**Aucun rapport `outputs/` produit par `developpeur-web`** pour T33-T35 (comptes rendus brefs demandés) ; à prévoir avant l'audit `conformite-qa` si tu le souhaites. `conformite-qa` **non lancé** sur le site, comme demandé.
+
+**Ce qui marche** (vérifié par moi après chaque tâche : `npm run build` OK, script de liens sur `site/dist/`)
+- 58 pages statiques, 4 242 liens internes, 0 erreur ; aucun « À VÉRIFIER » visible dans `dist/`.
+- Accueil 11 sections (GSAP local, ~55 Ko JS compressé, budget 70 Ko) : héros engrenages, récit épinglé, comparateur (doigt, souris, clavier), vue éclatée, 4 cartes collections animées, maquettes du moment (rail épinglé ≥ 1024×680), questionnaire, échelle de difficulté, Offrir (texte Noël générique de `decisions.md`, aucune date), atelier + lettre **désactivée** « Bientôt », FAQ. Bouton « Mettre en pause les animations ». Versions `reduced-motion` (GSAP jamais chargé) et sans JS contrôlées par captures Playwright 375/1280 px par l'agent.
+- « Trouver ma maquette » : 3 questions, 27 pages statiques de repli `noindex`, sans cookie ni stockage ; 9 cas de recette §4.1.7 OK. `/atelier/` créé.
+- Catalogue, 3 pages de niveau, 5 collections, 10 fiches (galerie 6 vues, zoom, bandeau démo, achat désactivé, pas d'`Offer`).
+- Pages légales et d'aide (T33), 404.
+- `decisions.md` appliqué en T35 : sur une fiche démo, lignes et FAQ « À VÉRIFIER » masquées, bloc sécurité « Informations du fabricant affichées dès la mise en vente de ce produit. » ; un produit `demo: false` avec « À VÉRIFIER » **fait échouer le build** (testé, message listant les champs).
+
+**Ce qui manque / écarts**
+- **Vue 3D au clic** (décidée dans `decisions.md`) : pas faite. Seul un emplacement `Vue3D.astro` existe (affiché si `modele_3d` renseigné, aucun ne l'est) ; Three.js pas en dépendance du site, pas de modèles exportés depuis `studio/`.
+- Vue éclatée : SVG « Illustration de principe » (les calques WebP et `vue-eclatee.json` de la spec n'existent pas).
+- Accroches calculées produit par produit (audit N2) : héros « Des pièces de bois prédécoupées… » au lieu de « découpés au laser » ; compteur de pièces masqué (`nombre_pieces` inconnu) ; « Livraison suivie » nulle part.
+- Fiche : zoom en fondu (pas depuis l'image), un toucher = ×2 (pas double-toucher), pas d'aperçu au survol des vignettes, pas d'animation de réorganisation des filtres, barre non masquée au défilement sur mobile, pas d'image de partage, `site` vide dans `astro.config.mjs`.
+- `/atelier/` : héros avec les planches du comparateur, faute du rendu « mains et planches ». Textes des 3 conseils de l'atelier en `[À VALIDER]` (à faire rédiger par `redacteur-catalogue`).
+- Textes rédigés par les agents à relire : intro d'« Idées cadeaux », 2 raccourcis de la page Contact (« Une question avant l'achat », « Ma commande »).
+- Formulaire type de rétractation écrit de mémoire (marqué « à contrôler mot pour mot » avec l'annexe à R221-1) ; encadré D.211-2 non reproduit (lien Légifrance) ; PDF des CGV à produire.
+- `docs/site-technique.md` complété par l'agent (dossiers, commandes) par-dessus tes modifications non commitées ; tout est commité ensemble dans le commit de fin.
+
+**Voir le site sur le PC**
+```
+cd site
+npm install
+npm run dev
+```
+puis ouvrir http://localhost:4321/ (adresse affichée par Astro). Version construite comme en production : `npm run build` puis `npm run preview` (http://localhost:4321/ aussi).
+
+**🔔 ACTION HUMAINE**
+1. Regarder le site en local (commande ci-dessus) et dire à Cowork ce qui plaît ou non, surtout l'accueil.
+2. Décider : vue 3D au clic sur la fiche (à construire : export des modèles depuis `studio/` + Three.js local) ou abandon pour le lancement.
+3. Toujours en attente (rien n'est publiable sans) : identité de l'EI, SIREN/RCS, adresse, email, téléphone, médiateur, identifiants REP, hébergeur, frais et délais de livraison, transporteur, frais de retour, service d'emails pour la lettre, Cloudflare Web Analytics, Apple Pay / Google Pay / Link, politique « pièce cassée au montage ».
+4. Faire relire par un juriste les points listés par l'audit (n° 20, 21, 23, 26) et les clauses marquées « avis d'un professionnel » (assemblage commencé, juridiction, durées de conservation, transferts Stripe/Cloudflare).
+
+### Suivi en direct de la synchro n°8
 
 - T31 `fait` (commit `5e8fa87`) : `redacteur-catalogue` a écrit les 10 fiches (`site/src/content/produits/`, `demo: true`, sans lien de paiement) + rapport `outputs/2026-11-12-redacteur-catalogue-fiches-demo.md`. Format du §5.4 de la spec v2 (pas celui de `site-technique.md`) ; champ `accroche` ajouté ; beaucoup de `À VÉRIFIER` dans des champs numériques/booléens : le schéma de `developpeur-web` doit les accepter pour les démos.
 - T32 `fait` : `studio/` (Three.js + Playwright + sharp, `npm run render`) a produit 60 vues produits (6 × 10) + 3 ambiances (`bureau-nuit`, `comparateur-planches`/`-monte`), WebP 1600 et 800 px, 126 fichiers, 5,7 Mo dans `site/public/`. Corrigé en fin de tâche : vue `boite` de la boîte à musique (manquait), `detail` du moulin (gros plan flou sans sujet → transmission sous le socle), cadrage du comparateur (planches hors champ). Planche contact : `outputs/planches/2026-11-12-studio-visuel-planche-contact.jpg` ; rapport `outputs/2026-11-12-studio-visuel-rendus-demo.md`. Rendus de démonstration seulement, à ne jamais utiliser pour vendre un produit réel.
 - T33 `fait` (commit `22b3658`) : le PC s'est éteint pendant la tâche ; reprise sans repartir de zéro (`developpeur-web` relancé pour compléter). `site/` Astro 6 + Tailwind 4 + Lucide + GSAP, polices auto-hébergées, thème, composants `ui/` et `mise-en-page/`, 11 pages : accueil provisoire, FAQ, livraison et retours, mentions légales, CGV (17 articles + annexe formulaire type), confidentialité, cookies, contact, à propos, renoncer au contrat (formulaire **désactivé**, pas d'API), 404. `npm run build` OK. Nombreux `[À VALIDER]` (identité, SIREN, hébergeur, REP, médiateur, frais, transporteur, textes officiels D.211-2 et R221-1 à recopier mot pour mot). Point ouvert : le drapeau `existe` de `lib/navigation.ts` n'est pas utilisé par la navigation, donc liens morts vers `/maquettes/`, `/collections/…`, `/atelier/`, `/trouver-ma-maquette/` tant que T34/T35 ne les créent pas.
 - T34 `fait` (commit `6a96e14`) : 30 pages, build OK, 2 231 liens internes vérifiés, 0 erreur. `/maquettes/` (filtres en liens, sans JS), `/maquettes/niveau/facile|moyen|expert/`, 5 collections (`mecanique`, `vehicules`, `miniatures`, `pour-debuter`, `idees-cadeaux`) avec héros animé + grille filtrable (`?niveau=`, sans stockage) + bouton pause des animations, 10 fiches `/maquettes/<slug>/` (galerie 6 vues srcset 800/1600, zoom plein écran clavier/doigt, lien vers l'image 1600 sans JS, bandeau démo, achat désactivé y compris barre mobile, pas d'`Offer` en JSON-LD, « Prix indicatif de démonstration »). La navigation utilise enfin `existe` (masqué en barre, « (bientôt) » en pied de page). Vue 3D : emplacement `[À VALIDER]` seulement, Three.js non installé. **Écart avec `knowledge/decisions.md`** : les valeurs « À VÉRIFIER » des fiches sont affichées `[À VALIDER : …]` au lieu d'être masquées (bascule en un seul endroit : `components/produit/Donnee.astro`). Écarts à la spec : zoom en fondu (pas depuis l'image), pas d'aperçu au survol des vignettes, pas d'animation de réorganisation du filtre, pas d'image de partage, `site` non renseigné dans `astro.config.mjs` (URL relatives). Phrase d'intro d'« Idées cadeaux » rédigée par l'agent. L'agent a aussi ajouté les nouveaux dossiers dans `docs/site-technique.md` (fichier déjà modifié par toi, non commité, je le laisse pour le commit de fin).
+- T35 `fait` (commit `8f26527`) : accueil 11 sections + questionnaire (27 pages de repli) + `/atelier/` ; 58 pages, 4 242 liens, 0 erreur. Correction `decisions.md` appliquée (valeurs « À VÉRIFIER » masquées sur les démos, build bloqué si `demo: false`). Détails dans le compte rendu final ci-dessus.
+- T36 `fait` : compte rendu final ci-dessus.
 
 ## 2026-11-12 18:43 · Synchro n°7 : identité Laiton, conception v2, audit
 

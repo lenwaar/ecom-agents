@@ -14,11 +14,26 @@
 | Formulaires (rétractation, contact) | À définir par `architecte-web` et `developpeur-web` (fonction serverless gratuite ou service de formulaire) | Le bouton de rétractation en ligne est obligatoire |
 | Nom de domaine | Plus tard (sous-domaine gratuit en attendant) | Coût annuel à valider par l'humain |
 
+## Spécification à suivre
+Voir `knowledge/decisions.md` : spécification v2 de `architecte-web` **corrigée par** l'audit v2 de `conformite-qa` (l'audit l'emporte), décisions en cours et affichage des produits de démonstration. Le format réel des fiches produits est celui du §5.4 de la spécification v2 (le format ci-dessous n'est qu'un résumé).
+
 ## Organisation
 ```
 site/                      code du site (Astro)
 site/src/content/produits/ une fiche produit = un fichier
-site/src/pages/            pages
+site/src/pages/            pages (maquettes/, maquettes/niveau/, collections/ : catalogue, étape 2)
+site/src/components/produit/    carte, grille, galerie, zoom, bloc d'achat, sécurité du produit
+site/src/components/collection/ héros et visuels animés des collections
+site/src/lib/catalogue.ts  collections, niveaux, statistiques calculées, état d'achat
+site/src/components/accueil/    sections de l'accueil cinématique (étape 3, T35)
+site/src/components/questionnaire/ étapes et résultats de « Trouver ma maquette »
+site/src/components/atelier/    bloc « La lettre de l'atelier » (désactivé tant que lettre.active: false)
+site/src/components/aide/       questions de FAQ partagées entre /faq/ et l'accueil
+site/src/lib/accueil.ts    réglages de l'accueil et accroches globales calculées (vraies pour tous les produits publiés)
+site/src/lib/questionnaire.ts   règle de recommandation (pure, utilisée à la construction et dans le navigateur)
+site/src/lib/atelier.ts    titres des conseils (textes à rédiger)
+site/src/scripts/accueil*.ts    animations GSAP de l'accueil (chargées seulement si l'animation est permise)
+site/src/content/reglages/accueil.yaml  produits mis en avant, sélection du moment, FAQ, lettre, Offrir (schéma validé)
 site/public/               images et fichiers statiques (produits/<slug>/<vue>.webp, ambiance/)
 studio/                    production des visuels 3D (Three.js + rendu automatisé), voir agent studio-visuel
 ```
@@ -55,3 +70,12 @@ Description du produit (rédigée par redacteur-catalogue).
 ## Règles
 - Aucun secret dans le dépôt : un Payment Link est public, une clé secrète Stripe ne l'est jamais.
 - Rien n'est mis en ligne ni encaissé sans l'accord de l'humain (compte Stripe et SIRET nécessaires pour encaisser).
+
+## Vérifier le site en local
+```
+cd site
+npm install
+npm run build       # doit passer sans erreur ni avertissement (58 pages à l'étape 3)
+npm run preview     # aperçu de dist/ sur http://localhost:4321/
+```
+Une fiche `demo: false` qui contient encore « À VÉRIFIER » fait échouer `npm run build` (le message liste les champs à compléter). Sur une fiche `demo: true`, ces valeurs ne sont pas affichées.

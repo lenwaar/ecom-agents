@@ -1,7 +1,8 @@
 # Direction design de la boutique (v2)
 
 **Exigences de l'humain (2026-11-12)** : une boutique au niveau des meilleurs sites actuels, qui donne envie de cliquer. Références montrées par l'humain : sites « cinématiques » récents (horlogerie avec engrenages en gros plan, automobile sombre et éditoriale, parfumerie avec effets de fumée, agences web soignées). Base de composants propre dans l'esprit **shadcn/ui**.
-**Prototype de référence à égaler ou dépasser : `docs/reference/prototype-accueil.html`** (ouvrir dans un navigateur).
+**Prototype de référence à égaler ou dépasser : `docs/reference/prototype-accueil-v2.html`** (ouvrir dans un navigateur ; la v1 `prototype-accueil.html` reste pour l'historique). Il montre toutes les sections de l'accueil animées : héros engrenages (parallaxe au pointeur, accélération au défilement), bandeau défilant, récit épinglé, comparateur avant/après, vue éclatée qui se rassemble, collections, galerie horizontale épinglée, questionnaire, échelle de difficulté, Offrir, L'atelier, FAQ, grand pied de page. Animations en JavaScript natif, sans dépendance : le site peut les reprendre telles quelles ou les porter en GSAP.
+**Fichier Figma de référence** : https://www.figma.com/design/lI9157i0tLtUCNlRgKWQcd (créé par Cowork le 2026-11-12). Pages : **Fondations** (couleurs en variables, styles de texte), **Composants** (Bouton en 4 variantes, Badge, Carte produit), **Accueil** (héros cinématique). Les variables Figma portent les mêmes noms que les variables CSS du site (ex. `var(--accent-laiton)`). Si l'humain modifie le fichier Figma, ses choix l'emportent sur ce document.
 S'applique à `architecte-web`, `developpeur-web` et à tout visuel produit par l'équipe.
 
 ## Règles absolues
