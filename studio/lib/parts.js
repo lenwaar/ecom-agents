@@ -115,9 +115,12 @@ export function gearProfile({ z, m = 2, bore = 2.6, spokes = 0, rim = null, hub 
 
 // Phase de la seconde roue pour un engrènement correct (dent dans le creux).
 // g1 : { x, y, z, phase } ; position de g2 (x2, y2), z2 dents. Retourne la phase de g2 (radians).
+// Sur la ligne des centres, si g1 présente n1 pas (fraction de dent), g2 doit présenter ½ − n1 pas :
+// les roues tournent en sens inverse (correction T38 : le signe du rapport était inversé, ce qui ne
+// tombait juste que lorsque n1 était entier ou demi-entier).
 export function meshPhase(g1, x2, y2, z2) {
   const al = Math.atan2(y2 - g1.y, x2 - g1.x);
-  return al + Math.PI + Math.PI / z2 - (g1.z / z2) * (al - g1.phase);
+  return al + Math.PI - Math.PI / z2 + (g1.z / z2) * (al - g1.phase);
 }
 // Position de la roue menée à l'angle `ang` autour de g1 (entraxe théorique + jeu de 0,15 mm)
 export function meshPos(g1, z2, m, ang, play = 0.15) {

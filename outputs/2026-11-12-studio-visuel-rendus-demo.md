@@ -71,3 +71,33 @@ Sans carte graphique : `STUDIO_GL=swiftshader npm run render` (rendu logiciel, b
 - Vue `boite` : les planches sont lisibles mais petites en vignette 800 px pour les grosses maquettes (grue, locomotive).
 - Aucune `etiquette` (photo d'étiquette GPSR) : impossible sans produit réel, le champ reste `null`.
 - Le niveau visuel est à juger par l'humain sur la planche contact, par rapport à `docs/reference/prototype-accueil-v2.html`.
+
+## 7. Retouches T38 (2026-11-13)
+Statut inchangé : `à-valider`. Rendus de démonstration uniquement, aucun produit réel, rien de publié.
+
+### Corrections
+1. **Taches grises au sol (vues `face`, `trois-quarts`, `dessus`, et aussi `detail` et `boite`, qui utilisent le même studio)**. Cause : le sol recevait l'ombre d'une lumière « dôme » tirée au hasard à chaque échantillon (96 ombres dures superposées, d'où le bruit en paquets, très visible en vue plongeante). Correction (`studio/lib/rigs.js`, `bakeGroundShadow`) : le sol ne reçoit plus d'ombre en temps réel. On projette l'objet une seule fois sur le plan du sol (ou du mur pour l'horloge), en trois couches floutées par un flou gaussien : contact serré, occlusion douce, ombre portée de la lumière principale. Résultat : fond parfaitement uni, une seule ombre douce, sans bruit, identique dans toutes les vues catalogue. Le dôme reste utilisé pour l'occlusion sur l'objet lui-même, avec des directions stratifiées (Halton) au lieu du hasard.
+2. **Vues `dessus`** (boîte à musique, planétaire en particulier) : même correction, vérifiées une par une.
+3. **Engrenages de la boîte « Initiation »**. Cause : dans `meshPhase` (`studio/lib/parts.js`), le signe du rapport de transmission était inversé ; le calage ne tombait juste que par hasard. Formule corrigée ; l'entraxe reste la somme des rayons primitifs plus 0,15 mm de jeu. Vérifié sur les profils réels par `studio/verifier-engrenages.js` : 0 interférence et jeu minimal de 0,05 mm pour les 3 paires de l'Initiation, mais aussi pour l'horloge (3 paires), le planétaire (4 paires) et la boîte à musique (1 paire), qui utilisent la même fonction et sont donc corrigés aussi.
+4. **Ambiance `comparateur-planches`**. Recomposition avec une nouvelle caméra commune, plus serrée, pour les deux images du comparateur. Les planches de l'horloge sont posées debout contre le mur, à l'endroit exact où l'horloge est accrochée dans `comparateur-monte`. L'horloge est descendue de 120 mm, et trois roues déjà détachées sont posées sur le bureau. Lampe, livres et carnet déplacés pour dégager le sujet. Mêmes dimensions (1600 × 1000 et 800 × 1000), même point de vue, même lumière dans les deux images. Le site les utilise aussi en fond décoratif (alt vide) sur la page atelier, ce qui reste compatible.
+5. **Fiabilité du rendu** (`studio/render.js`) : lors d'une perte du contexte WebGL (pilote graphique), certaines images sortaient vides ou fausses sans erreur (8 vues vides, plus 2 vues « bois plein cadre » au premier passage). Désormais, toute perte de contexte signalée par la page, ou une image uniforme, invalide le rendu et relance un essai. Toutes les vues concernées ont été refaites et contrôlées.
+
+### Fichiers régénérés
+- Les 60 vues produits (10 × 6, WebP 1600 et 800 px), car le sol, les engrenages et l'occlusion changent presque partout. Les 3 ambiances (`bureau-nuit`, `comparateur-planches`, `comparateur-monte`). Mêmes noms, formats et dimensions ; `site/src/` non modifié ; `npm run build` passe (58 pages).
+- Planche contact régénérée au même emplacement : `outputs/planches/2026-11-12-studio-visuel-planche-contact.jpg`.
+- Poids total : 5,4 Mo (produits) + 0,2 Mo (ambiances).
+
+### Commandes
+```
+cd studio
+npm run render                    # tout (~30 min ici)
+node verifier-engrenages.js       # contrôle d'engrènement (entraxe, interférence, jeu)
+node render.js --only boite-engrenages-initiation --views face,dessus
+node apercu.js <slug>             # aperçu 3 × 2 des vues d'un produit (studio/.cache/)
+```
+
+### Ce qui reste imparfait
+- Horloge murale : l'ombre portée sur le mur reste très discrète, car la platine n'est qu'à 12 mm du mur. C'est physiquement juste, mais l'horloge peut sembler un peu détachée du fond.
+- Comparateur, version portrait (800 px) : le tiers supérieur de `comparateur-planches` est du mur vide. C'est le prix de l'alignement avec l'horloge, plus haute que les planches.
+- Les pertes de contexte WebGL restent fréquentes sur cette machine (7 nouveaux essais pendant le rendu complet) : elles sont maintenant détectées et refaites, mais le rendu complet prend environ 30 min.
+- Les limites du §6 restent valables (rendus de démonstration à remplacer par des photos réelles avant toute vente).

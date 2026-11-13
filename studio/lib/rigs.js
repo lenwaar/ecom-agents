@@ -2,7 +2,7 @@
 // et mise à plat des planches prédécoupées (vue « Dans la boîte »).
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { dirFromAngles } from './engine.js';
+import { dirFromAngles, halton } from './engine.js';
 import { MAT, woodFace } from './materials.js';
 import { KIT, offsetPoly, bounds, transformPts, toShape, ccw, rectPts, box, put, rod, lathe, sphere, V2 } from './parts.js';
 import { edgeMaterial } from './materials.js';
@@ -18,13 +18,116 @@ function shadowCam(light, center, R, mapSize = 4096) {
   light.target.position.copy(center);
 }
 
-// Échantillon d'une direction de l'hémisphère supérieur (pondérée par le cosinus)
-function hemiDir(rand, minEl = 8, n = 3) {
-  for (;;) {
-    const u = rand(), v = rand(); const y = Math.pow(u, 1 / (n + 1)); const r = Math.sqrt(1 - y * y), a = 2 * Math.PI * v;
-    const d = new THREE.Vector3(r * Math.cos(a), y, r * Math.sin(a));
-    if (Math.asin(d.y) > D2R(minEl)) return d;
+// Direction de l'hémisphère supérieur (pondérée par le cosinus), au-dessus de minEl.
+// u, v dans [0, 1[ : suite de Halton (échantillonnage stratifié, sans bruit en paquets).
+function hemiDir(u, v, minEl = 8, n = 3) {
+  const y0 = Math.sin(D2R(minEl));
+  const y = y0 + (1 - y0) * Math.pow(u, 1 / (n + 1)); const r = Math.sqrt(1 - y * y), a = 2 * Math.PI * v;
+  return new THREE.Vector3(r * Math.cos(a), y, r * Math.sin(a));
+}
+
+// ---------- Ombre de sol précalculée (T38) ----------
+// Les ombres du dôme reçues par le sol donnaient des taches irrégulières (une ombre dure par échantillon).
+// Le sol ne reçoit plus d'ombre en temps réel : on projette une fois l'objet sur le plan, en trois couches
+// floutées (contact serré, occlusion douce, ombre portée de la lumière principale), puis le sol affiche
+// cette texture. Résultat : fond uni, ombre douce et sans bruit, identique d'une vue à l'autre.
+const BAKE_VERT = /* glsl */`
+uniform vec3 uP0, uN, uU, uV, uL, uC; uniform float uHalf, uMode, uHRange;
+varying float vH;
+void main(){
+  vec3 wp = (modelMatrix * vec4(position, 1.0)).xyz;
+  float h = max(dot(wp - uP0, uN), 0.0);
+  vec3 q = uMode > 0.5 ? wp - uL * (h / max(dot(uL, uN), 0.05)) : wp - uN * h;
+  vec2 p = vec2(dot(q - uC, uU), dot(q - uC, uV)) / uHalf;
+  vH = h / uHRange;
+  gl_Position = vec4(p, 0.0, 1.0);
+}`;
+const BAKE_FRAG = /* glsl */`
+precision highp float; varying float vH; uniform float uMode;
+void main(){
+  float k = uMode > 0.5 ? mix(1.0, 0.45, clamp(vH, 0.0, 1.0)) : pow(1.0 - clamp(vH, 0.0, 1.0), 2.0);
+  gl_FragColor = vec4(k, k, k, 1.0);
+}`;
+const GBLUR_FRAG = /* glsl */`
+precision highp float; varying vec2 vUv; uniform sampler2D tSrc; uniform vec2 uDir; uniform float uSigma;
+void main(){ float s = 0.0, ws = 0.0; float stp = max(uSigma / 4.0, 0.5);
+  for (int i = -12; i <= 12; i++){ float o = float(i) * stp; float w = exp(-o*o/(2.0*uSigma*uSigma)); s += texture2D(tSrc, vUv + uDir*o).r*w; ws += w; }
+  gl_FragColor = vec4(vec3(s/ws), 1.0); }`;
+const QUAD_VERT = 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }';
+
+function bakeGroundShadow(renderer, scene, objBox, { n, u, v, p0, lightDir, res = 1024 }) {
+  const size = objBox.getSize(new THREE.Vector3()); const S = size.length();
+  const corners = [];
+  for (const x of [objBox.min.x, objBox.max.x]) for (const y of [objBox.min.y, objBox.max.y]) for (const z of [objBox.min.z, objBox.max.z]) corners.push(new THREE.Vector3(x, y, z));
+  let hMax = 1;
+  for (const c of corners) hMax = Math.max(hMax, c.clone().sub(p0).dot(n));
+  // emprise : chute verticale + projection selon la lumière principale
+  const pts = [];
+  for (const c of corners) {
+    const h = Math.max(c.clone().sub(p0).dot(n), 0);
+    pts.push(c.clone().addScaledVector(n, -h), c.clone().addScaledVector(lightDir, -h / Math.max(lightDir.dot(n), 0.05)));
   }
+  const center = new THREE.Vector3(); pts.forEach((p) => center.add(p)); center.divideScalar(pts.length);
+  const sig = { contact: Math.max(1.2, S * 0.006), ambient: S * 0.045, key: S * 0.028 };
+  let half = 0;
+  for (const p of pts) half = Math.max(half, Math.abs(p.clone().sub(center).dot(u)), Math.abs(p.clone().sub(center).dot(v)));
+  half = half + 4 * sig.ambient + S * 0.05;
+  const texel = (2 * half) / res;
+
+  const rtOpts = { type: THREE.HalfFloatType, depthBuffer: false, minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter };
+  const tmp = new THREE.WebGLRenderTarget(res, res, rtOpts);
+  const bakeMat = new THREE.ShaderMaterial({
+    vertexShader: BAKE_VERT, fragmentShader: BAKE_FRAG, side: THREE.DoubleSide, depthTest: false, depthWrite: false,
+    blending: THREE.CustomBlending, blendEquation: THREE.MaxEquation, blendSrc: THREE.OneFactor, blendDst: THREE.OneFactor,
+    uniforms: { uP0: { value: p0 }, uN: { value: n }, uU: { value: u }, uV: { value: v }, uL: { value: lightDir }, uC: { value: center }, uHalf: { value: half }, uMode: { value: 0 }, uHRange: { value: 1 } },
+  });
+  const blurMat = new THREE.ShaderMaterial({ vertexShader: QUAD_VERT, fragmentShader: GBLUR_FRAG, depthTest: false, depthWrite: false, uniforms: { tSrc: { value: null }, uDir: { value: new THREE.Vector2() }, uSigma: { value: 1 } } });
+  const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), blurMat); quad.frustumCulled = false;
+  const qScene = new THREE.Scene(); qScene.add(quad); const qCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+  const dummyCam = new THREE.OrthographicCamera(-1, 1, 1, -1, -1e6, 1e6);
+
+  // seuls les objets qui portent ombre comptent
+  const hidden = [];
+  scene.traverse((o) => { if ((o.isMesh || o.isLine) && !o.castShadow && o.visible) { o.visible = false; hidden.push(o); } });
+  const prevOverride = scene.overrideMaterial; const prevClear = renderer.getClearColor(new THREE.Color()); const prevAlpha = renderer.getClearAlpha();
+  scene.overrideMaterial = bakeMat;
+  const layer = (mode, hRange, sigmaMm) => {
+    const rt = new THREE.WebGLRenderTarget(res, res, rtOpts);
+    bakeMat.uniforms.uMode.value = mode; bakeMat.uniforms.uHRange.value = hRange;
+    renderer.setRenderTarget(rt); renderer.setClearColor(0x000000, 0); renderer.clear(true, true, true);
+    renderer.render(scene, dummyCam);
+    // flou gaussien séparable, en plusieurs passes (σ par passe ≤ 6 texels)
+    const sigma = sigmaMm / texel; const N = Math.max(1, Math.ceil((sigma / 6) ** 2)); const sp = sigma / Math.sqrt(N);
+    for (let k = 0; k < N; k++) {
+      blurMat.uniforms.uSigma.value = sp;
+      blurMat.uniforms.tSrc.value = rt.texture; blurMat.uniforms.uDir.value.set(1 / res, 0); renderer.setRenderTarget(tmp); renderer.render(qScene, qCam);
+      blurMat.uniforms.tSrc.value = tmp.texture; blurMat.uniforms.uDir.value.set(0, 1 / res); renderer.setRenderTarget(rt); renderer.render(qScene, qCam);
+    }
+    return rt.texture;
+  };
+  const tContact = layer(0, Math.max(3, S * 0.035), sig.contact);
+  const tAmbient = layer(0, hMax * 0.6, sig.ambient);
+  const tKey = layer(1, hMax * 1.1, sig.key);
+  scene.overrideMaterial = prevOverride; hidden.forEach((o) => { o.visible = true; });
+  renderer.setRenderTarget(null); renderer.setClearColor(prevClear, prevAlpha);
+  tmp.dispose();
+
+  const mat = new THREE.ShaderMaterial({
+    transparent: true, depthWrite: false,
+    uniforms: { tContact: { value: tContact }, tAmbient: { value: tAmbient }, tKey: { value: tKey }, uU: { value: u }, uV: { value: v }, uC: { value: center }, uHalf: { value: half }, uK: { value: new THREE.Vector3(0.6, 0.22, 0.2) }, uOpacity: { value: 1 } },
+    vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix*vec4(position,1.0); vW = w.xyz; gl_Position = projectionMatrix*viewMatrix*w; }',
+    fragmentShader: /* glsl */`
+      precision highp float; varying vec3 vW; uniform sampler2D tContact, tAmbient, tKey; uniform vec3 uU, uV, uC, uK; uniform float uHalf, uOpacity;
+      void main(){
+        vec2 p = vec2(dot(vW - uC, uU), dot(vW - uC, uV)) / uHalf;
+        vec2 uv = p * 0.5 + 0.5;
+        float fade = 1.0 - smoothstep(0.82, 0.99, max(abs(p.x), abs(p.y)));
+        float c = texture2D(tContact, uv).r, a = texture2D(tAmbient, uv).r, k = texture2D(tKey, uv).r;
+        float sh = 1.0 - (1.0 - uK.x*c) * (1.0 - uK.y*a) * (1.0 - uK.z*k);
+        gl_FragColor = vec4(0.0, 0.0, 0.0, clamp(sh * fade * uOpacity, 0.0, 1.0));
+      }`,
+  });
+  return mat;
 }
 
 // ---------- Studio : catalogue ----------
@@ -56,21 +159,24 @@ export function studioRig(renderer, scene, objBox, { az = 0, wall = null, shadow
   for (const [l, d] of [[key, keyDir], [fill, fillDir], [rim, rimDir], [dome, new THREE.Vector3(0, 1, 0)]]) {
     l.position.copy(center).addScaledVector(d, R * 4); l.target.position.copy(center); scene.add(l, l.target);
   }
-  if (!wall) {
-    const floor = new THREE.Mesh(new THREE.PlaneGeometry(20000, 20000), MAT.shadow);
-    floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
-  } else {
-    const w = new THREE.Mesh(new THREE.PlaneGeometry(20000, 20000), MAT.shadow);
-    w.position.z = wall.z; w.receiveShadow = true; scene.add(w);
-  }
-  MAT.shadow.opacity = shadowOpacity;
+  // Sol (ou mur) : ombre précalculée, douce et sans bruit ; il ne reçoit plus les ombres en temps réel.
+  const plane = wall
+    ? { n: new THREE.Vector3(0, 0, 1), u: new THREE.Vector3(1, 0, 0), v: new THREE.Vector3(0, 1, 0), p0: new THREE.Vector3(0, 0, wall.z) }
+    : { n: new THREE.Vector3(0, 1, 0), u: new THREE.Vector3(1, 0, 0), v: new THREE.Vector3(0, 0, -1), p0: new THREE.Vector3(0, 0, 0) };
+  const groundMat = bakeGroundShadow(renderer, scene, objBox, { ...plane, lightDir: keyDir.clone() });
+  groundMat.uniforms.uOpacity.value = shadowOpacity / 0.34;
+  // objet accroché : ombre portée sur le mur plus présente (sinon il semble flotter devant le fond)
+  if (wall) groundMat.uniforms.uK.value.set(0.6, 0.32, 0.45);
+  const ground = new THREE.Mesh(new THREE.PlaneGeometry(20000, 20000), groundMat);
+  if (wall) ground.position.z = wall.z; else ground.rotation.x = -Math.PI / 2;
+  ground.receiveShadow = false; ground.castShadow = false; ground.renderOrder = -1; scene.add(ground);
   const t1 = new THREE.Vector3(), t2 = new THREE.Vector3();
   const jitter = (i, rand) => {
     // lumière principale : source de surface (≈ 9°)
     t1.set(rand() - 0.5, rand() - 0.5, rand() - 0.5).multiplyScalar(0.32);
     key.position.copy(center).addScaledVector(t2.copy(keyDir).add(t1).normalize(), R * 4);
-    // dôme : direction aléatoire (occlusion ambiante, ombres de contact)
-    let d = hemiDir(rand, 28);
+    // dôme : directions stratifiées (Halton) pour l'occlusion sur l'objet lui-même
+    const d = hemiDir(halton(i + 1, 5), halton(i + 1, 7), 28);
     if (wall) { d.z = Math.abs(d.z); }
     dome.position.copy(center).addScaledVector(d, R * 4);
   };
@@ -184,12 +290,14 @@ export function nightSet(renderer, scene, objBox, opts = {}) {
   const props = [];
   if (opts.props !== false) {
     // pile de livres à gauche en arrière
-    const bx = opts.mode === 'wall' ? center.x - 230 : objBox.min.x - 150 - S * 0.15, bz = Math.max(wallZ + 140, opts.mode === 'wall' ? wallZ + 140 : objBox.min.z - 60);
+    let bx = opts.mode === 'wall' ? center.x - 230 : objBox.min.x - 150 - S * 0.15, bz = Math.max(wallZ + 140, opts.mode === 'wall' ? wallZ + 140 : objBox.min.z - 60);
+    if (opts.booksAt) [bx, bz] = opts.booksAt; // position imposée (T38 : comparateur)
     const b1 = book(210, 34, 150, '#2F3B2E'); b1.position.set(bx, deskY + 17, bz); b1.rotation.y = D2R(8); g.add(b1);
     const b2 = book(190, 28, 136, '#5A2A24'); b2.position.set(bx + 6, deskY + 34 + 14, bz + 4); b2.rotation.y = D2R(-4); g.add(b2);
     const b3 = book(176, 22, 128, '#1E2B44'); b3.position.set(bx + 2, deskY + 62 + 11, bz - 2); b3.rotation.y = D2R(14); g.add(b3);
     // carnet et crayon à droite devant
-    const nx = opts.mode === 'wall' ? center.x + 60 : objBox.max.x + 80 + S * 0.1, nz = opts.mode === 'wall' ? wallZ + 330 : objBox.max.z - 10;
+    let nx = opts.mode === 'wall' ? center.x + 60 : objBox.max.x + 80 + S * 0.1, nz = opts.mode === 'wall' ? wallZ + 330 : objBox.max.z - 10;
+    if (opts.notebookAt) [nx, nz] = opts.notebookAt;
     const nb = box(120, 8, 170, MAT.kraft); nb.position.set(nx + 60, deskY + 2 + 4, nz - 40); nb.rotation.y = D2R(-12); g.add(nb);
     const nbp = box(116, 6.6, 166, MAT.paper); nbp.position.set(nx + 62, deskY + 2 + 4, nz - 40); nbp.rotation.y = D2R(-12); g.add(nbp);
     const pencil = new THREE.Group();

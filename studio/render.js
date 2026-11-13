@@ -40,7 +40,12 @@ function launchArgs() {
 async function renderOne(browser, base, scene, view, w, h) {
   const page = await browser.newPage({ viewport: { width: 800, height: 1000 } });
   page.on('pageerror', (e) => console.error(`  [${scene}/${view}] erreur page :`, e.message));
-  page.on('console', (m) => { if (m.type() === 'error' || m.type() === 'warning') console.error(`  [${scene}/${view}] ${m.type()} : ${m.text().slice(0, 300)}`); });
+  // T38 : un contexte WebGL perdu pendant le rendu peut donner une image fausse sans erreur explicite
+  let lost = false;
+  page.on('console', (m) => {
+    if (/context lost|CONTEXT_LOST|program not valid/i.test(m.text())) lost = true;
+    if (m.type() === 'error' || m.type() === 'warning') console.error(`  [${scene}/${view}] ${m.type()} : ${m.text().slice(0, 300)}`);
+  });
   const url = `${base}/viewer.html?scene=${scene}&view=${view}&w=${w}&h=${h}${samples ? `&samples=${samples}` : ''}`;
   await page.goto(url);
   await page.waitForFunction(() => window.__done === true, null, { timeout: 15 * 60 * 1000, polling: 250 });
@@ -48,8 +53,15 @@ async function renderOne(browser, base, scene, view, w, h) {
   if (err) { await page.close(); throw new Error(`${scene}/${view} : ${err}`); }
   const stats = await page.evaluate(() => window.__stats);
   const dataUrl = await page.evaluate(() => document.getElementById('c').toDataURL('image/png'));
+  await new Promise((r) => setTimeout(r, 300));
+  lost = lost || await page.evaluate(() => { const c = document.getElementById('c'); const gl = c.getContext('webgl2'); return !gl || gl.isContextLost(); });
   await page.close();
-  return { png: Buffer.from(dataUrl.split(',')[1], 'base64'), stats };
+  if (lost) throw new Error(`${scene}/${view} : contexte WebGL perdu pendant le rendu`);
+  const png = Buffer.from(dataUrl.split(',')[1], 'base64');
+  // T38 : un contexte WebGL perdu en fin de rendu peut laisser une image uniforme ; on la refuse (nouvel essai)
+  const st = await sharp(png).stats();
+  if (st.channels.slice(0, 3).every((c) => c.stdev < 1.5)) throw new Error(`${scene}/${view} : image vide (contexte WebGL perdu)`);
+  return { png, stats };
 }
 
 async function writeWebp(png, file, width, height, quality) {

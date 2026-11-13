@@ -51,7 +51,7 @@ Ordre d'exécution demandé par l'humain : T37, T38, T38b, T39, T41, T40, T42 (T
 ### T37 · Installer createur-contenu · `fait`
 Copie `coordination/prochaine-synchro/createur-contenu.md` vers `.claude/agents/createur-contenu.md`, puis supprime **seulement les fichiers déjà utilisés** de `coordination/prochaine-synchro/` (pas tout le dossier). Ne le lance pas (règle permanente).
 
-### T38 · Retouche des rendus 3D · `à faire`
+### T38 · Retouche des rendus 3D · `fait`
 Lance `studio-visuel` : sur les vues catalogue (`face`, `trois-quarts`, `dessus`), le sol présente des **taches grises irrégulières** autour du produit (ombre bruitée, visible sur la grue et la voiture). Corrige l'ombre de contact (plus douce, sans bruit, ou fond parfaitement uni avec une seule ombre portée floue), puis régénère toutes les vues concernées. Corrige aussi le petit engrenage en haut à droite de la boîte « Initiation », qui touche à peine les autres.
 Corrige aussi : l'image d'ambiance `comparateur-planches` (presque vide, on voit surtout le bureau) et les ombres tachées des vues « dessus » (boîte à musique, planétaire).
 
