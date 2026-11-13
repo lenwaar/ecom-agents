@@ -1,0 +1,149 @@
+---
+/**
+ * 4. « Dans la boîte » : vue éclatée qui se rassemble (§4.1.4).
+ * - Avec animation : section de 200 vh (160 vh mobile), visuel collant ; les pièces se rassemblent
+ *   au défilement (du socle vers les axes, décalées), les étiquettes s'effacent, flash de halo en fin de course.
+ * - Sans animation / sans JavaScript : deux images fixes côte à côte (éclatée avec étiquettes, assemblée).
+ * - Le contenu réel est en texte : liste « Dans la boîte » issue de `contenu_boite` du produit choisi
+ *   (accueil.yaml, produit_eclate) ; en démonstration, les éléments inconnus ne sont pas affichés.
+ * - Compteur « [n] pièces » seulement si `nombre_pieces` est connu (aucun chiffre inventé).
+ */
+import Package from '@lucide/astro/icons/package';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import VisuelEclate from './VisuelEclate.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+import { listeDemo } from '../../lib/catalogue';
+import { PIECES_ILLUSTRATION, getReglagesAccueil, produitParSlug } from '../../lib/accueil';
+
+const reglages = await getReglagesAccueil();
+const produit = produitParSlug(await getProduitsPublies(), reglages.produit_eclate, 'produit_eclate');
+const p = produit.data;
+const contenu = p.demo ? listeDemo(p.contenu_boite) : p.contenu_boite;
+const pieces = typeof p.nombre_pieces === 'number' ? p.nombre_pieces : null;
+---
+
+<section data-eclate aria-labelledby="titre-boite" class="registre-sombre relative bg-nuit pb-20 text-creme md:pb-28">
+  <div class="eclate">
+  <div class="epingle conteneur grid items-center gap-10 py-24 lg:grid-cols-[1fr_1.2fr] lg:gap-[5vw]">
+    <div>
+      <p class="kicker text-laiton" data-revele="bloc">Dans la boîte</p>
+      <h2 id="titre-boite" class="titre-serif mt-5 text-[40px] leading-none md:text-[clamp(44px,5.4vw,76px)]" data-revele="titre">
+        <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block">Tout est là.</span></span>
+        <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block"><em>Il ne manque que vous.</em></span></span>
+      </h2>
+      {
+        pieces && (
+          <p class="mt-5 text-[15px] tracking-[0.04em] text-laiton" data-eclate-compteur data-final={`${pieces} pièces, une maquette`}>
+            {pieces} pièces
+          </p>
+        )
+      }
+
+      <ol class="legende-eclate mt-6 grid gap-2.5 text-[15px]" aria-label="Légende de l'illustration">
+        {
+          PIECES_ILLUSTRATION.map((nom, i) => (
+            <li class="flex items-center gap-3 text-creme-secondaire" data-eclate-legende={i}>
+              <span class="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-bordure-sombre text-[12px]" aria-hidden="true">
+                {i + 1}
+              </span>
+              {nom}
+            </li>
+          ))
+        }
+      </ol>
+
+    </div>
+
+    <div>
+      <div class="statique grid gap-4 sm:grid-cols-2">
+        <figure class="m-0 rounded-[20px] border border-bordure-sombre p-3">
+          <VisuelEclate etat="eclate" class="h-auto w-full" />
+          <figcaption class="mt-2 text-[13px] text-creme-secondaire">Pièces écartées</figcaption>
+        </figure>
+        <figure class="m-0 rounded-[20px] border border-bordure-sombre p-3">
+          <VisuelEclate etat="assemble" class="h-auto w-full" />
+          <figcaption class="mt-2 text-[13px] text-creme-secondaire">Pièces assemblées</figcaption>
+        </figure>
+      </div>
+      <div class="anime hidden">
+        <VisuelEclate etat="anime" class="mx-auto h-auto w-[90vw] max-w-[640px] lg:w-full" />
+      </div>
+      <p class="mt-3 text-[13px] text-creme-secondaire">Illustration de principe d'un mécanisme à engrenages{p.demo ? ', produit de démonstration' : ''}.</p>
+    </div>
+  </div>
+  </div>
+  <div class="conteneur grid gap-6 sm:grid-cols-[minmax(0,560px)_auto] sm:items-end">
+    <div class="rounded-[18px] border border-bordure-sombre p-5" data-revele="bloc">
+      <h3 class="flex items-center gap-2 text-[15px] font-semibold">
+        <Package size={18} stroke-width={1.75} aria-hidden="true" class="text-laiton" />
+        Dans la boîte de {p.nom_court}
+      </h3>
+      <ul class="mt-2 list-disc space-y-1 pl-5 text-[15px] text-creme-secondaire">
+        {contenu.map((c) => <li>{c}</li>)}
+      </ul>
+      <p class="mt-2 text-[14px] text-creme-secondaire">
+        {p.demo ? 'Produit de démonstration : le contenu détaillé sera publié avec le produit réel.' : 'Le contenu complet figure sur la fiche, avant le paiement.'}
+      </p>
+    </div>
+    <p>
+      <a href={`/maquettes/${p.slug}/`} class="group inline-flex min-h-11 items-center gap-2 text-[15px] font-medium text-creme underline-offset-4 hover:text-laiton hover:underline">
+        Voir {p.nom_court}
+        <ArrowRight size={18} stroke-width={1.75} aria-hidden="true" class="transition-transform group-hover:translate-x-[3px]" />
+      </a>
+    </p>
+  </div>
+</section>
+
+<style>
+  :global(html.js-anim) .eclate {
+    height: 160vh;
+  }
+  @media (min-width: 1024px) {
+    :global(html.js-anim) .eclate {
+      height: 200vh;
+    }
+  }
+  :global(html.js-anim) .eclate .epingle {
+    position: sticky;
+    top: 0;
+    min-height: 100svh;
+    padding-block: 72px 24px;
+  }
+  @media (max-width: 1023px) {
+    /* Mobile : le visuel passe au-dessus, le texte se réduit pour tenir dans l'écran collant. */
+    :global(html.js-anim) .eclate .epingle {
+      height: 100svh;
+      overflow: hidden;
+      align-content: center;
+      gap: 12px;
+    }
+    :global(html.js-anim) .eclate .epingle > div:last-child {
+      order: -1;
+    }
+    :global(html.js-anim) .eclate h2 {
+      font-size: 34px;
+    }
+    :global(html.js-anim) .eclate .legende-eclate {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+    :global(html.js-anim .eclate .anime svg) {
+      width: min(90vw, 46svh);
+    }
+  }
+  :global(html.js-anim) .eclate .statique {
+    display: none;
+  }
+  :global(html.js-anim) .eclate .anime {
+    display: block;
+  }
+  .legende-eclate li.en-place {
+    color: var(--texte-sur-nuit);
+  }
+  .legende-eclate li.en-place span {
+    background: var(--accent-laiton);
+    border-color: var(--accent-laiton);
+    color: var(--fond-nuit);
+  }
+</style>

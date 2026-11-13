@@ -1,0 +1,143 @@
+---
+/**
+ * 1. Héros engrenages (§4.1.1, repris du prototype v2 et enrichi).
+ * - Train de 4 roues réellement engrenées (module 9, dents 36 / 18 / 24 / 12, sens alternés,
+ *   phases calculées) + 5e roue floue en arrière-plan. Tracés calculés à la construction : rien ne « saute ».
+ * - Texte calculé (audit N2) : aucune accroche fausse pour un seul produit publié.
+ * - Animations (scripts/accueil.ts) : entrée R1 / R2, rotation continue accélérée au défilement,
+ *   parallaxe au pointeur (ordinateur), sortie liée au défilement, pause hors écran.
+ * - Sans JavaScript ou sans animation : tout est visible, immobile.
+ */
+import Truck from '@lucide/astro/icons/truck';
+import LockKeyhole from '@lucide/astro/icons/lock-keyhole';
+import Bouton from '../ui/Bouton.astro';
+import Roue from './Roue.astro';
+import { premiereRoue, roueVoisine } from '../../lib/engrenages';
+import { getDelaisEnVente, getProduitsPublies } from '../../lib/donnees';
+import { getReglagesAccueil, textesRecit } from '../../lib/accueil';
+
+const produits = await getProduitsPublies();
+const reglages = await getReglagesAccueil();
+const { heros, faits } = textesRecit(produits, reglages.seuil_soirees_heures);
+const delais = await getDelaisEnVente();
+
+const livraison = delais
+  ? `Livraison ${faits.suivie ? 'suivie ' : ''}en ${delais.min} à ${delais.max} jours`
+  : 'Délai de livraison affiché sur chaque fiche';
+
+// Train d'engrenages du prototype : A au centre, B et C autour de A, D sur B.
+const M = 9;
+const A = premiereRoue(430, 430, 36, M);
+const B = roueVoisine(A, 18, -31.5, M);
+const C = roueVoisine(A, 24, 126, M);
+const D = roueVoisine(B, 12, -80, M);
+const fond = premiereRoue(0, 0, 40, 12);
+---
+
+<section
+  data-heros
+  aria-labelledby="titre-heros"
+  class="heros grain relative -mt-14 flex min-h-[max(620px,100svh)] items-center overflow-hidden pt-14 md:-mt-16 md:pt-16"
+>
+  <div data-halo class="halo pointer-events-none absolute inset-0" aria-hidden="true"></div>
+
+  <div data-engrenages class="engrenages pointer-events-none absolute" aria-hidden="true">
+    <svg viewBox="-60 -60 1020 1020" class="h-full w-full overflow-visible">
+      <g class="roue-floue">
+        <Roue roue={{ ...fond, cx: 790, cy: 760 }} module={12} remplissage="url(#degrade-bois)" bras={6} marque="data-roue-fond" />
+      </g>
+      <g data-entree-roues>
+        <Roue roue={A} module={M} remplissage="url(#degrade-laiton)" bras={6} marque="data-roue-heros" />
+        <Roue roue={B} module={M} remplissage="url(#degrade-bois)" bras={4} marque="data-roue-heros" />
+        <Roue roue={C} module={M} remplissage="url(#degrade-bois)" bras={5} marque="data-roue-heros" />
+        <Roue roue={D} module={M} remplissage="url(#degrade-laiton)" bras={3} marque="data-roue-heros" />
+      </g>
+    </svg>
+  </div>
+
+  <div data-texte-heros class="conteneur relative z-[1] py-16">
+    <p class="kicker text-laiton" data-entree-bloc>Maquettes mécaniques en bois</p>
+    <h1 id="titre-heros" class="titre-serif ombre-texte mt-6 text-[52px] leading-[0.92] md:text-[clamp(54px,9.2vw,132px)]">
+      <span data-ligne class="block overflow-hidden pb-[0.06em]"><span class="block">La mécanique,</span></span>
+      <span data-ligne class="block overflow-hidden pb-[0.06em]"><span class="block"><em>pièce par pièce.</em></span></span>
+    </h1>
+    <p class="ombre-texte mt-6 max-w-[460px] text-[16px] leading-[1.65] text-creme-secondaire" data-entree-bloc>{heros}</p>
+    <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap" data-entree-bloc>
+      <Bouton registre="sombre" href="/maquettes/" class="aimant w-full sm:w-auto">Découvrir les maquettes</Bouton>
+      <Bouton registre="sombre" variante="secondaire" href="#trouver-ma-maquette" class="aimant w-full sm:w-auto">Trouver ma maquette</Bouton>
+    </div>
+    <p class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-creme-secondaire" data-entree-bloc>
+      <span class="inline-flex items-center gap-1.5">
+        <Truck size={16} stroke-width={1.75} aria-hidden="true" class="text-laiton" />{livraison}
+      </span>
+      <span aria-hidden="true">·</span>
+      <span class="inline-flex items-center gap-1.5">
+        <LockKeyhole size={16} stroke-width={1.75} aria-hidden="true" class="text-laiton" />Paiement par Stripe
+      </span>
+    </p>
+  </div>
+
+  <p class="indice-defiler pointer-events-none absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2.5 text-[11px] uppercase tracking-[0.2em] text-creme-secondaire md:flex" aria-hidden="true">
+    Défiler<i></i>
+  </p>
+</section>
+
+<style>
+  .heros {
+    background:
+      radial-gradient(55% 55% at 72% 45%, rgba(200, 161, 90, 0.16), transparent 70%),
+      radial-gradient(80% 80% at 15% 95%, rgba(30, 58, 95, 0.45), transparent 70%),
+      var(--fond-nuit);
+  }
+  .halo {
+    background: radial-gradient(30% 30% at 72% 45%, rgba(200, 161, 90, 0.12), transparent 70%);
+  }
+  .engrenages {
+    right: -55vw;
+    top: 30%;
+    width: 120vw;
+    aspect-ratio: 1;
+    opacity: 0.3;
+  }
+  @media (min-width: 768px) {
+    .engrenages {
+      right: -12vw;
+      top: 50%;
+      width: min(62vw, 820px);
+      translate: 0 -50%;
+      opacity: 1;
+    }
+  }
+  .roue-floue {
+    filter: blur(2px);
+    opacity: 0.35;
+  }
+  .ombre-texte {
+    text-shadow: 0 2px 30px rgba(10, 15, 26, 0.6);
+  }
+  .indice-defiler i {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(var(--accent-laiton), transparent);
+  }
+  :global(html.js-anim:not(.anim-pause)) .indice-defiler i {
+    animation: goutte 2s var(--courbe-sortie) infinite;
+  }
+  @keyframes goutte {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+  /* États initiaux de l'entrée : seulement si l'animation va tourner (html.js-anim). */
+  :global(html.js-anim) [data-heros] [data-ligne] > span {
+    transform: translateY(110%);
+  }
+  :global(html.js-anim) [data-heros] [data-entree-bloc] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  :global(html.js-anim) [data-heros] [data-entree-roues] {
+    opacity: 0;
+  }
+</style>

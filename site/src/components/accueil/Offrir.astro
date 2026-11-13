@@ -1,0 +1,104 @@
+---
+/**
+ * 9. Offrir (§4.1.9, audit N5, N11, N12, N31 ; knowledge/decisions.md).
+ * - Aucune date limite de Noël en dur, aucun compte à rebours : texte générique décidé par Cowork.
+ * - « Message cadeau » seulement si offrir.message_cadeau_actif est vrai (accueil.yaml).
+ * - Pas de mention « emballage cadeau » ni « colis sans prix » (non vérifiés).
+ * - Rétractation formulée comme un droit (« comme le prévoit la loi pour les achats à distance », N31).
+ * Animation (scripts/accueil.ts) : parallaxe légère du visuel, étiquette kraft qui oscille à l'entrée
+ * puis au survol. Sans animation / sans JS : visuel fixe, étiquette immobile.
+ */
+import Clock from '@lucide/astro/icons/clock';
+import Gift from '@lucide/astro/icons/gift';
+import Truck from '@lucide/astro/icons/truck';
+import RotateCcw from '@lucide/astro/icons/rotate-ccw';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import Bouton from '../ui/Bouton.astro';
+import { getDelaisEnVente, getProduitsPublies } from '../../lib/donnees';
+import { getReglagesAccueil, plageHeures, texteHeures } from '../../lib/accueil';
+import { traceEngrenage } from '../../lib/engrenages';
+
+const produits = await getProduitsPublies();
+const reglages = await getReglagesAccueil();
+const delais = await getDelaisEnVente();
+const h = plageHeures(produits);
+const demo = produits.some((p) => p.data.demo);
+
+const points = [
+  { icone: Clock, texte: `Choisissez selon le temps qu'il ou elle aime y passer : ${texteHeures(h.min, h.max)}.` },
+  ...(reglages.offrir.message_cadeau_actif
+    ? [{ icone: Gift, texte: 'Message cadeau : écrivez quelques mots au moment du paiement. Il sera imprimé et glissé dans le colis.' }]
+    : []),
+  {
+    icone: Truck,
+    texte: `${delais ? `Livré en ${delais.min} à ${delais.max} jours. ` : ''}Commandez tôt pour Noël : le délai est affiché sur chaque fiche.`,
+  },
+  { icone: RotateCcw, texte: 'Droit de rétractation : 14 jours à compter de la réception, comme le prévoit la loi pour les achats à distance.' },
+];
+---
+
+<section id="offrir" aria-labelledby="titre-offrir" class="conteneur py-20 md:py-28">
+  <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-[5vw]">
+    <div data-offrir-visuel class="relative mx-auto w-full max-w-[560px]">
+      <div class="overflow-hidden rounded-[24px] shadow-[0_30px_80px_rgba(17,24,39,.25)]">
+        <picture>
+          <source media="(min-width: 1024px)" srcset="/ambiance/bureau-nuit-1600.webp" width="1600" height="1000" />
+          <img
+            src="/ambiance/bureau-nuit-800.webp"
+            width="800"
+            height="1000"
+            alt="Boîte à musique en bois montée sur un bureau, à côté d'un paquet en papier kraft, de nuit"
+            loading="lazy"
+            decoding="async"
+            data-offrir-image
+            class="aspect-[4/5] h-full w-full scale-[1.12] object-cover lg:aspect-square"
+          />
+        </picture>
+      </div>
+      <svg viewBox="0 0 140 220" class="etiquette absolute -top-6 right-3 w-[96px] md:right-6 md:w-[120px]" aria-hidden="true" focusable="false" data-offrir-etiquette>
+        <path d="M70 0 C 66 30, 76 52, 70 74" stroke="#E3C88E" stroke-width="2.5" fill="none" />
+        <path d="M22 98 L70 74 L118 98 V196 Q118 210 104 210 H36 Q22 210 22 196 Z" fill="#C9A77A" stroke="#8A6A3A" stroke-width="2" />
+        <circle cx="70" cy="98" r="8" fill="#FBFAF7" stroke="#8A6A3A" stroke-width="2" />
+        <text x="70" y="140" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="21" fill="#3B2A16">À offrir</text>
+        <path transform="translate(70 175)" d={traceEngrenage(12, 12, 2)} fill-rule="evenodd" fill="#8A6A3A" />
+      </svg>
+      {demo && <p class="mt-3 text-[13px] text-gris-fort">Rendu 3D de démonstration. Lampe et objets de décor non fournis.</p>}
+    </div>
+
+    <div>
+      <p class="kicker text-laiton-fonce" data-revele="bloc">Offrir</p>
+      <h2 id="titre-offrir" class="titre-serif mt-5 text-[44px] leading-none md:text-[clamp(44px,5.4vw,76px)]" data-revele="titre">
+        <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block">Un cadeau</span></span>
+        <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block"><em>qui se construit.</em></span></span>
+      </h2>
+      <ul class="mt-8 grid gap-4" data-revele="cartes">
+        {
+          points.map(({ icone: Icone, texte }) => (
+            <li class="flex gap-3 text-[15px] leading-[1.6] text-gris-fort">
+              <Icone size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+              {texte}
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-9 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center" data-revele="bloc">
+        <Bouton variante="secondaire" href="/collections/idees-cadeaux/" fleche class="w-full sm:w-auto">Voir les idées cadeaux</Bouton>
+        <a
+          href="/trouver-ma-maquette/offrir/"
+          data-questionnaire-offrir
+          class="group inline-flex min-h-11 items-center justify-center gap-2 text-[15px] font-medium text-bleu-nuit underline-offset-4 hover:underline"
+        >
+          Trouver une maquette à offrir
+          <ArrowRight size={16} stroke-width={1.75} aria-hidden="true" class="transition-transform group-hover:translate-x-[3px]" />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .etiquette {
+    transform-origin: 50% 0;
+    filter: drop-shadow(0 10px 18px rgba(17, 24, 39, 0.25));
+  }
+</style>

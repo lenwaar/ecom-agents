@@ -1,0 +1,27 @@
+---
+/**
+ * Indicateur « Question [n] sur 3 » + 3 segments (§4.1.7). `n = 4` : résultats (3 segments remplis).
+ */
+interface Props {
+  n: 1 | 2 | 3 | 4;
+}
+
+const { n } = Astro.props;
+const segments = [1, 2, 3].map((i) => (i < n ? 'scale-x-100' : 'scale-x-0'));
+const libelle = n === 4 ? 'Vos suggestions' : `Question ${n} sur 3`;
+---
+
+<div data-progression>
+  <p class="text-[13px] font-medium tracking-[0.04em] text-gris-fort" data-progression-texte>
+    {libelle}
+  </p>
+  <div class="mt-2 flex gap-2" aria-hidden="true">
+    {
+      segments.map((etat) => (
+        <span class="h-[3px] flex-1 overflow-hidden rounded-full bg-bordure">
+          <b data-segment class={`block h-full origin-left bg-bleu-nuit transition-transform duration-400 ease-sortie ${etat}`} />
+        </span>
+      ))
+    }
+  </div>
+</div>

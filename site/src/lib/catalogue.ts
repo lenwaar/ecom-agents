@@ -69,6 +69,40 @@ export function estConnu<T>(valeur: T | string | null | undefined): valeur is T 
   return true;
 }
 
+// ---------------------------------------------------------------------------
+// Valeurs « À VÉRIFIER » sur les produits de démonstration (knowledge/decisions.md)
+// ---------------------------------------------------------------------------
+
+export const MARQUEUR_A_VERIFIER = 'À VÉRIFIER';
+
+/** Vrai si la valeur est vide ou contient « À VÉRIFIER » (y compris dans une liste ou un objet). */
+export function contientAVerifier(valeur: unknown): boolean {
+  if (valeur === null || valeur === undefined) return true;
+  if (typeof valeur === 'string') return valeur.trim() === '' || valeur.includes(MARQUEUR_A_VERIFIER);
+  if (Array.isArray(valeur)) return valeur.some(contientAVerifier);
+  if (typeof valeur === 'object') return Object.values(valeur).some(contientAVerifier);
+  return false;
+}
+
+/**
+ * Produit de démonstration : retire d'un texte chaque phrase qui contient « À VÉRIFIER ».
+ * Renvoie '' s'il ne reste rien (la ligne n'est alors pas affichée).
+ * « Notice d'assemblage : À VÉRIFIER » → '' ; « Écrivez-nous. Délai : À VÉRIFIER. » → « Écrivez-nous. »
+ */
+export function texteDemo(texte: string): string {
+  if (!texte.includes(MARQUEUR_A_VERIFIER)) return texte.trim();
+  return texte
+    .split(/(?<=[.!?])\s+/)
+    .filter((phrase) => !phrase.includes(MARQUEUR_A_VERIFIER))
+    .join(' ')
+    .trim();
+}
+
+/** Liste de textes d'un produit de démonstration, sans les éléments inconnus. */
+export function listeDemo(valeurs: string[]): string[] {
+  return valeurs.map(texteDemo).filter((v) => v !== '');
+}
+
 export function formatHeures(min: number, max: number): string {
   return min === max ? `${min} h` : `${min} à ${max} h`;
 }

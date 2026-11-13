@@ -1,0 +1,96 @@
+---
+/**
+ * 6. Les maquettes du moment (§4.1.6, repris du prototype v2). Sélection ÉDITORIALE (accueil.yaml,
+ * selection_du_moment), jamais « meilleures ventes » ni « populaires ».
+ * - Cartes produit §4.0 (CarteProduit). Mobile 1 colonne, 2 dès 640 px, 4 dès 1024 px.
+ * - Ordinateur avec animation (prototype v2) : rail horizontal épinglé qui défile avec la page,
+ *   barre de progression ; la hauteur de la section est calculée par scripts/accueil.ts.
+ * - Sans animation / sans JS : grille simple, tout visible.
+ */
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import CarteProduit from '../produit/CarteProduit.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+import { getReglagesAccueil, produitParSlug } from '../../lib/accueil';
+
+const reglages = await getReglagesAccueil();
+const tous = await getProduitsPublies();
+const selection = reglages.selection_du_moment.map((slug) => produitParSlug(tous, slug, 'selection_du_moment'));
+const demo = selection.some((p) => p.data.demo);
+---
+
+<section data-moment aria-labelledby="titre-moment" class="moment relative">
+  <div class="epingle py-20 md:py-28">
+    <div class="conteneur flex flex-wrap items-end justify-between gap-6">
+      <div>
+        <p class="kicker text-laiton-fonce" data-revele="bloc">Sélection</p>
+        <h2 id="titre-moment" class="titre-serif mt-5 text-[44px] leading-none md:text-[clamp(44px,5.4vw,76px)]" data-revele="titre">
+          <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block">Les maquettes</span></span>
+          <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block"><em>du moment.</em></span></span>
+        </h2>
+      </div>
+      <div class="max-w-[360px]" data-revele="bloc">
+        {demo && <p class="text-[14px] text-gris-fort">Rendus 3D de démonstration : les vraies photos remplaceront ces images à la mise en vente.</p>}
+        <a href="/maquettes/" class="group mt-3 inline-flex min-h-11 items-center gap-2 text-[15px] font-medium text-bleu-nuit underline-offset-4 hover:underline">
+          Tout le catalogue
+          <ArrowRight size={18} stroke-width={1.75} aria-hidden="true" class="transition-transform group-hover:translate-x-[3px]" />
+        </a>
+      </div>
+    </div>
+
+    <div class="cadre-rail conteneur mt-10">
+      <ul data-moment-rail class="rail grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4" data-revele="cartes">
+        {
+          selection.map((produit) => (
+            <li class="carte-rail">
+              <CarteProduit produit={produit} sizes="(min-width: 1024px) 340px, (min-width: 640px) 50vw, 100vw" />
+            </li>
+          ))
+        }
+        <li class="fin-rail hidden" aria-hidden="true">
+          <a
+            href="/maquettes/"
+            tabindex="-1"
+            class="flex h-full min-h-[320px] flex-col justify-end rounded-carte bg-nuit p-6 text-creme transition-colors hover:bg-nuit-2"
+          >
+            <span class="titre-serif text-[34px] leading-none">Tout <em class="text-laiton">le catalogue.</em></span>
+            <ArrowRight size={22} stroke-width={1.75} class="mt-4" />
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="barre-rail conteneur mt-8 hidden" aria-hidden="true">
+      <span class="relative block h-[2px] overflow-hidden bg-bordure"><b data-moment-barre class="absolute inset-0 origin-left scale-x-0 bg-laiton-fonce"></b></span>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Rail horizontal : ordinateur, avec animation, quand le script l'active (classe .horizontal). */
+  .moment.horizontal .epingle {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    padding-block: 72px 32px;
+  }
+  .moment.horizontal .cadre-rail {
+    max-width: none;
+    padding-right: 0;
+  }
+  .moment.horizontal .rail {
+    display: flex;
+    width: max-content;
+    will-change: transform;
+  }
+  .moment.horizontal .carte-rail,
+  .moment.horizontal .fin-rail {
+    display: block;
+    width: clamp(280px, 24vw, 330px);
+  }
+  .moment.horizontal .barre-rail {
+    display: block;
+  }
+</style>

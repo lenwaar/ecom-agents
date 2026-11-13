@@ -1,0 +1,71 @@
+---
+/**
+ * « Trouver ma maquette », version sans JavaScript et partageable (§3 et §4.1.7 de la spécification v2).
+ * 1 + 2 + 6 + 18 = 27 pages statiques, toutes en noindex :
+ *   /trouver-ma-maquette/                      question 1 (pour qui ?)
+ *   /trouver-ma-maquette/[pour-qui]/           question 2 (niveau)
+ *   /trouver-ma-maquette/[pour-qui]/[niveau]/  question 3 (temps)
+ *   /trouver-ma-maquette/[pour-qui]/[niveau]/[temps]/  résultat
+ * Chaque réponse est un lien. Aucun cookie, aucun stockage (audit N9, N10).
+ */
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import FilAriane from '../../components/produit/FilAriane.astro';
+import EtapeQuestion from '../../components/questionnaire/EtapeQuestion.astro';
+import Progression from '../../components/questionnaire/Progression.astro';
+import Resultats from '../../components/questionnaire/Resultats.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+import { getReglagesAccueil, versQuiz } from '../../lib/accueil';
+import { QUESTIONS, cheminEtape, type Experience, type PourQui, type Temps } from '../../lib/questionnaire';
+
+export const getStaticPaths = (() => {
+  const chemins: { params: { etapes: string | undefined } }[] = [{ params: { etapes: undefined } }];
+  for (const a of QUESTIONS.pourQui.choix) {
+    chemins.push({ params: { etapes: a.valeur } });
+    for (const b of QUESTIONS.experience.choix) {
+      chemins.push({ params: { etapes: `${a.valeur}/${b.valeur}` } });
+      for (const c of QUESTIONS.temps.choix) chemins.push({ params: { etapes: `${a.valeur}/${b.valeur}/${c.valeur}` } });
+    }
+  }
+  return chemins;
+}) satisfies GetStaticPaths;
+
+const [pourQui, experience, temps] = (Astro.params.etapes ?? '').split('/').filter(Boolean) as [PourQui?, Experience?, Temps?];
+const produits = await getProduitsPublies();
+const reglages = await getReglagesAccueil();
+const n = (temps ? 4 : experience ? 3 : pourQui ? 2 : 1) as 1 | 2 | 3 | 4;
+const precedent = n === 1 ? undefined : n === 2 ? cheminEtape() : n === 3 ? cheminEtape(pourQui) : undefined;
+---
+
+<Base
+  titre="Trouver ma maquette en 3 questions | Rouage & Laiton"
+  description="Trois questions pour choisir une maquette en bois selon votre niveau et votre temps. Vos réponses ne sont pas enregistrées."
+  noindex
+>
+  <div class="conteneur pt-6 pb-24 md:pt-8">
+    <FilAriane etapes={[{ libelle: 'Accueil', href: '/' }, { libelle: 'Trouver ma maquette' }]} />
+    <h1 class="titre-serif mt-6 text-[44px] leading-none md:text-[64px]">Trouver <em>ma maquette.</em></h1>
+    <p class="mt-4 max-w-[560px] text-[16px] text-gris">Trois questions, une suggestion. Vos réponses ne sont pas enregistrées : ni compte, ni cookie.</p>
+
+    <div class="mt-10 max-w-[980px] rounded-[24px] border border-bordure bg-carte p-5 md:p-10">
+      <Progression n={n} />
+      <div class="mt-8">
+        {n === 1 && <EtapeQuestion question="pourQui" />}
+        {n === 2 && <EtapeQuestion question="experience" pourQui={pourQui} precedent={precedent} />}
+        {n === 3 && <EtapeQuestion question="temps" pourQui={pourQui} experience={experience} precedent={precedent} />}
+        {
+          n === 4 && (
+            <Resultats
+              produits={produits}
+              quiz={versQuiz(produits)}
+              pourQui={pourQui!}
+              experience={experience!}
+              temps={temps!}
+              messageCadeau={reglages.offrir.message_cadeau_actif}
+            />
+          )
+        }
+      </div>
+    </div>
+  </div>
+</Base>

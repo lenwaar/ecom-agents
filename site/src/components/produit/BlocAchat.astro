@@ -8,7 +8,8 @@
  * - Vente : lien Payment Link seulement si statut en-vente, demo false et lien https://buy.stripe.com/
  *   (aucune intégration Stripe active : un simple lien public, jamais de clé).
  * - « Livraison suivie » seulement si `suivi: true` (audit N8). Aucune valeur inventée :
- *   les inconnues s'affichent « [À VALIDER] ».
+ *   les inconnues s'affichent « [À VALIDER] », sauf sur un produit de démonstration où elles ne sont
+ *   pas affichées (knowledge/decisions.md : « reçue au plus tard [max] jours », frais omis).
  */
 import Clock from '@lucide/astro/icons/clock';
 import Truck from '@lucide/astro/icons/truck';
@@ -39,6 +40,8 @@ const messageCadeau = reglages?.offrir?.message_cadeau_actif === true;
 const { lienAchat, libelleDesactive } = etatAchat(produit);
 
 const fraisFormat = (f: number) => (f === 0 ? 'offerte' : `${formatPrix(f)} par commande, quel que soit le nombre de maquettes`);
+const fraisConnus = typeof p.frais_livraison_ttc === 'number';
+const delaiMinConnu = typeof p.delai_livraison_min_jours === 'number';
 const mailto = lienEmail(boutique.vendeur.email, `Question sur ${p.nom_court}`);
 ---
 
@@ -71,8 +74,21 @@ const mailto = lienEmail(boutique.vendeur.email, `Question sur ${p.nom_court}`);
     <Truck size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
     <p>
       {p.suivi === true ? 'Livraison suivie' : 'Livraison'} :{' '}
-      <Donnee v={p.frais_livraison_ttc} note="frais de livraison" format={fraisFormat} /> · reçue en{' '}
-      <Donnee v={p.delai_livraison_min_jours} note="délai minimum" /> à {p.delai_livraison_max_jours} jours après votre commande
+      {
+        p.demo ? (
+          <Fragment>
+            {fraisConnus && <Fragment>{fraisFormat(p.frais_livraison_ttc as number)} · </Fragment>}
+            {delaiMinConnu
+              ? `reçue en ${p.delai_livraison_min_jours} à ${p.delai_livraison_max_jours} jours après votre commande`
+              : `reçue au plus tard ${p.delai_livraison_max_jours} jours après votre commande`}
+          </Fragment>
+        ) : (
+          <Fragment>
+            <Donnee v={p.frais_livraison_ttc} note="frais de livraison" format={fraisFormat} /> · reçue en{' '}
+            <Donnee v={p.delai_livraison_min_jours} note="délai minimum" /> à {p.delai_livraison_max_jours} jours après votre commande
+          </Fragment>
+        )
+      }
       {
         estConnu(p.expedie_depuis) && (
           <span class="block text-gris">Expédiée depuis {p.expedie_depuis}</span>

@@ -1,0 +1,22 @@
+---
+/**
+ * Bouton « Mettre en pause les animations » des pages cinématiques (audit N4, WCAG 2.2.2).
+ * Fixe en bas de l'écran, 44 px. Affiché par le script seulement si des animations tournent.
+ * Il pose html.anim-pause pendant la visite : rotations, bande défilante, oscillations arrêtées.
+ * Aucun stockage (ni cookie, ni localStorage) : l'état est oublié au changement de page.
+ */
+import Pause from '@lucide/astro/icons/pause';
+import Play from '@lucide/astro/icons/play';
+---
+
+<button
+  type="button"
+  data-pause-global
+  aria-pressed="false"
+  hidden
+  class="fixed right-4 bottom-4 z-40 inline-flex min-h-11 items-center gap-2 rounded-full border border-bordure-sombre bg-nuit/85 px-4 text-[13px] text-creme shadow-[0_8px_24px_rgba(0,0,0,.25)] backdrop-blur transition-colors hover:border-laiton hover:text-laiton"
+>
+  <Pause data-icone-pause size={16} stroke-width={1.75} aria-hidden="true" />
+  <Play data-icone-lecture size={16} stroke-width={1.75} aria-hidden="true" class="hidden" />
+  <span data-libelle class="sr-only sm:not-sr-only">Mettre en pause les animations</span>
+</button>

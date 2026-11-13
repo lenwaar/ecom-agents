@@ -1,0 +1,110 @@
+---
+/**
+ * 7. « Trouver ma maquette » sur l'accueil (§4.1.7, audit N7, N9, N10).
+ * - Sans JavaScript : la question 1, dont chaque réponse est un lien vers /trouver-ma-maquette/…
+ * - Avec JavaScript (scripts/questionnaire.ts) : les liens sont interceptés, les questions 2 et 3
+ *   (modèles <template>) et les résultats s'affichent dans la section. Données : JSON compact des produits
+ *   publiés, intégré à la construction (aucune requête). Aucun cookie, aucun localStorage, aucune transmission.
+ * - Focus sur la légende de la question suivante ; zone aria-live (« Question 2 sur 3 », « 3 maquettes trouvées »).
+ */
+import ArrowLeft from '@lucide/astro/icons/arrow-left';
+import Clock from '@lucide/astro/icons/clock';
+import Gift from '@lucide/astro/icons/gift';
+import Info from '@lucide/astro/icons/info';
+import Link from '@lucide/astro/icons/link';
+import RotateCcw from '@lucide/astro/icons/rotate-ccw';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import EtapeQuestion from '../questionnaire/EtapeQuestion.astro';
+import Progression from '../questionnaire/Progression.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+import { getReglagesAccueil, versQuiz } from '../../lib/accueil';
+
+const produits = await getProduitsPublies();
+const reglages = await getReglagesAccueil();
+const json = JSON.stringify({ produits: versQuiz(produits), messageCadeau: reglages.offrir.message_cadeau_actif }).replace(/</g, '\\u003c');
+---
+
+<section id="trouver-ma-maquette" aria-labelledby="titre-questionnaire" class="conteneur py-20 md:py-28">
+  <p class="kicker text-laiton-fonce" data-revele="bloc">Trouver ma maquette</p>
+  <h2 id="titre-questionnaire" class="titre-serif mt-5 text-[44px] leading-none md:text-[clamp(44px,5.4vw,76px)]" data-revele="titre">
+    <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block">Trouver</span></span>
+    <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block"><em>ma maquette.</em></span></span>
+  </h2>
+  <p class="mt-5 max-w-[560px] text-[16px] text-gris" data-revele="bloc">Trois questions, une suggestion. Vos réponses ne sont pas enregistrées : ni compte, ni cookie.</p>
+
+  <div data-questionnaire class="relative mt-10 max-w-[980px] overflow-hidden rounded-[24px] border border-bordure bg-carte p-5 md:p-10" data-revele="bloc">
+    <div class="flex items-start justify-between gap-4">
+      <div class="flex-1"><Progression n={1} /></div>
+      <button
+        type="button"
+        data-retour
+        hidden
+        class="-mt-2 inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full px-3 text-[14px] font-medium text-bleu-nuit hover:bg-encart"
+      >
+        <ArrowLeft size={16} stroke-width={1.75} aria-hidden="true" />
+        Précédent
+      </button>
+    </div>
+    <div data-zone class="mt-8">
+      <EtapeQuestion question="pourQui" />
+    </div>
+    <p data-annonce aria-live="polite" class="sr-only"></p>
+
+    <template data-modele="experience"><EtapeQuestion question="experience" pourQui="moi" /></template>
+    <template data-modele="temps"><EtapeQuestion question="temps" pourQui="moi" experience="premiere" /></template>
+    <template data-modele="resultats">
+      <div>
+        <h3 tabindex="-1" data-titre class="titre-serif text-[30px] leading-[1.1] outline-none md:text-[40px]"></h3>
+        <p data-reponses class="mt-3 text-[15px] text-gris-fort"></p>
+        <p data-message hidden class="mt-4 flex gap-2 rounded-[14px] bg-encart p-4 text-[15px]">
+          <Info size={18} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+          <span></span>
+        </p>
+        <ul data-liste class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></ul>
+        <p data-offrir hidden class="mt-6 flex gap-3 rounded-[14px] border border-bordure p-4 text-[15px]">
+          <Gift size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+          <span></span>
+        </p>
+        <p class="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[15px]">
+          <button type="button" data-recommencer class="inline-flex min-h-11 items-center gap-2 font-medium text-bleu-nuit underline-offset-4 hover:underline">
+            <RotateCcw size={16} stroke-width={1.75} aria-hidden="true" />
+            Modifier mes réponses
+          </button>
+          <a data-lien-resultat href="/trouver-ma-maquette/" class="inline-flex min-h-11 items-center gap-2 font-medium text-bleu-nuit underline-offset-4 hover:underline">
+            <Link size={16} stroke-width={1.75} aria-hidden="true" />
+            Lien vers ce résultat
+          </a>
+        </p>
+      </div>
+    </template>
+    <template data-modele="carte">
+      <li class="flex flex-col gap-3">
+        <ul data-raisons class="flex flex-wrap gap-2" aria-label="Pourquoi cette suggestion"></ul>
+        <a data-lien class="group flex flex-1 gap-4 rounded-[16px] border border-bordure bg-papier p-3 transition-[transform,box-shadow] duration-400 ease-sortie hover:-translate-y-1 hover:shadow-survol">
+          <img data-image alt="" width="800" height="1000" loading="lazy" decoding="async" class="h-[125px] w-[100px] shrink-0 rounded-[12px] object-cover" style="background: radial-gradient(70% 60% at 50% 40%, #f4eee2, #e9e2d3);" />
+          <span class="flex min-w-0 flex-col gap-1.5 py-1">
+            <span class="flex flex-wrap gap-1.5">
+              <span class="rounded-full border border-bordure bg-carte px-2 py-0.5 text-[12px] font-medium">14 ans et plus</span>
+              <span data-demo hidden class="rounded-full bg-encre px-2 py-0.5 text-[12px] font-medium text-creme">Démonstration</span>
+            </span>
+            <span data-nom class="text-[16px] font-semibold leading-snug"></span>
+            <span class="inline-flex items-center gap-1.5 text-[14px] text-gris-fort">
+              <Clock size={16} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" /><span data-temps></span>
+            </span>
+            <span class="mt-auto flex items-center gap-2">
+              <span data-prix class="text-[18px] font-semibold"></span>
+              <ArrowRight size={16} stroke-width={1.75} aria-hidden="true" class="transition-transform group-hover:translate-x-[3px]" />
+            </span>
+            <span data-prix-demo hidden class="text-[12px] text-gris-fort">Prix indicatif de démonstration</span>
+          </span>
+        </a>
+      </li>
+    </template>
+    <script type="application/json" data-produits is:inline set:html={json} />
+  </div>
+</section>
+
+<script>
+  import { initialiserQuestionnaire } from '../../scripts/questionnaire';
+  initialiserQuestionnaire();
+</script>

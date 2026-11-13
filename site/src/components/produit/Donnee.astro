@@ -1,30 +1,35 @@
 ---
 /**
- * Affiche une donnée de fiche produit. Les fiches de démonstration contiennent des « À VÉRIFIER »
- * (y compris dans des champs numériques ou booléens) : ils deviennent un marqueur « [À VALIDER] »
- * surligné (composant Valeur), jamais un chiffre inventé.
- * - Valeur entière inconnue : « [À VALIDER : note] ».
- * - Texte qui contient « À VÉRIFIER » au milieu (« Notice d'assemblage : À VÉRIFIER. ») :
- *   la partie connue est gardée, chaque « À VÉRIFIER » devient le marqueur.
+ * Affiche une donnée de fiche produit, sans jamais inventer de valeur.
+ * - Produit de démonstration (`demo`) : une valeur inconnue (« À VÉRIFIER ») n'est PAS affichée
+ *   (knowledge/decisions.md) ; dans un texte, seule la phrase qui contient « À VÉRIFIER » est retirée.
+ *   Le composant parent masque la ligne entière avec `contientAVerifier` / `texteDemo` (lib/catalogue.ts).
+ * - Vrai produit : une valeur « À VÉRIFIER » fait déjà échouer la construction (content.config.ts).
+ *   Par sécurité, une valeur inconnue s'afficherait « [À VALIDER] » surligné.
  */
 import Valeur from '../ui/Valeur.astro';
+import { MARQUEUR_A_VERIFIER, texteDemo } from '../../lib/catalogue';
 
 interface Props {
   v: unknown;
   note?: string;
   /** Mise en forme d'une valeur connue (nombre, booléen, objet). */
   format?: (valeur: any) => string;
+  /** Produit de démonstration : les valeurs inconnues ne sont pas affichées. */
+  demo?: boolean;
 }
 
-const { v, note, format } = Astro.props;
-const MARQUEUR = 'À VÉRIFIER';
+const { v, note, format, demo = false } = Astro.props;
 
-const inconnu = v === null || v === undefined || (typeof v === 'string' && (v.trim() === '' || v.trim() === MARQUEUR));
-const morceaux = typeof v === 'string' && !inconnu ? v.split(MARQUEUR) : null;
+const inconnu = v === null || v === undefined || (typeof v === 'string' && (v.trim() === '' || v.trim() === MARQUEUR_A_VERIFIER));
+const texte = typeof v === 'string' && demo ? texteDemo(v) : null;
+const morceaux = typeof v === 'string' && !inconnu && !demo ? v.split(MARQUEUR_A_VERIFIER) : null;
 ---
 
 {
-  inconnu ? (
+  demo ? (
+    inconnu || texte === '' ? null : <Fragment>{format ? format(texte ?? v) : texte ?? String(v)}</Fragment>
+  ) : inconnu ? (
     <Valeur v="" note={note} />
   ) : morceaux && morceaux.length > 1 ? (
     morceaux.map((m, i) => (

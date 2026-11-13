@@ -1,0 +1,106 @@
+---
+/**
+ * 10. L'atelier : conseils et lettre d'information (§4.1.10), panneau sombre.
+ * - 3 cartes de conseils (accueil.yaml, conseils_atelier) : titres de la spécification, textes À RÉDIGER
+ *   (redacteur-catalogue, vérifiés sur un vrai assemblage) : marqueur « [À VALIDER] », rien d'inventé.
+ * - Lettre : visible mais désactivée (« Bientôt ») tant qu'aucun service d'envoi n'est choisi.
+ * - Animation : halo laiton qui suit lentement le pointeur (ordinateur), cartes en cascade.
+ * Images d'illustration : rendus « boite » et « detail » des produits choisis dans accueil.yaml.
+ */
+import Wrench from '@lucide/astro/icons/wrench';
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import Valeur from '../ui/Valeur.astro';
+import LettreAtelier from '../atelier/LettreAtelier.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+import { cheminVue, type NomVue } from '../../lib/catalogue';
+import { getReglagesAccueil, produitParSlug } from '../../lib/accueil';
+import { conseils } from '../../lib/atelier';
+import { pageExiste } from '../../lib/navigation';
+
+const reglages = await getReglagesAccueil();
+const produits = await getProduitsPublies();
+const liste = conseils(reglages.conseils_atelier);
+const eclate = produitParSlug(produits, reglages.produit_eclate, 'produit_eclate').data.slug;
+const comparateur = produitParSlug(produits, reglages.produit_comparateur, 'produit_comparateur').data.slug;
+const images: { slug: string; vue: NomVue }[] = [
+  { slug: eclate, vue: 'boite' },
+  { slug: eclate, vue: 'detail' },
+  { slug: comparateur, vue: 'boite' },
+];
+const atelierExiste = pageExiste('/atelier/');
+---
+
+<section data-atelier aria-labelledby="titre-atelier" class="atelier registre-sombre grain relative overflow-hidden bg-nuit py-20 text-creme md:py-32">
+  <div data-atelier-halo class="halo pointer-events-none absolute top-0 left-0 hidden h-[640px] w-[640px] rounded-full md:block" aria-hidden="true"></div>
+  <div class="conteneur relative z-[1]">
+    <p class="kicker text-laiton" data-revele="bloc">L'atelier</p>
+    <h2 id="titre-atelier" class="titre-serif mt-5 text-[44px] leading-none md:text-[clamp(44px,5.4vw,76px)]" data-revele="titre">
+      <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block">Les gestes</span></span>
+      <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block"><em>qui font la différence.</em></span></span>
+    </h2>
+
+    <ul class="mt-12 grid gap-4 lg:grid-cols-3" data-revele="cartes">
+      {
+        liste.map((c, i) => (
+          <li class="carte-conseil group flex flex-col overflow-hidden rounded-[22px] border border-bordure-sombre bg-nuit-2 transition-transform duration-400 ease-sortie">
+            <div class="aspect-[16/10] overflow-hidden bg-nuit">
+              <img
+                src={cheminVue(images[i % images.length].slug, images[i % images.length].vue, 800)}
+                srcset={`${cheminVue(images[i % images.length].slug, images[i % images.length].vue, 800)} 800w, ${cheminVue(images[i % images.length].slug, images[i % images.length].vue, 1600)} 1600w`}
+                sizes="(min-width: 1024px) 33vw, 100vw"
+                width="800"
+                height="1000"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                class="h-full w-full object-cover transition-transform duration-[900ms] ease-sortie group-hover:scale-[1.06]"
+              />
+            </div>
+            <div class="flex flex-1 flex-col p-6">
+              <p class="flex items-center gap-2 text-[12px] tracking-[0.14em] text-laiton uppercase">
+                <Wrench size={16} stroke-width={1.75} aria-hidden="true" />
+                Conseil {String(i + 1).padStart(2, '0')}
+              </p>
+              <h3 class="titre-serif mt-3 text-[26px] leading-[1.15]">{c.titre}</h3>
+              <p class="mt-3 text-[15px] text-creme-secondaire">
+                <Valeur v={c.texte} note="conseil à rédiger et vérifier sur un vrai assemblage" />
+              </p>
+              {atelierExiste && (
+                <a
+                  href={`/atelier/#${c.ancre}`}
+                  class="mt-auto inline-flex min-h-11 items-center gap-2 self-start pt-4 text-[15px] font-medium text-creme underline-offset-4 hover:text-laiton hover:underline"
+                  aria-label={`Lire le conseil : ${c.titre}`}
+                >
+                  Lire le conseil
+                  <ArrowRight size={16} stroke-width={1.75} aria-hidden="true" class="transition-transform group-hover:translate-x-[3px]" />
+                </a>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+    {produits.some((p) => p.data.demo) && <p class="mt-4 text-[13px] text-creme-secondaire">Illustrations : rendus 3D de démonstration.</p>}
+
+    <div class="mt-14" data-revele="bloc">
+      <LettreAtelier id="lettre-accueil" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .halo {
+    background: radial-gradient(closest-side, rgba(200, 161, 90, 0.12), transparent);
+    translate: -50% -50%;
+    opacity: 0;
+    transition: opacity 600ms;
+  }
+  :global(html.js-anim:not(.anim-pause)) .atelier:hover .halo {
+    opacity: 1;
+  }
+  @media (hover: hover) {
+    .carte-conseil:hover {
+      transform: translateY(-4px);
+    }
+  }
+</style>

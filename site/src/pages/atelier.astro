@@ -1,0 +1,114 @@
+---
+/**
+ * L'atelier /atelier/ (§4.5 de la spécification v2), registre cinématique.
+ * Héros sombre, conseils en sections ancrées (#detacher-une-piece, …), bloc lettre d'information.
+ * Les textes des conseils sont À RÉDIGER par redacteur-catalogue et à vérifier sur un vrai assemblage :
+ * ils restent « [À VALIDER] » tant qu'ils n'existent pas (aucun conseil inventé).
+ * Lettre inactive (knowledge/decisions.md) : action principale « Découvrir les maquettes ».
+ * Animations : révélations R1 / R2 / R3 seulement (scripts/mouvement.ts) ; rien de caché sans JavaScript.
+ */
+import Base from '../layouts/Base.astro';
+import Bouton from '../components/ui/Bouton.astro';
+import Valeur from '../components/ui/Valeur.astro';
+import FilAriane from '../components/produit/FilAriane.astro';
+import LettreAtelier from '../components/atelier/LettreAtelier.astro';
+import { getProduitsPublies } from '../lib/donnees';
+import { cheminVue, type NomVue } from '../lib/catalogue';
+import { getReglagesAccueil, produitParSlug } from '../lib/accueil';
+import { conseils } from '../lib/atelier';
+
+const reglages = await getReglagesAccueil();
+const produits = await getProduitsPublies();
+const liste = conseils(reglages.conseils_atelier);
+const eclate = produitParSlug(produits, reglages.produit_eclate, 'produit_eclate').data.slug;
+const comparateur = produitParSlug(produits, reglages.produit_comparateur, 'produit_comparateur').data.slug;
+const images: { slug: string; vue: NomVue }[] = [
+  { slug: eclate, vue: 'boite' },
+  { slug: eclate, vue: 'detail' },
+  { slug: comparateur, vue: 'boite' },
+];
+const demo = produits.some((p) => p.data.demo);
+---
+
+<Base
+  titre="L'atelier : conseils d'assemblage | Rouage & Laiton"
+  description="Conseils d'assemblage pour les maquettes en bois : détacher une pièce, régler un engrenage, préparer les planches. Et la lettre de l'atelier."
+  registre="sombre"
+  animations
+>
+  <section class="heros-atelier grain relative -mt-14 overflow-hidden pt-14 md:-mt-16 md:pt-16">
+    <picture>
+      <source media="(min-width: 768px)" srcset="/ambiance/comparateur-planches-1600.webp" width="1600" height="1000" />
+      <img
+        src="/ambiance/comparateur-planches-800.webp"
+        width="800"
+        height="1000"
+        alt=""
+        fetchpriority="high"
+        class="absolute inset-0 -z-10 h-full w-full object-cover opacity-55"
+      />
+    </picture>
+    <div class="voile absolute inset-0 -z-10" aria-hidden="true"></div>
+    <div class="conteneur relative z-[1] flex min-h-[70svh] flex-col justify-end pt-8 pb-16 md:pb-24">
+      <FilAriane registre="sombre" etapes={[{ libelle: 'Accueil', href: '/' }, { libelle: "L'atelier" }]} />
+      <p class="kicker mt-10 text-laiton" data-revele="bloc">L'atelier</p>
+      <h1 class="titre-serif mt-5 text-[48px] leading-[0.95] md:text-[clamp(56px,7vw,104px)]">
+        Les gestes <em>qui font la différence.</em>
+      </h1>
+      <p class="mt-6 max-w-[520px] text-[16px] text-creme-secondaire" data-revele="bloc">
+        Des conseils d'assemblage, vérifiés sur de vraies maquettes avant d'être publiés.
+      </p>
+      {demo && <p class="mt-4 text-[13px] text-creme-secondaire">Illustrations : rendus 3D de démonstration.</p>}
+    </div>
+  </section>
+
+  <div class="registre-clair relative z-[2] -mt-8 rounded-t-[32px] bg-papier text-encre">
+    <div class="conteneur grid gap-20 pt-16 pb-20 md:pt-24">
+      {
+        liste.map((c, i) => (
+          <section id={c.ancre} aria-labelledby={`titre-${c.ancre}`} class="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
+            <div class={i % 2 ? 'lg:order-2' : ''} data-revele="bloc">
+              <img
+                src={cheminVue(images[i % images.length].slug, images[i % images.length].vue, 800)}
+                srcset={`${cheminVue(images[i % images.length].slug, images[i % images.length].vue, 800)} 800w, ${cheminVue(images[i % images.length].slug, images[i % images.length].vue, 1600)} 1600w`}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                width="800"
+                height="1000"
+                alt=""
+                loading="lazy"
+                decoding="async"
+                class="aspect-[4/3] w-full rounded-[22px] object-cover"
+              />
+            </div>
+            <div>
+              <p class="text-[12px] tracking-[0.14em] text-laiton-fonce uppercase">Conseil {String(i + 1).padStart(2, '0')}</p>
+              <h2 id={`titre-${c.ancre}`} class="titre-serif mt-3 text-[36px] leading-[1.05] md:text-[52px]">
+                {c.titre}
+              </h2>
+              <p class="mt-5 max-w-[60ch] text-[16px] text-gris-fort">
+                <Valeur v={c.texte} note="conseil à rédiger (redacteur-catalogue) et à vérifier sur un vrai assemblage" />
+              </p>
+            </div>
+          </section>
+        ))
+      }
+    </div>
+  </div>
+
+  <section aria-label="La lettre de l'atelier" class="registre-sombre bg-nuit py-20 text-creme md:py-28">
+    <div class="conteneur">
+      <LettreAtelier id="lettre-atelier" />
+      <p class="mt-12">
+        <Bouton registre="sombre" href="/maquettes/">Découvrir les maquettes</Bouton>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .voile {
+    background:
+      linear-gradient(180deg, rgba(10, 15, 26, 0.55), rgba(10, 15, 26, 0.92)),
+      radial-gradient(55% 55% at 72% 45%, rgba(200, 161, 90, 0.15), transparent 70%);
+  }
+</style>

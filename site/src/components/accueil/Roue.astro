@@ -1,0 +1,44 @@
+---
+/**
+ * Une roue dentée ajourée en SVG (style du prototype v2), calculée à la construction.
+ * Le groupe intérieur porte data-roue / data-phase / data-rapport : les scripts le font tourner
+ * (rotation = phase + rapport × angle de la première roue). Immobile sans JavaScript.
+ */
+import { traceRoueAjouree, type Engrenage } from '../../lib/engrenages';
+
+interface Props {
+  roue: Engrenage;
+  module: number;
+  remplissage: string;
+  bras?: number;
+  /** Attribut posé sur le groupe tournant (ex. data-roue-heros). */
+  marque?: string;
+  class?: string;
+}
+
+const { roue, module, remplissage, bras = 5, marque = 'data-roue', class: classe } = Astro.props;
+const { contour, jante, moyeu } = traceRoueAjouree(roue.dents, roue.rayon, module);
+const epaisseur = Math.max(roue.rayon * 0.11, 4);
+const attributs = { [marque]: '', 'data-phase': roue.phase.toFixed(4), 'data-rapport': roue.rapport.toFixed(6) };
+---
+
+<g transform={`translate(${roue.cx.toFixed(2)} ${roue.cy.toFixed(2)})`} class={classe}>
+  <g transform={`rotate(${roue.phase.toFixed(3)})`} {...attributs}>
+    <path d={contour} fill={remplissage} fill-rule="evenodd" />
+    {
+      Array.from({ length: bras }, (_, k) => (
+        <rect
+          x="0"
+          y={(-epaisseur / 2).toFixed(2)}
+          width={(jante + 1).toFixed(2)}
+          height={epaisseur.toFixed(2)}
+          rx={(epaisseur / 3).toFixed(2)}
+          fill={remplissage}
+          transform={`rotate(${((k * 360) / bras).toFixed(2)})`}
+        />
+      ))
+    }
+    <circle r={moyeu.toFixed(2)} fill={remplissage} />
+    <circle r={(moyeu * 0.42).toFixed(2)} fill="#0A0F1A" />
+  </g>
+</g>

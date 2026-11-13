@@ -1,0 +1,61 @@
+---
+/**
+ * 11. FAQ et réassurance (§4.1.11, audit point 26, N8, N31), panneau clair.
+ * - Réassurance : 4 éléments formulés comme des droits (composant partagé ReassuranceCompacte).
+ * - FAQ : 4 accordéons natifs (accueil.yaml, faq_apercu), réponses de la même source que /faq/.
+ * - Rappel final : bouton PRINCIPAL « Découvrir les maquettes » (même cible que le héros).
+ */
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import Bouton from '../ui/Bouton.astro';
+import QuestionFaq from '../aide/QuestionFaq.astro';
+import ReassuranceCompacte from '../produit/ReassuranceCompacte.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+import { getReglagesAccueil, textesRecit } from '../../lib/accueil';
+
+const reglages = await getReglagesAccueil();
+const { rappel } = textesRecit(await getProduitsPublies(), reglages.seuil_soirees_heures);
+---
+
+<section aria-labelledby="titre-faq-accueil" class="conteneur py-20 md:py-28">
+  <ReassuranceCompacte questionnaire={false} revele />
+
+  <div class="mt-20 grid gap-10 lg:grid-cols-[.8fr_1.2fr] lg:gap-[5vw]">
+    <div>
+      <p class="kicker text-laiton-fonce" data-revele="bloc">Aide</p>
+      <h2 id="titre-faq-accueil" class="titre-serif mt-5 text-[44px] leading-none md:text-[clamp(44px,5.4vw,76px)]" data-revele="titre">
+        <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block">Questions</span></span>
+        <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block"><em>fréquentes.</em></span></span>
+      </h2>
+      <a href="/faq/" class="group mt-6 inline-flex min-h-11 items-center gap-2 text-[15px] font-medium text-bleu-nuit underline-offset-4 hover:underline">
+        Toutes les questions
+        <ArrowRight size={16} stroke-width={1.75} aria-hidden="true" class="transition-transform group-hover:translate-x-[3px]" />
+      </a>
+    </div>
+    <div class="reponses border-t border-bordure" data-revele="bloc">
+      {reglages.faq_apercu.map((cle) => <QuestionFaq cle={cle} />)}
+    </div>
+  </div>
+
+  <div class="mt-24 flex flex-col items-start gap-6 rounded-[28px] bg-nuit p-8 text-creme md:flex-row md:items-center md:justify-between md:p-12 registre-sombre" data-revele="bloc">
+    <p class="titre-serif text-[36px] leading-[1.05] md:text-[52px]">{rappel.debut} <em>{rappel.italique}</em></p>
+    <Bouton registre="sombre" href="/maquettes/" class="aimant w-full md:w-auto">Découvrir les maquettes</Bouton>
+  </div>
+</section>
+
+<style>
+  .reponses :global(a) {
+    color: var(--action-bleu-nuit);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .reponses :global(ul) {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin-top: 0.5rem;
+  }
+  .reponses :global(p),
+  .reponses :global(li) {
+    color: var(--texte-secondaire-fort);
+    font-size: 15px;
+  }
+</style>

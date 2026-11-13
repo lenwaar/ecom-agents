@@ -1,0 +1,45 @@
+---
+/**
+ * 5. Collections (§4.1.5) : « Quatre façons de commencer. », 4 grandes cartes animées.
+ * Textes et statistiques calculés (lib/catalogue.ts, audit N2 : « qui bougent vraiment » seulement
+ * si chaque produit de la collection a une partie mobile). Entrée des cartes en cascade (R3).
+ */
+import ArrowRight from '@lucide/astro/icons/arrow-right';
+import CarteCollectionAccueil from './CarteCollectionAccueil.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+import { COLLECTIONS_PRINCIPALES, collections, produitsDeCollection } from '../../lib/catalogue';
+
+const produits = await getProduitsPublies();
+const liste = collections(produits);
+const cartes = COLLECTIONS_PRINCIPALES.map((slug) => liste.find((c) => c.slug === slug)!)
+  .map((c) => ({ collection: c, produits: produitsDeCollection(produits, c.slug) }))
+  .filter((c) => c.produits.length > 0);
+---
+
+<section aria-labelledby="titre-collections" class="conteneur py-20 md:py-32">
+  <p class="kicker text-laiton-fonce" data-revele="bloc">Collections</p>
+  <div class="mt-5 flex flex-wrap items-end justify-between gap-6">
+    <h2 id="titre-collections" class="titre-serif text-[44px] leading-none md:text-[clamp(44px,5.4vw,76px)]" data-revele="titre">
+      <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block">Quatre façons</span></span>
+      <span data-ligne class="block overflow-hidden pb-[0.08em]"><span class="block"><em>de commencer.</em></span></span>
+    </h2>
+    <a
+      href="/maquettes/"
+      class="group inline-flex min-h-12 items-center gap-2.5 rounded-full border border-bordure bg-carte px-6 text-[15px] font-medium transition-colors hover:border-laiton-fonce hover:text-laiton-fonce"
+      data-revele="bloc"
+    >
+      Tout le catalogue
+      <ArrowRight size={18} stroke-width={1.75} aria-hidden="true" class="transition-transform group-hover:translate-x-[3px]" />
+    </a>
+  </div>
+  <ul class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-revele="cartes">
+    {
+      cartes.map(({ collection, produits }) => (
+        <li>
+          <CarteCollectionAccueil collection={collection} produits={produits} />
+        </li>
+      ))
+    }
+  </ul>
+  {produits.some((p) => p.data.demo) && <p class="mt-4 text-[13px] text-gris-fort">Visuels : rendus 3D de démonstration.</p>}
+</section>

@@ -1,0 +1,54 @@
+---
+/**
+ * Bloc « La lettre de l'atelier » (§4.1.10, audit N13, N14 ; knowledge/decisions.md).
+ * Tant que lettre.active est faux (aucun service d'envoi choisi) : formulaire VISIBLE mais DÉSACTIVÉ
+ * (« Bientôt »), aucune adresse collectée, aucune requête. Aucune réduction ni cadeau contre l'inscription.
+ * Le formulaire actif (double confirmation, case non cochée, POST /api/lettre) sera branché quand
+ * l'humain aura choisi le service d'emails et que la politique de confidentialité sera à jour.
+ */
+import Mail from '@lucide/astro/icons/mail';
+import Valeur from '../ui/Valeur.astro';
+import { getReglagesAccueil } from '../../lib/accueil';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'lettre' } = Astro.props;
+const { lettre } = await getReglagesAccueil();
+---
+
+<div class="lettre grid gap-8 rounded-[28px] border border-bordure-sombre bg-nuit-2/70 p-6 md:grid-cols-2 md:items-center md:p-12">
+  <div>
+    <h3 id={`${id}-titre`} class="titre-serif flex items-center gap-3 text-[34px] leading-[1.05] md:text-[40px]">
+      <Mail size={24} stroke-width={1.75} aria-hidden="true" class="shrink-0 text-laiton" />
+      La lettre de l'atelier
+    </h3>
+    <p class="mt-3 max-w-[460px] text-[16px] text-creme-secondaire">
+      Un conseil d'assemblage et les nouveaux modèles, <Valeur v={lettre.frequence} note="fréquence" />. Pas de publicité de partenaires.
+    </p>
+  </div>
+  <form aria-labelledby={`${id}-titre`} aria-describedby={`${id}-note`} class="grid gap-3">
+    <label for={`${id}-email`} class="text-[14px] font-medium">Votre adresse email</label>
+    <div class="flex flex-col gap-3 sm:flex-row">
+      <input
+        id={`${id}-email`}
+        type="email"
+        autocomplete="email"
+        disabled
+        placeholder="nom@exemple.fr"
+        class="min-h-12 flex-1 rounded-full border border-creme-secondaire/60 bg-transparent px-5 text-[15px] text-creme placeholder:text-creme-secondaire disabled:cursor-not-allowed"
+      />
+      <button
+        type="submit"
+        disabled
+        class="min-h-12 cursor-not-allowed rounded-full border border-laiton/60 px-6 text-[15px] font-medium text-laiton"
+      >
+        Bientôt
+      </button>
+    </div>
+    <p id={`${id}-note`} class="text-[13px] text-creme-secondaire">
+      {lettre.active ? '' : "L'inscription n'est pas encore ouverte : aucune adresse n'est collectée pour le moment."}
+    </p>
+  </form>
+</div>

@@ -6,6 +6,7 @@
  */
 import PageTexte from '../layouts/PageTexte.astro';
 import Accordeon from '../components/ui/Accordeon.astro';
+import QuestionFaq from '../components/aide/QuestionFaq.astro';
 import Bouton from '../components/ui/Bouton.astro';
 import Valeur from '../components/ui/Valeur.astro';
 import { getBoutique, getModeDemo } from '../lib/donnees';
@@ -34,16 +35,7 @@ const sommaire = [
     <Accordeon titre="À qui s'adressent vos maquettes ?">
       <p>Aux adultes, à partir de 14 ans. Chaque fiche indique l'âge minimum, la difficulté et le temps d'assemblage.</p>
     </Accordeon>
-    <Accordeon titre="Comment choisir le niveau de difficulté ?">
-      <p>
-        Notre échelle, établie à partir du nombre de pièces, du temps d'assemblage et du nombre de réglages. Elle peut différer de celle du fabricant.
-      </p>
-      <ul>
-        <li><strong>Facile</strong> : pour une première maquette. Un mécanisme simple, peu de réglages.</li>
-        <li><strong>Moyen</strong> : vous avez déjà monté une maquette. Plus de pièces et quelques réglages (jeu des engrenages, tension).</li>
-        <li><strong>Expert</strong> : pour les habitués. Mécanismes fins, ajustements précis, plusieurs séances.</li>
-      </ul>
-    </Accordeon>
+    <QuestionFaq cle="difficulte" />
     <Accordeon titre="Faut-il de la colle ou des outils ?">
       <p>Cela dépend du modèle : la fiche de chaque maquette indique si de la colle est nécessaire, et quels outils sont nécessaires ou fournis.</p>
     </Accordeon>
@@ -85,11 +77,7 @@ const sommaire = [
     <Accordeon titre="Où livrez-vous ?">
       <p>En {b.livraison.zone}.</p>
     </Accordeon>
-    <Accordeon titre="Quel est le délai de livraison ?">
-      <p>
-        Le délai de chaque maquette est affiché sur sa fiche, avant le paiement : {b.livraison.delai_max_jours} jours au maximum entre la commande et la réception. Si ce délai n'est pas tenu, vous pouvez annuler la commande et être remboursé sous 14 jours.
-      </p>
-    </Accordeon>
+    <QuestionFaq cle="delai" />
     <Accordeon titre="Combien coûte la livraison ?">
       <p><Valeur v={b.livraison.frais} /> par commande, quel que soit le nombre de maquettes.</p>
     </Accordeon>
@@ -97,11 +85,7 @@ const sommaire = [
 
   <h2 id="retours">Retours et rétractation</h2>
   <div class="mt-2">
-    <Accordeon titre="Comment me rétracter ?">
-      <p>
-        Vous avez 14 jours à compter de la réception pour changer d'avis, sans vous justifier, comme le prévoit la loi pour les achats à distance. Le plus simple : le formulaire <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a>, qui vous envoie un accusé de réception. Vous pouvez aussi nous écrire par email ou utiliser le formulaire type de nos CGV.
-      </p>
-    </Accordeon>
+    <QuestionFaq cle="retractation" />
     <Accordeon titre="Qui paie les frais de retour ?">
       <p><Valeur v={b.retours.frais} /></p>
     </Accordeon>
@@ -117,11 +101,7 @@ const sommaire = [
 
   <h2 id="assemblage">Assemblage</h2>
   <div class="mt-2">
-    <Accordeon titre="Une pièce manque ou est abîmée à la réception : que faire ?">
-      <p>
-        C'est couvert par la garantie légale de conformité. Envoyez-nous une photo de la pièce et de la boîte par email : nous vous envoyons la pièce ou une maquette de remplacement. Délai de réponse : <Valeur v={b.service_client.delai_reponse_piece_manquante} />. <a href="/contact/#piece-manquante">Nous écrire</a>
-      </p>
-    </Accordeon>
+    <QuestionFaq cle="piece-manquante" />
     <Accordeon titre="J'ai cassé une pièce pendant le montage : que faire ?">
       <p><Valeur v="" note="politique de la boutique à décider par l'humain" /></p>
     </Accordeon>

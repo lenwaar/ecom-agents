@@ -1,39 +1,106 @@
 ---
 /**
- * Accueil PROVISOIRE (étape 1). L'accueil animé (tâche T35, niveau du prototype
- * docs/reference/prototype-accueil-v2.html) sera construit à une étape suivante.
- * Cette page ne sert qu'à vérifier le registre sombre, la barre et le pied de page.
+ * Accueil cinématique (§4.1 de la spécification v2, corrigée par l'audit v2 ; tâche T35).
+ * Niveau minimum : docs/reference/prototype-accueil-v2.html (knowledge/decisions.md).
+ * Ordre : 1 Héros (sombre) → bande défilante → 2 Récit épinglé → 3 De la planche à l'objet → 4 Dans la boîte
+ * → panneau clair : 5 Collections, 6 Les maquettes du moment, 7 Trouver ma maquette, 8 Échelle, 9 Offrir
+ * → panneau sombre : 10 L'atelier → panneau clair : 11 FAQ et réassurance → pied de page.
+ * Tout le contenu vient des fiches produits et de content/reglages/accueil.yaml (aucun produit en dur).
+ * Animations : scripts/accueil.ts (GSAP + ScrollTrigger servis localement, chargés seulement si
+ * l'animation va tourner). Sans JavaScript ou avec prefers-reduced-motion : tout est visible et lisible.
  */
 import Base from '../layouts/Base.astro';
-import Bouton from '../components/ui/Bouton.astro';
-import Badge from '../components/ui/Badge.astro';
+import Degrades from '../components/accueil/Degrades.astro';
+import HerosAccueil from '../components/accueil/HerosAccueil.astro';
+import BandeDefilante from '../components/accueil/BandeDefilante.astro';
+import RecitEpingle from '../components/accueil/RecitEpingle.astro';
+import Comparateur from '../components/accueil/Comparateur.astro';
+import DansLaBoite from '../components/accueil/DansLaBoite.astro';
+import CollectionsAccueil from '../components/accueil/CollectionsAccueil.astro';
+import MaquettesDuMoment from '../components/accueil/MaquettesDuMoment.astro';
+import QuestionnaireAccueil from '../components/accueil/QuestionnaireAccueil.astro';
+import EchelleDifficulte from '../components/accueil/EchelleDifficulte.astro';
+import Offrir from '../components/accueil/Offrir.astro';
+import AtelierAccueil from '../components/accueil/AtelierAccueil.astro';
+import FaqReassurance from '../components/accueil/FaqReassurance.astro';
+import BoutonPause from '../components/accueil/BoutonPause.astro';
+import DonneesStructurees from '../components/produit/DonneesStructurees.astro';
+import { getBoutique } from '../lib/donnees';
+
+const boutique = await getBoutique();
 ---
 
 <Base
   titre="Maquettes mécaniques en bois à assembler | Rouage & Laiton"
-  description="Maquettes mécaniques en bois à assembler soi-même, pour adultes, à partir de 14 ans. Boutique en préparation."
+  description="Maquette en bois à assembler soi-même : maquette mécanique, véhicules et miniatures, pour adultes, dès 14 ans. Délai de livraison affiché sur chaque fiche."
   registre="sombre"
+  animations
 >
-  <section
-    class="grain relative -mt-14 flex min-h-[88svh] items-center overflow-hidden pt-14 md:-mt-16 md:pt-16"
-    style="background: radial-gradient(55% 55% at 72% 45%, rgba(200,161,90,.17), transparent 70%), radial-gradient(80% 80% at 15% 95%, rgba(30,58,95,.5), transparent 70%), var(--fond-nuit);"
-  >
-    <div class="conteneur relative z-[1] py-20">
-      <p class="kicker text-laiton">Maquettes en bois à assembler</p>
-      <h1 class="titre-serif mt-6 max-w-4xl text-[52px] leading-[0.92] md:text-[clamp(52px,9vw,128px)]">
-        Construire un objet <em>qui bouge.</em>
-      </h1>
-      <p class="mt-6 max-w-[460px] text-[16px] leading-[1.65] text-creme-secondaire">
-        Des maquettes mécaniques en bois, pour adultes, à partir de 14 ans. La boutique est en préparation.
-      </p>
-      <div class="mt-10 flex flex-wrap gap-3">
-        <Bouton registre="sombre" href="/livraison-et-retours/">Livraison et retours</Bouton>
-        <Bouton registre="sombre" variante="secondaire" href="/faq/">Questions fréquentes</Bouton>
-      </div>
-      <div class="mt-10 flex flex-wrap gap-2">
-        <Badge registre="sombre">14 ans et plus</Badge>
-        <Badge registre="sombre" variante="laiton">Accueil provisoire</Badge>
-      </div>
-    </div>
-  </section>
+  <div class="barre-progression" data-progression-page aria-hidden="true"></div>
+  <Degrades />
+
+  <HerosAccueil />
+  <BandeDefilante />
+  <RecitEpingle />
+  <Comparateur />
+  <DansLaBoite />
+
+  <div data-panneau class="panneau registre-clair relative z-[2] -mt-6 rounded-t-[24px] bg-papier text-encre md:-mt-8 md:rounded-t-[32px]">
+    <CollectionsAccueil />
+    <MaquettesDuMoment />
+    <QuestionnaireAccueil />
+    <EchelleDifficulte />
+    <Offrir />
+  </div>
+
+  <div data-panneau class="panneau relative z-[3] -mt-6 overflow-hidden rounded-t-[24px] md:-mt-8 md:rounded-t-[32px]">
+    <AtelierAccueil />
+  </div>
+
+  <div data-panneau class="panneau registre-clair relative z-[4] -mt-6 rounded-t-[24px] bg-papier text-encre md:-mt-8 md:rounded-t-[32px]">
+    <FaqReassurance />
+  </div>
+
+  <BoutonPause />
+
+  <DonneesStructurees
+    donnees={{
+      '@type': 'Organization',
+      name: boutique.nom_commercial,
+      description: 'Maquettes mécaniques en bois à assembler, pour adultes.',
+    }}
+  />
+  <DonneesStructurees donnees={{ '@type': 'WebSite', name: boutique.nom_commercial, inLanguage: 'fr' }} />
 </Base>
+
+<script>
+  import { animerAccueil } from '../scripts/accueil';
+  animerAccueil();
+</script>
+
+<style>
+  /* États initiaux des révélations R1 « titre » : seulement si l'animation va tourner. */
+  :global(html.js-anim [data-revele="titre"] [data-ligne] > span) {
+    transform: translateY(110%);
+  }
+  :global(html.js-anim [data-revele="cadre"]) {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  .barre-progression {
+    display: none;
+  }
+  :global(html.js-anim) .barre-progression {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent-laiton);
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 60;
+    pointer-events: none;
+  }
+</style>

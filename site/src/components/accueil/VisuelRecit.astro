@@ -1,0 +1,106 @@
+---
+/**
+ * Visuel du récit « Ouvrir, Assembler, Tourner » (§4.1.2). Un seul dessin, trois états :
+ * 1 : planche de bois avec les contours des engrenages gravés (trait brûlé #5A3E22) ;
+ * 2 : les 3 roues sortent de la planche vers leurs axes, la planche s'efface, un cadre apparaît ;
+ * 3 : les roues engrènent et tournent, une manivelle laiton tourne avec la grande roue, halo laiton.
+ * `etat` = 1, 2 ou 3 : image fixe (version sans animation, 240 px) ; `anime` : départ de l'état 1,
+ * piloté au défilement par scripts/accueil.ts (attributs data-*). Décoratif : aria-hidden.
+ */
+import Roue from './Roue.astro';
+import { premiereRoue, roueVoisine, traceEngrenage } from '../../lib/engrenages';
+
+interface Props {
+  etat: 1 | 2 | 3 | 'anime';
+  class?: string;
+}
+
+const { etat, class: classe } = Astro.props;
+const M = 8;
+// Positions finales (engrenées) : grande roue 32 dents, pignon 13 dents, roue 20 dents.
+const G1 = premiereRoue(250, 330, 32, M);
+const G2 = roueVoisine(G1, 13, -35, M);
+const G3 = roueVoisine(G1, 20, 40, M);
+const roues = [G1, G2, G3];
+// Positions dans la planche (état 1).
+const dansPlanche = [
+  { x: 200, y: 300 },
+  { x: 432, y: 212 },
+  { x: 428, y: 372 },
+];
+const deplacement = roues.map((r, i) => ({ dx: dansPlanche[i].x - r.cx, dy: dansPlanche[i].y - r.cy }));
+
+const e = etat === 'anime' ? 1 : etat;
+// Avancement de la sortie de planche selon l'état fixe (1 : dans la planche ; 2 : à mi-chemin ; 3 : en place).
+const k = e === 1 ? 0 : e === 2 ? 0.55 : 1;
+const rotation = e === 1 ? 0 : e === 2 ? 22 : 40;
+const opacitePlanche = e === 1 ? 1 : e === 2 ? 0.35 : 0.15;
+const opaciteCadre = e === 1 ? 0 : e === 2 ? 0.6 : 1;
+const opaciteRoues = e === 1 ? 0 : 1;
+const opaciteHalo = e === 3 ? 0.9 : 0.25;
+const remplissages = ['url(#degrade-laiton)', 'url(#degrade-bois)', 'url(#degrade-bois)'];
+const bras = [6, 4, 5];
+---
+
+<svg viewBox="0 0 600 600" class={classe} aria-hidden="true" focusable="false" data-visuel-recit={etat === 'anime' ? '' : undefined}>
+  <circle cx="300" cy="320" r="270" fill="url(#degrade-halo)" opacity={opaciteHalo} data-recit-halo />
+
+  <g opacity={opaciteCadre} data-recit-cadre>
+    <rect x="70" y="80" width="460" height="460" rx="22" fill="rgba(245,241,232,.03)" stroke="#C8A15A" stroke-opacity=".5" stroke-width="2" />
+    <rect x="86" y="96" width="428" height="428" rx="14" fill="none" stroke="#C8A15A" stroke-opacity=".18" stroke-width="1" />
+  </g>
+
+  <g opacity={opacitePlanche} data-recit-planche>
+    <rect x="66" y="132" width="468" height="336" rx="10" fill="url(#degrade-planche)" />
+    <rect x="66" y="452" width="468" height="16" rx="6" fill="#8A6A3A" opacity=".45" />
+    {
+      roues.map((r, i) => (
+        <path
+          d={traceEngrenage(r.dents, r.rayon, M)}
+          transform={`translate(${dansPlanche[i].x} ${dansPlanche[i].y})`}
+          fill="none"
+          stroke="#5A3E22"
+          stroke-width="1.6"
+          stroke-dasharray={i === 0 ? undefined : '5 4'}
+          fill-rule="evenodd"
+        />
+      ))
+    }
+    <g fill="#5A3E22" opacity=".55" font-family="Inter, sans-serif" font-size="13">
+      <text x="88" y="160">A1</text>
+      <text x="490" y="160">A2</text>
+      <text x="490" y="450">A3</text>
+    </g>
+  </g>
+
+  {
+    roues.map((r, i) => (
+      <g
+        data-recit-roue={i}
+        data-dx={deplacement[i].dx.toFixed(2)}
+        data-dy={deplacement[i].dy.toFixed(2)}
+        opacity={opaciteRoues}
+        transform={`translate(${(deplacement[i].dx * (1 - k)).toFixed(2)} ${(deplacement[i].dy * (1 - k)).toFixed(2)})`}
+      >
+        <Roue
+          roue={{ ...r, phase: r.phase + r.rapport * rotation }}
+          module={M}
+          remplissage={remplissages[i]}
+          bras={bras[i]}
+          marque="data-roue-recit"
+        />
+      </g>
+    ))
+  }
+
+  <g opacity={e === 3 ? 1 : 0} data-recit-manivelle>
+    <g transform={`translate(${G1.cx} ${G1.cy})`}>
+      <g transform={`rotate(${rotation})`} data-recit-bras>
+        <rect x="-8" y="-8" width="104" height="16" rx="8" fill="url(#degrade-laiton)" />
+        <circle cx="96" cy="0" r="15" fill="#7A5A2C" />
+        <circle cx="96" cy="0" r="9" fill="url(#degrade-laiton)" />
+        <circle r="13" fill="url(#degrade-laiton)" />
+      </g>
+    </g>
+  </g>
+</svg>

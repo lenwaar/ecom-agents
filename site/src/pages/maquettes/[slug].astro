@@ -24,7 +24,19 @@ import CarteProduit from '../../components/produit/CarteProduit.astro';
 import Donnee from '../../components/produit/Donnee.astro';
 import DonneesStructurees from '../../components/produit/DonneesStructurees.astro';
 import { getBoutique, getProduitsPublies, formatPrix } from '../../lib/donnees';
-import { cheminVue, collectionPrincipale, collections, etatAchat, niveau, produitsDeCollection, VUES, type SlugCollection } from '../../lib/catalogue';
+import {
+  MARQUEUR_A_VERIFIER,
+  cheminVue,
+  collectionPrincipale,
+  collections,
+  etatAchat,
+  listeDemo,
+  niveau,
+  produitsDeCollection,
+  texteDemo,
+  VUES,
+  type SlugCollection,
+} from '../../lib/catalogue';
 
 export const getStaticPaths = (async () => {
   const produits = await getProduitsPublies();
@@ -49,7 +61,14 @@ const apres = memeCollection
 const autres = memeCollection.filter((x) => x.id !== apres?.id).slice(0, 2);
 
 const fraisRetour = boutique.retours.frais;
-const faqVisibles = p.faq.filter((f) => f.question.trim() !== '');
+// Démonstration (knowledge/decisions.md) : une FAQ dont la réponse commence par « À VÉRIFIER » n'est pas
+// affichée ; ailleurs, la phrase inconnue est retirée (Donnee). Contenu de la boîte : éléments inconnus retirés.
+const faqVisibles = p.faq.filter(
+  (f) => f.question.trim() !== '' && !(p.demo && (f.reponse.trim().startsWith(MARQUEUR_A_VERIFIER) || texteDemo(f.reponse) === '')),
+);
+const contenuBoite = p.demo ? listeDemo(p.contenu_boite) : p.contenu_boite;
+const fraisConnus = typeof p.frais_livraison_ttc === 'number';
+const delaiMinConnu = typeof p.delai_livraison_min_jours === 'number';
 ---
 
 <Base titre={p.seo.titre} description={p.seo.description}>
@@ -130,9 +149,9 @@ const faqVisibles = p.faq.filter((f) => f.question.trim() !== '');
         </h2>
         <ul class="mt-4 list-disc space-y-1.5 pl-5 text-[15px]">
           {
-            p.contenu_boite.map((c) => (
+            contenuBoite.map((c) => (
               <li>
-                <Donnee v={c} />
+                <Donnee v={c} demo={p.demo} />
               </li>
             ))
           }
@@ -164,17 +183,25 @@ const faqVisibles = p.faq.filter((f) => f.question.trim() !== '');
         <ul class="mt-4 space-y-2 text-[15px]">
           <li><span class="font-medium">Zone :</span> {boutique.livraison.zone}</li>
           <li>
-            <span class="font-medium">Délai :</span> reçue en <Donnee v={p.delai_livraison_min_jours} note="délai minimum" /> à {p.delai_livraison_max_jours} jours
-            après votre commande
+            <span class="font-medium">Délai :</span>{' '}
+            {p.demo && !delaiMinConnu ? (
+              <Fragment>reçue au plus tard {p.delai_livraison_max_jours} jours après votre commande</Fragment>
+            ) : (
+              <Fragment>
+                reçue en <Donnee v={p.delai_livraison_min_jours} note="délai minimum" /> à {p.delai_livraison_max_jours} jours après votre commande
+              </Fragment>
+            )}
           </li>
-          <li>
-            <span class="font-medium">Frais :</span>{' '}
-            <Donnee
-              v={p.frais_livraison_ttc}
-              note="frais de livraison"
-              format={(f: number) => (f === 0 ? 'livraison offerte' : `${formatPrix(f)} par commande, quel que soit le nombre de maquettes`)}
-            />
-          </li>
+          {(!p.demo || fraisConnus) && (
+            <li>
+              <span class="font-medium">Frais :</span>{' '}
+              <Donnee
+                v={p.frais_livraison_ttc}
+                note="frais de livraison"
+                format={(f: number) => (f === 0 ? 'livraison offerte' : `${formatPrix(f)} par commande, quel que soit le nombre de maquettes`)}
+              />
+            </li>
+          )}
           <li>
             <span class="font-medium">Droit de rétractation :</span> 14 jours à compter de la réception. Frais de retour :{' '}
             <Valeur v={fraisRetour} note="frais de retour" />
@@ -194,7 +221,7 @@ const faqVisibles = p.faq.filter((f) => f.question.trim() !== '');
               {faqVisibles.map((f) => (
                 <Accordeon titre={f.question}>
                   <p class="text-[15px]">
-                    <Donnee v={f.reponse} />
+                    <Donnee v={f.reponse} demo={p.demo} />
                   </p>
                 </Accordeon>
               ))}

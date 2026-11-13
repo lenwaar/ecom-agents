@@ -1,0 +1,85 @@
+---
+/**
+ * Bande défilante sous le héros (reprise du prototype v2). Chaque élément est un fait vrai pour
+ * tout le catalogue publié ou un droit légal (lib/accueil.ts, audit N2). Aucun chiffre inventé.
+ * - Animation CSS seulement sous html.js-anim, arrêtée par le bouton pause (audit N4) et au survol.
+ * - Sans JavaScript ou sans animation : liste fixe qui passe à la ligne, rien de caché.
+ * La copie qui sert à la boucle est aria-hidden.
+ */
+import Scissors from '@lucide/astro/icons/scissors';
+import Check from '@lucide/astro/icons/check';
+import ShieldCheck from '@lucide/astro/icons/shield-check';
+import Clock from '@lucide/astro/icons/clock';
+import Gauge from '@lucide/astro/icons/gauge';
+import Gift from '@lucide/astro/icons/gift';
+import Truck from '@lucide/astro/icons/truck';
+import RotateCcw from '@lucide/astro/icons/rotate-ccw';
+import Wrench from '@lucide/astro/icons/wrench';
+import { getProduitsPublies } from '../../lib/donnees';
+import { elementsBande } from '../../lib/accueil';
+
+const ICONES = {
+  scissors: Scissors,
+  check: Check,
+  'shield-check': ShieldCheck,
+  clock: Clock,
+  gauge: Gauge,
+  gift: Gift,
+  truck: Truck,
+  'rotate-ccw': RotateCcw,
+  wrench: Wrench,
+} as const;
+
+const elements = elementsBande(await getProduitsPublies());
+---
+
+<section aria-label="Points forts" class="bande registre-sombre overflow-hidden border-y border-bordure-sombre bg-nuit py-5 text-creme">
+  <div class="piste flex flex-wrap justify-center gap-x-12 gap-y-3 px-4">
+    {
+      [0, 1].map((copie) => (
+        <ul class={`groupe flex flex-wrap justify-center gap-x-12 gap-y-3 ${copie === 1 ? 'copie' : ''}`} aria-hidden={copie === 1 ? 'true' : undefined}>
+          {elements.map(({ icone, texte }) => {
+            const Icone = ICONES[icone as keyof typeof ICONES];
+            return (
+              <li class="titre-serif flex items-center gap-3.5 whitespace-nowrap text-[clamp(20px,2.6vw,32px)] leading-tight">
+                <Icone size={22} stroke-width={1.75} aria-hidden="true" class="text-laiton" />
+                {texte}
+              </li>
+            );
+          })}
+        </ul>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  /* Sans animation : la copie n'existe pas visuellement. */
+  .copie {
+    display: none;
+  }
+  :global(html.js-anim) .piste {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    width: max-content;
+    padding-inline: 0;
+    gap: 0;
+    animation: defile 40s linear infinite;
+  }
+  :global(html.js-anim) .groupe {
+    flex-wrap: nowrap;
+    padding-right: 3rem;
+  }
+  :global(html.js-anim) .copie {
+    display: flex;
+  }
+  :global(html.js-anim.anim-pause) .piste,
+  .bande:hover .piste {
+    animation-play-state: paused;
+  }
+  @keyframes defile {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

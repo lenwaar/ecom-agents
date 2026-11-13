@@ -1,6 +1,6 @@
 // Liens de navigation et du pied de page (§4.0 de la spécification v2).
 // Une seule source pour la barre, le panneau mobile et le pied de page.
-// `existe: false` = page prévue à une étape suivante (questionnaire, atelier : T35) : affichée en texte non cliquable.
+// `existe: false` = page prévue à une étape suivante : affichée en texte non cliquable (aucun lien vers une page absente).
 
 export interface Lien {
   libelle: string;
@@ -11,13 +11,13 @@ export interface Lien {
 export const LIENS_NAVIGATION: Lien[] = [
   { libelle: 'Maquettes', href: '/maquettes/', existe: true },
   { libelle: 'Idées cadeaux', href: '/collections/idees-cadeaux/', existe: true },
-  { libelle: "L'atelier", href: '/atelier/', existe: false },
+  { libelle: "L'atelier", href: '/atelier/', existe: true },
   { libelle: 'Aide', href: '/faq/', existe: true },
 ];
 
 /** Liens ajoutés dans le panneau mobile. */
 export const LIENS_PANNEAU_MOBILE: Lien[] = [
-  { libelle: 'Trouver ma maquette', href: '/trouver-ma-maquette/', existe: false },
+  { libelle: 'Trouver ma maquette', href: '/trouver-ma-maquette/', existe: true },
   { libelle: 'Livraison et retours', href: '/livraison-et-retours/', existe: true },
   { libelle: 'Contact', href: '/contact/', existe: true },
 ];
@@ -28,8 +28,8 @@ export const COLONNES_PIED_DE_PAGE: { titre: string; liens: Lien[] }[] = [
     liens: [
       { libelle: 'Maquettes', href: '/maquettes/', existe: true },
       { libelle: 'Collections', href: '/collections/mecanique/', existe: true },
-      { libelle: 'Trouver ma maquette', href: '/trouver-ma-maquette/', existe: false },
-      { libelle: "L'atelier", href: '/atelier/', existe: false },
+      { libelle: 'Trouver ma maquette', href: '/trouver-ma-maquette/', existe: true },
+      { libelle: "L'atelier", href: '/atelier/', existe: true },
       { libelle: 'À propos', href: '/a-propos/', existe: true },
     ],
   },

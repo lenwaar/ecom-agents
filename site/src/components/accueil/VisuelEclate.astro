@@ -1,0 +1,101 @@
+---
+/**
+ * Vue éclatée de « Dans la boîte » (§4.1.4), dessinée en SVG à la construction (repli du prototype v2,
+ * faute des calques WebP prévus par la spécification). Illustration de principe d'un mécanisme
+ * à engrenages : elle ne décrit pas le contenu exact d'un kit (la liste en texte vient de la fiche).
+ * - `eclate` : pièces écartées avec leurs étiquettes (version fixe) ;
+ * - `assemble` : pièces en place (version fixe) ;
+ * - `anime` : départ éclaté, rassemblé au défilement par scripts/accueil.ts (data-dx, data-dy, data-rot).
+ * Ordinateur : étiquettes en texte ; mobile : pastilles numérotées (légende en liste sous le visuel).
+ */
+import Roue from './Roue.astro';
+import { premiereRoue, roueVoisine } from '../../lib/engrenages';
+import { PIECES_ILLUSTRATION } from '../../lib/accueil';
+
+interface Props {
+  etat: 'eclate' | 'assemble' | 'anime';
+  class?: string;
+}
+
+const { etat, class: classe } = Astro.props;
+
+const M = 6;
+const grande = premiereRoue(250, 300, 36, M);
+const pignon = roueVoisine(grande, 18, -22, M);
+const pignon2 = roueVoisine(pignon, 14, 78, M);
+
+// Décalage en position éclatée (x, y, rotation en degrés) et position de l'étiquette (assemblée).
+const pieces = [
+  { dx: 0, dy: 150, rot: 0, etiquette: { x: 520, y: 470 } },
+  { dx: -230, dy: -120, rot: -90, etiquette: { x: 150, y: 175 } },
+  { dx: 230, dy: -150, rot: 120, etiquette: { x: 370, y: 150 } },
+  { dx: -200, dy: 160, rot: 40, etiquette: { x: 120, y: 330 } },
+];
+const eclate = etat !== 'assemble';
+const t = (i: number) => (eclate ? `translate(${pieces[i].dx} ${pieces[i].dy}) rotate(${pieces[i].rot} 320 300)` : undefined);
+const anime = etat === 'anime';
+---
+
+<svg viewBox="-40 -60 720 700" class={classe} aria-hidden="true" focusable="false" data-visuel-eclate={anime ? '' : undefined}>
+  <circle cx="320" cy="320" r="300" fill="url(#degrade-halo)" opacity={etat === 'assemble' ? 0.35 : 0.15} data-eclate-halo />
+
+  <g data-eclate-piece="0" data-dx={pieces[0].dx} data-dy={pieces[0].dy} data-rot={pieces[0].rot} transform={t(0)}>
+    <path d="M160 430 A160 160 0 0 1 480 430 Z" fill="url(#degrade-bois)" opacity=".9" />
+    <rect x="120" y="430" width="400" height="46" rx="10" fill="url(#degrade-bois)" />
+    <rect x="120" y="466" width="400" height="10" rx="4" fill="#7A5A2C" opacity=".6" />
+  </g>
+  <g data-eclate-piece="1" data-dx={pieces[1].dx} data-dy={pieces[1].dy} data-rot={pieces[1].rot} transform={t(1)}>
+    <Roue roue={grande} module={M} remplissage="url(#degrade-laiton)" bras={6} marque="data-roue-eclate" />
+  </g>
+  <g data-eclate-piece="2" data-dx={pieces[2].dx} data-dy={pieces[2].dy} data-rot={pieces[2].rot} transform={t(2)}>
+    <Roue roue={pignon} module={M} remplissage="url(#degrade-bois)" bras={4} marque="data-roue-eclate" />
+    <Roue roue={pignon2} module={M} remplissage="url(#degrade-bois)" bras={3} marque="data-roue-eclate" />
+  </g>
+  <g data-eclate-piece="3" data-dx={pieces[3].dx} data-dy={pieces[3].dy} data-rot={pieces[3].rot} transform={t(3)}>
+    <rect x="96" y="292" width="160" height="16" rx="8" fill="url(#degrade-bois)" />
+    <circle cx="96" cy="300" r="18" fill="url(#degrade-laiton)" />
+    <circle cx={grande.cx} cy={grande.cy} r="9" fill="url(#degrade-laiton)" />
+    <circle cx={pignon.cx.toFixed(2)} cy={pignon.cy.toFixed(2)} r="8" fill="url(#degrade-laiton)" />
+    <circle cx={pignon2.cx.toFixed(2)} cy={pignon2.cy.toFixed(2)} r="7" fill="url(#degrade-laiton)" />
+  </g>
+
+  {
+    eclate &&
+      pieces.map((piece, i) => {
+        // Étiquette posée près de la pièce en position éclatée.
+        const ex = piece.etiquette.x + piece.dx * 0.55;
+        const ey = piece.etiquette.y + piece.dy * 0.55;
+        return (
+          <g data-eclate-etiquette={i} class="etiquette-eclate">
+            <g class="etiquette-texte">
+              <line x1={ex} y1={ey} x2={ex + 46} y2={ey} stroke="#C8A15A" stroke-width="1.2" />
+              <circle cx={ex} cy={ey} r="3" fill="#C8A15A" />
+              <text x={ex + 54} y={ey + 5} fill="#F5F1E8" font-family="Inter, sans-serif" font-size="17">
+                {PIECES_ILLUSTRATION[i]}
+              </text>
+            </g>
+            <g class="etiquette-numero">
+              <circle cx={ex} cy={ey} r="17" fill="#F5F1E8" />
+              <text x={ex} y={ey + 6} fill="#0A0F1A" text-anchor="middle" font-family="Inter, sans-serif" font-size="17" font-weight="600">
+                {i + 1}
+              </text>
+            </g>
+          </g>
+        );
+      })
+  }
+</svg>
+
+<style>
+  .etiquette-numero {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .etiquette-texte {
+      display: none;
+    }
+    .etiquette-numero {
+      display: inline;
+    }
+  }
+</style>

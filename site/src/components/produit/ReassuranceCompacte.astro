@@ -14,6 +14,14 @@ import ArrowRight from '@lucide/astro/icons/arrow-right';
 import { getDelaisEnVente, getProduitsPublies } from '../../lib/donnees';
 import { pageExiste } from '../../lib/navigation';
 
+interface Props {
+  /** Encart « Vous hésitez ? Trouver ma maquette » (catalogue, collections). */
+  questionnaire?: boolean;
+  /** Entrée en cascade (accueil). */
+  revele?: boolean;
+}
+
+const { questionnaire: avecQuestionnaire = true, revele = false } = Astro.props;
 const produits = await getProduitsPublies();
 const delais = await getDelaisEnVente();
 const suivie = produits.length > 0 && produits.every((p) => p.data.suivi === true);
@@ -39,7 +47,7 @@ const questionnaire = '/trouver-ma-maquette/';
 
 <section aria-labelledby="titre-reassurance" class="border-t border-bordure pt-12">
   <h2 id="titre-reassurance" class="sr-only">Vos droits et la livraison</h2>
-  <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+  <ul class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4" data-revele={revele ? 'cartes' : undefined}>
     {
       elements.map(({ icone: Icone, titre, texte }) => (
         <li class="flex gap-3">
@@ -53,7 +61,7 @@ const questionnaire = '/trouver-ma-maquette/';
     }
   </ul>
   {
-    pageExiste(questionnaire) && (
+    avecQuestionnaire && pageExiste(questionnaire) && (
       <p class="mt-10 rounded-carte border border-bordure bg-carte p-5 text-[15px]">
         Vous hésitez ?{' '}
         <a href={questionnaire} class="inline-flex items-center gap-1.5 font-medium text-bleu-nuit underline-offset-4 hover:underline">

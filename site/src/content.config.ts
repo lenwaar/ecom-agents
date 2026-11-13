@@ -24,12 +24,13 @@ const personne = z.object({
 
 const vue = z.object({ alt: z.string().min(10) });
 
-/** Cherche un marqueur « À VÉRIFIER » n'importe où dans la fiche. */
-function contientMarqueur(valeur: unknown): boolean {
-  if (typeof valeur === 'string') return valeur.includes(MARQUEUR);
-  if (Array.isArray(valeur)) return valeur.some(contientMarqueur);
-  if (valeur && typeof valeur === 'object') return Object.values(valeur).some(contientMarqueur);
-  return false;
+/** Liste les champs qui contiennent un marqueur « À VÉRIFIER » (ex. « securite.fabricant.nom », « faq[1].reponse »). */
+function champsAVerifier(valeur: unknown, chemin = ''): string[] {
+  if (typeof valeur === 'string') return valeur.includes(MARQUEUR) ? [chemin || '(racine)'] : [];
+  if (Array.isArray(valeur)) return valeur.flatMap((v, i) => champsAVerifier(v, `${chemin}[${i}]`));
+  if (valeur && typeof valeur === 'object')
+    return Object.entries(valeur).flatMap(([cle, v]) => champsAVerifier(v, chemin ? `${chemin}.${cle}` : cle));
+  return [];
 }
 
 const produits = defineCollection({
@@ -134,8 +135,17 @@ const produits = defineCollection({
         ctx.addIssue({ code: 'custom', message: 'V4 : delai_livraison_min_jours dépasse delai_livraison_max_jours.' });
       }
       // knowledge/decisions.md : sur un vrai produit publié, une valeur « À VÉRIFIER » bloque la construction.
-      if (!p.demo && p.statut !== 'brouillon' && contientMarqueur(p)) {
-        ctx.addIssue({ code: 'custom', message: 'Vrai produit publié avec une valeur « À VÉRIFIER » : à compléter avant publication.' });
+      // (Les fiches de démonstration gardent leurs « À VÉRIFIER » : le site ne les affiche pas.)
+      if (!p.demo && p.statut !== 'brouillon') {
+        const champs = champsAVerifier(p);
+        if (champs.length > 0) {
+          ctx.addIssue({
+            code: 'custom',
+            message:
+              `Produit réel « ${p.slug} » (demo: false) avec ${champs.length} valeur(s) « À VÉRIFIER » : ${champs.join(', ')}. ` +
+              'Complétez ces champs avec les informations du fournisseur, ou repassez la fiche en statut « brouillon », avant de construire le site.',
+          });
+        }
       }
     }),
 });
@@ -145,6 +155,19 @@ const reglages = defineCollection({
   loader: glob({ pattern: 'accueil.yaml', base: './src/content/reglages' }),
   schema: z.looseObject({
     mode_demo: z.boolean(),
+    // Accueil (§4.1) : produits choisis par leur slug ; un slug inconnu fait échouer la construction (lib/accueil.ts).
+    produit_comparateur: z.string(),
+    produit_eclate: z.string(),
+    selection_du_moment: z.array(z.string()).min(1).max(8),
+    conseils_atelier: z.array(z.string()),
+    faq_apercu: z.array(z.enum(['delai', 'difficulte', 'retractation', 'piece-manquante'])),
+    offrir: z.object({
+      message_cadeau_actif: z.boolean(),
+      // knowledge/decisions.md : aucune date limite de Noël affichée en dur ; la valeur doit rester null.
+      date_limite_noel: z.null(),
+    }),
+    lettre: z.object({ active: z.boolean(), frequence: z.string() }),
+    seuil_soirees_heures: z.number().positive(),
   }),
 });
 

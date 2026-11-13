@@ -1,0 +1,84 @@
+---
+/**
+ * Une question de « Trouver ma maquette » (§4.1.7) : fieldset / legend, grandes tuiles.
+ * Chaque réponse est un LIEN vers la page statique de l'étape suivante (version sans JavaScript,
+ * partageable). Sur l'accueil, scripts/questionnaire.ts intercepte ces liens et tout se passe
+ * dans la section. Aucun cookie, aucun stockage.
+ */
+import User from '@lucide/astro/icons/user';
+import Gift from '@lucide/astro/icons/gift';
+import Sprout from '@lucide/astro/icons/sprout';
+import Gauge from '@lucide/astro/icons/gauge';
+import Flame from '@lucide/astro/icons/flame';
+import Moon from '@lucide/astro/icons/moon';
+import Calendar from '@lucide/astro/icons/calendar';
+import Layers from '@lucide/astro/icons/layers';
+import Check from '@lucide/astro/icons/check';
+import ArrowLeft from '@lucide/astro/icons/arrow-left';
+import { QUESTIONS, cheminEtape, type Experience, type PourQui } from '../../lib/questionnaire';
+
+interface Props {
+  question: keyof typeof QUESTIONS;
+  pourQui?: PourQui;
+  experience?: Experience;
+  /** Lien « Précédent » (pages statiques ; sur l'accueil, le script le remplace par un bouton). */
+  precedent?: string;
+}
+
+const { question, pourQui, experience, precedent } = Astro.props;
+const q = QUESTIONS[question];
+const numero = question === 'pourQui' ? 1 : question === 'experience' ? 2 : 3;
+const ICONES = { user: User, gift: Gift, sprout: Sprout, gauge: Gauge, flame: Flame, moon: Moon, calendar: Calendar, layers: Layers } as const;
+
+function lien(valeur: string): string {
+  if (question === 'pourQui') return cheminEtape(valeur as PourQui);
+  if (question === 'experience') return cheminEtape(pourQui, valeur as Experience);
+  return cheminEtape(pourQui, experience, valeur as never);
+}
+---
+
+<fieldset class="etape-question min-w-0" data-question={question} data-numero={numero}>
+  {
+    precedent !== undefined && (
+      <a href={precedent} data-precedent class="mb-4 inline-flex min-h-11 items-center gap-2 text-[14px] font-medium text-bleu-nuit underline-offset-4 hover:underline">
+        <ArrowLeft size={16} stroke-width={1.75} aria-hidden="true" />
+        Précédent
+      </a>
+    )
+  }
+  <legend tabindex="-1" class="titre-serif float-left w-full text-[30px] leading-[1.1] outline-none md:text-[40px]">
+    <span class="sr-only">Question {numero} sur 3 : </span>{q.legende}
+  </legend>
+  <ul class="clear-both grid gap-3 pt-6 sm:grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+    {
+      q.choix.map((choix) => {
+        const Icone = ICONES[choix.icone as keyof typeof ICONES];
+        return (
+          <li>
+            <a
+              href={lien(choix.valeur)}
+              data-choix={choix.valeur}
+              class="tuile group flex min-h-14 items-center gap-3 rounded-[16px] border border-bordure bg-carte px-4 py-4 text-[15px] font-medium text-encre transition-[border-color,background-color,transform] duration-250 ease-sortie hover:-translate-y-0.5 hover:border-bleu-nuit"
+            >
+              <Icone size={22} stroke-width={1.75} aria-hidden="true" class="shrink-0 text-laiton-fonce" />
+              <span class="flex-1">{choix.libelle}</span>
+              <Check size={18} stroke-width={2} aria-hidden="true" class="coche shrink-0 text-bleu-nuit opacity-0 transition-opacity duration-200" />
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+  {q.note && <p class="mt-4 text-[14px] text-gris-fort">{q.note}</p>}
+</fieldset>
+
+<style>
+  .tuile.choisie {
+    border-color: var(--action-bleu-nuit);
+    box-shadow: inset 0 0 0 1px var(--action-bleu-nuit);
+    background: #f4f6fa;
+  }
+  .tuile.choisie .coche {
+    opacity: 1;
+  }
+</style>

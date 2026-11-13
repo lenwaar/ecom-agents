@@ -1,0 +1,69 @@
+---
+/**
+ * Questions de la FAQ reprises sur l'accueil (§4.1.11 : « réponses reprises de /faq/, même source »).
+ * Une seule source pour /faq/ et l'accueil. Réponses tirées de knowledge/politiques.md ;
+ * valeurs inconnues => [À VALIDER] (boutique.yaml).
+ */
+import Accordeon from '../ui/Accordeon.astro';
+import Valeur from '../ui/Valeur.astro';
+import { getBoutique } from '../../lib/donnees';
+
+export type CleFaq = 'delai' | 'difficulte' | 'retractation' | 'piece-manquante';
+
+interface Props {
+  cle: CleFaq;
+  niveauTitre?: 'h2' | 'h3' | 'span';
+}
+
+const { cle, niveauTitre = 'h3' } = Astro.props;
+const b = await getBoutique();
+const titres: Record<CleFaq, string> = {
+  delai: 'Quel est le délai de livraison ?',
+  difficulte: 'Comment choisir le niveau de difficulté ?',
+  retractation: 'Comment me rétracter ?',
+  'piece-manquante': 'Une pièce manque ou est abîmée à la réception : que faire ?',
+};
+---
+
+<Accordeon titre={titres[cle]} niveauTitre={niveauTitre}>
+  {
+    cle === 'delai' && (
+      <p>
+        Le délai de chaque maquette est affiché sur sa fiche, avant le paiement : {b.livraison.delai_max_jours} jours au maximum entre la commande et la
+        réception. Si ce délai n'est pas tenu, vous pouvez annuler la commande et être remboursé sous 14 jours.
+      </p>
+    )
+  }
+  {
+    cle === 'difficulte' && (
+      <Fragment>
+        <p>
+          Notre échelle, établie à partir du nombre de pièces, du temps d'assemblage et du nombre de réglages. Elle peut différer de celle du fabricant.
+        </p>
+        <ul>
+          <li><strong>Facile</strong> : pour une première maquette. Un mécanisme simple, peu de réglages.</li>
+          <li><strong>Moyen</strong> : vous avez déjà monté une maquette. Plus de pièces et quelques réglages (jeu des engrenages, tension).</li>
+          <li><strong>Expert</strong> : pour les habitués. Mécanismes fins, ajustements précis, plusieurs séances.</li>
+        </ul>
+      </Fragment>
+    )
+  }
+  {
+    cle === 'retractation' && (
+      <p>
+        Vous avez 14 jours à compter de la réception pour changer d'avis, sans vous justifier, comme le prévoit la loi pour les achats à distance. Le plus
+        simple : le formulaire <a href="/renoncer-au-contrat/">Renoncer au contrat ici</a>, qui vous envoie un accusé de réception. Vous pouvez aussi nous
+        écrire par email ou utiliser le formulaire type de nos CGV.
+      </p>
+    )
+  }
+  {
+    cle === 'piece-manquante' && (
+      <p>
+        C'est couvert par la garantie légale de conformité. Envoyez-nous une photo de la pièce et de la boîte par email : nous vous envoyons la pièce ou
+        une maquette de remplacement. Délai de réponse : <Valeur v={b.service_client.delai_reponse_piece_manquante} />.{' '}
+        <a href="/contact/#piece-manquante">Nous écrire</a>
+      </p>
+    )
+  }
+</Accordeon>

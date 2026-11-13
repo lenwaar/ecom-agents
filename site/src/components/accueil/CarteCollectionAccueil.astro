@@ -1,0 +1,171 @@
+---
+/**
+ * Grande carte de collection de l'accueil (§4.1.5). Toute la carte est un lien « Voir la collection [nom] ».
+ * Image de fond : rendu « situation » d'un produit de la collection (srcset 800 / 1600, chargement différé),
+ * + calque animé propre à la collection (SVG, décoratif) :
+ * - mecanique : deux roues engrenées (60° et −120° au survol) ;
+ * - vehicules : roue, bielle et piston (un tour de roue, la bielle suit, avance de 12 px) ;
+ * - miniatures : lumière qui se réchauffe (calque chaud 0 → 0,6) et zoom 1,04 ;
+ * - pour-debuter : trois pièces qui se détachent de leur planche (y −10 px, ±6°, décalage 80 ms).
+ * Animations jouées par scripts/accueil.ts (survol ou focus ; une fois à 60 % de visibilité sur écran tactile).
+ * Sans animation / sans JS : visuels fixes, carte et lien complets. Rendus de démonstration : légende.
+ */
+import ArrowUpRight from '@lucide/astro/icons/arrow-up-right';
+import Roue from './Roue.astro';
+import { premiereRoue, roueVoisine, traceEngrenage } from '../../lib/engrenages';
+import { cheminVue, ligneStatistiques, type Collection } from '../../lib/catalogue';
+import type { Produit } from '../../lib/donnees';
+
+interface Props {
+  collection: Collection;
+  produits: Produit[];
+}
+
+const { collection, produits } = Astro.props;
+const illustration = [...produits].sort((a, b) => b.data.ordre - a.data.ordre)[0];
+const slug = collection.slug;
+
+const r1 = premiereRoue(205, 95, 20, 7);
+const r2 = roueVoisine(r1, 12, 140, 7);
+const vehicule = { cx: 210, cy: 100, R: 52, r: 30, L: 92 };
+const pinX = vehicule.cx + vehicule.r;
+const pistonX = pinX - vehicule.L;
+const nbModeles = produits.length;
+---
+
+<a
+  href={`/collections/${slug}/`}
+  aria-label={`Voir la collection ${collection.nom}`}
+  data-carte-collection={slug}
+  class="carte-collection group relative isolate flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-[22px] bg-nuit text-creme transition-[transform,box-shadow] duration-400 ease-sortie sm:aspect-[4/5] lg:aspect-[3/4]"
+>
+  {
+    illustration && (
+      <img
+        src={cheminVue(illustration.data.slug, 'situation', 800)}
+        srcset={`${cheminVue(illustration.data.slug, 'situation', 800)} 800w, ${cheminVue(illustration.data.slug, 'situation', 1600)} 1600w`}
+        sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+        width="800"
+        height="1000"
+        alt=""
+        loading="lazy"
+        decoding="async"
+        data-carte-image
+        class="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-[1100ms] ease-sortie"
+      />
+    )
+  }
+  {slug === 'miniatures' && <span data-carte-chaud class="calque-chaud absolute inset-0 -z-10 opacity-0" aria-hidden="true" />}
+  <span class="degrade absolute inset-0 -z-10" aria-hidden="true"></span>
+
+  <svg viewBox="0 0 300 200" class="calque pointer-events-none absolute right-0 w-[40%] max-w-[260px] opacity-90 sm:w-[62%]" aria-hidden="true" focusable="false">
+    {
+      slug === 'mecanique' && (
+        <g>
+          <Roue roue={r1} module={7} remplissage="url(#degrade-laiton)" bras={5} marque="data-carte-roue" />
+          <Roue roue={r2} module={7} remplissage="url(#degrade-bois)" bras={4} marque="data-carte-roue" />
+        </g>
+      )
+    }
+    {
+      slug === 'vehicules' && (
+        <g data-carte-vehicule data-bielle={JSON.stringify(vehicule)}>
+          <line x1="40" y1={vehicule.cy + vehicule.R + 4} x2="290" y2={vehicule.cy + vehicule.R + 4} stroke="#C8A15A" stroke-opacity=".45" stroke-width="2" />
+          <rect x="40" y={vehicule.cy - 14} width="70" height="28" rx="5" fill="none" stroke="#C8A15A" stroke-opacity=".6" stroke-width="2" />
+          <g data-carte-roue-vehicule transform={`rotate(0 ${vehicule.cx} ${vehicule.cy})`}>
+            <circle cx={vehicule.cx} cy={vehicule.cy} r={vehicule.R} fill="none" stroke="url(#degrade-laiton)" stroke-width="9" />
+            {Array.from({ length: 10 }, (_, i) => {
+              const a = (i * Math.PI) / 5;
+              return (
+                <line
+                  x1={vehicule.cx}
+                  y1={vehicule.cy}
+                  x2={(vehicule.cx + (vehicule.R - 5) * Math.cos(a)).toFixed(2)}
+                  y2={(vehicule.cy + (vehicule.R - 5) * Math.sin(a)).toFixed(2)}
+                  stroke="#C8A15A"
+                  stroke-opacity=".75"
+                  stroke-width="3"
+                />
+              );
+            })}
+            <circle cx={vehicule.cx} cy={vehicule.cy} r="10" fill="#C8A15A" />
+          </g>
+          <line data-tige x1={pinX} y1={vehicule.cy} x2={pistonX} y2={vehicule.cy} stroke="#E3C88E" stroke-width="6" stroke-linecap="round" />
+          <circle data-maneton cx={pinX} cy={vehicule.cy} r="6" fill="#0A0F1A" stroke="#E3C88E" stroke-width="3" />
+          <rect data-piston x={pistonX - 24} y={vehicule.cy - 11} width="24" height="22" rx="3" fill="#C8A15A" />
+        </g>
+      )
+    }
+    {
+      slug === 'miniatures' && (
+        <g fill="none" stroke="#E3C88E" stroke-width="2" opacity=".85">
+          <path d="M150 170 V80 L185 52 L220 80 V170" />
+          <path d="M220 170 V100 L250 76 L280 100 V170" />
+          <rect x="172" y="104" width="26" height="30" rx="3" data-carte-fenetre fill="rgba(255,190,110,.0)" />
+          <rect x="238" y="118" width="22" height="26" rx="3" data-carte-fenetre fill="rgba(255,190,110,.0)" />
+          <line x1="130" y1="170" x2="295" y2="170" />
+        </g>
+      )
+    }
+    {
+      slug === 'pour-debuter' && (
+        <g>
+          <rect x="110" y="30" width="176" height="130" rx="8" fill="rgba(226,196,150,.22)" stroke="#C8A15A" stroke-opacity=".55" stroke-width="1.5" />
+          <g fill="none" stroke="#5A3E22" stroke-opacity=".9" stroke-width="1.4" stroke-dasharray="4 3">
+            <circle cx="160" cy="95" r="36" />
+            <rect x="214" y="48" width="56" height="26" rx="4" />
+            <circle cx="244" cy="122" r="22" />
+          </g>
+          <g data-carte-piece><path transform="translate(160 95)" d={traceEngrenage(14, 30, 4.3)} fill-rule="evenodd" fill="url(#degrade-laiton)" /></g>
+          <g data-carte-piece><rect x="214" y="48" width="56" height="26" rx="4" fill="url(#degrade-bois)" /></g>
+          <g data-carte-piece><circle cx="244" cy="122" r="22" fill="url(#degrade-bois)" /><circle cx="244" cy="122" r="5" fill="#0A0F1A" /></g>
+        </g>
+      )
+    }
+  </svg>
+
+  <span class="absolute top-5 left-5 text-[13px] text-creme-secondaire">{nbModeles} modèle{nbModeles > 1 ? 's' : ''}</span>
+  <span
+    class="fleche absolute top-4 right-4 grid h-11 w-11 place-items-center rounded-full bg-creme/15 backdrop-blur transition-[transform,background-color,color] duration-400 ease-sortie"
+    aria-hidden="true"
+  >
+    <ArrowUpRight size={18} stroke-width={1.75} />
+  </span>
+
+  <span class="relative block p-5 md:p-6">
+    <span class="titre-serif block text-[34px] leading-none md:text-[36px]">{collection.nom}</span>
+    <span class="mt-2 block text-[14px] leading-snug text-creme-secondaire">{collection.phrase}</span>
+    <span class="mt-3 block text-[13px] text-creme">{ligneStatistiques(produits)}</span>
+  </span>
+</a>
+
+<style>
+  .degrade {
+    background: linear-gradient(180deg, rgba(10, 15, 26, 0.15) 0%, rgba(10, 15, 26, 0.25) 40%, rgba(10, 15, 26, 0.92) 100%);
+  }
+  .calque-chaud {
+    background: radial-gradient(60% 50% at 50% 45%, rgba(255, 170, 80, 0.6), transparent 70%);
+    mix-blend-mode: soft-light;
+  }
+  .calque {
+    top: 56px;
+  }
+  @media (max-width: 639px) {
+    .calque {
+      top: 64px;
+    }
+  }
+  @media (hover: hover) {
+    .carte-collection:hover,
+    .carte-collection:focus-visible {
+      transform: translateY(-6px);
+      box-shadow: 0 24px 50px rgba(17, 24, 39, 0.22);
+    }
+    .carte-collection:hover .fleche,
+    .carte-collection:focus-visible .fleche {
+      transform: rotate(45deg);
+      background: var(--accent-laiton);
+      color: var(--fond-nuit);
+    }
+  }
+</style>

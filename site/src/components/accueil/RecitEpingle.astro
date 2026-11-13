@@ -1,0 +1,112 @@
+---
+/**
+ * 2. Récit épinglé « Ouvrir, Assembler, Tourner » (§4.1.2, textes calculés : audit N2).
+ * Avec animation (html.js-anim) : section de 300 vh (240 vh mobile), contenu collant (sticky CSS),
+ * chronologie GSAP liée au défilement (scripts/accueil.ts) : une étape à la fois, barre à 3 segments,
+ * visuel qui passe de la planche aux roues qui tournent.
+ * Sans animation ou sans JavaScript : hauteur normale, 3 étapes empilées et visibles, chacune avec
+ * l'image fixe de son état (240 px) ; barre de progression masquée. Les 3 étapes sont toujours dans le DOM.
+ */
+import VisuelRecit from './VisuelRecit.astro';
+import { getProduitsPublies } from '../../lib/donnees';
+import { getReglagesAccueil, textesRecit } from '../../lib/accueil';
+
+const reglages = await getReglagesAccueil();
+const { etapes } = textesRecit(await getProduitsPublies(), reglages.seuil_soirees_heures);
+---
+
+<section data-recit aria-label="Ouvrir, assembler, tourner" class="recit registre-sombre relative bg-nuit text-creme">
+  <div class="epingle conteneur grid items-center gap-10 py-24 lg:gap-[4vw]">
+    <div class="order-2 lg:order-1">
+      <ol class="etapes grid gap-14 lg:grid-cols-3 lg:gap-10">
+        {
+          etapes.map((etape, i) => (
+            <li class="etape grid gap-6 sm:grid-cols-[160px_1fr] sm:items-center lg:grid-cols-1 lg:items-start" data-recit-etape={i}>
+              <VisuelRecit etat={(i + 1) as 1 | 2 | 3} class="vignette w-[200px] sm:w-[160px]" />
+              <div>
+                <p class="text-[13px] tracking-[0.2em] text-laiton">
+                  {etape.numero} / 03
+                </p>
+                <h2 class="titre-serif mt-3 text-[44px] leading-none md:text-[clamp(46px,6vw,88px)]">
+                  {etape.titre} <em>{etape.italique}</em>
+                </h2>
+                <p class="mt-5 max-w-[460px] text-[16px] leading-[1.65] text-creme-secondaire">{etape.texte}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="barres mt-8 hidden gap-2" aria-hidden="true">
+        {[0, 1, 2].map(() => <span class="relative h-[2px] w-14 overflow-hidden bg-bordure-sombre"><b data-recit-barre class="absolute inset-0 origin-left scale-x-0 bg-laiton" /></span>)}
+      </div>
+    </div>
+    <div class="visuel-anime order-1 hidden justify-self-center lg:order-2" data-recit-visuel>
+      <VisuelRecit etat="anime" class="h-auto w-full" />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Version animée : section haute, contenu collant, étapes superposées. */
+  :global(html.js-anim) .recit {
+    height: 240vh;
+  }
+  @media (min-width: 1024px) {
+    :global(html.js-anim) .recit {
+      height: 300vh;
+    }
+  }
+  :global(html.js-anim) .recit .epingle {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    padding-block: 72px 24px;
+    align-content: center;
+    gap: 24px;
+    overflow: hidden;
+  }
+  :global(html.js-anim) .recit .etapes {
+    position: relative;
+    display: block;
+    height: 300px;
+  }
+  :global(html.js-anim) .recit .etape {
+    position: absolute;
+    inset: 0;
+    display: block;
+    opacity: 0;
+  }
+  :global(html.js-anim) .recit .etape:first-child {
+    opacity: 1;
+  }
+  :global(html.js-anim .recit .vignette) {
+    display: none;
+  }
+  :global(html.js-anim) .recit .barres {
+    display: flex;
+  }
+  :global(html.js-anim) .recit .visuel-anime {
+    display: block;
+    width: min(300px, 70vw);
+  }
+  @media (min-width: 1024px) {
+    :global(html.js-anim) .recit .epingle {
+      grid-template-columns: 1fr 1fr;
+    }
+    :global(html.js-anim) .recit .visuel-anime {
+      width: 100%;
+      max-width: 520px;
+    }
+    :global(html.js-anim) .recit .etapes {
+      height: 340px;
+    }
+  }
+  @media (max-width: 1023px) {
+    :global(html.js-anim) .recit h2 {
+      font-size: 40px;
+    }
+    :global(html.js-anim) .recit .etapes {
+      height: 230px;
+    }
+  }
+</style>
