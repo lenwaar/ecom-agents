@@ -23,7 +23,7 @@ const AGENTS = path.join(TMP, "agents-test");
 const DE_COWORK = path.join(COORDINATION, "de-cowork.md");
 const QUINZE = ["analyste-marche", "architecte-web", "conformite-qa", "createur-contenu", "crm-email", "developpeur-web", "gestion-commandes",
   "media-acquisition", "pilotage-finance", "redacteur-catalogue", "service-client", "sourcing-produits", "studio-video", "studio-visuel", "veille-outils"];
-const TOUS = [...QUINZE, "cerveau", "partenariats", "ventes"];   // + 3 agents de l'entreprise (2026-11-14)
+const TOUS = [...QUINZE, "cerveau", "createur-produits-numeriques", "partenariats", "ventes"];   // + 3 agents de l'entreprise (2026-11-14)
 
 function aujourdhui() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
 function heure() { return new Date().toLocaleTimeString("fr-FR", { hour12: false }); }
@@ -93,11 +93,11 @@ async function ouvrir(viewport = { width: 1440, height: 1000 }) {
 }
 const etatDe = (page, id) => page.locator("#membre-" + id).getAttribute("data-etat");
 
-test("QG : 13 pièces, 18 agents, synchro en cours, états tirés des livrables", async () => {
+test("QG : 13 pièces, 19 agents, synchro en cours, états tirés des livrables", async () => {
   const { page, externes } = await ouvrir();
   assert.strictEqual(await page.locator(".piece").count(), 13);
-  assert.strictEqual(await page.locator('.membre[data-type="agent"]').count(), 18);
-  assert.strictEqual(await page.locator("#nb-agents").textContent(), "18 sur 18 installés");
+  assert.strictEqual(await page.locator('.membre[data-type="agent"]').count(), 19);
+  assert.strictEqual(await page.locator("#nb-agents").textContent(), "19 sur 19 installés");
   assert.strictEqual(await etatDe(page, "analyste-marche"), "attend");
   assert.strictEqual(await page.locator("#st-analyste-marche").textContent(), "1 livrable à valider");
   assert.strictEqual(await etatDe(page, "conformite-qa"), "attend");

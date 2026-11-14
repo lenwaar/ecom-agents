@@ -1,31 +1,38 @@
 # Niche retenue
 
-**Validée par l'humain le 2026-11-12.**
+**Décision de l'humain du 2026-11-14 : changement complet de niche et passage aux produits 100 % numériques.**
+Ancienne niche (maquettes en bois) archivée dans `archives/niche-maquettes-bois.md` : abandonnée parce qu'aucun produit n'était rentable au prix public du fournisseur (sourcing v3).
 
 ## La niche
-Kits de maquettes en bois à assembler pour adultes : maquettes mécaniques (mécanismes qui tournent), miniatures déco (« book nook », maisons miniatures, véhicules).
+Tableurs et modèles **de budget et d'organisation de l'argent, en français**, pour Excel et Google Sheets, téléchargés juste après le paiement.
 
 ## Pourquoi
-- Demande stable en France, avec un pic chaque décembre (cadeau). Google Trends France, 5 ans, relevé le 2026-11-12 : « maquette bois » intérêt moyen 22 contre 18 pour « kit crochet » et 5 pour « puzzle 3d bois ».
-- Les adultes sont une part croissante des acheteurs de jouets et loisirs (voir le rapport `outputs/2026-11-12-analyste-marche-top3-niches-v3.md`).
-- Contenu idéal à tourner seul : timelapse d'assemblage, mécanisme en mouvement, mains uniquement.
+- Besoin fort et durable : vie chère, envie de savoir où part l'argent. Les recherches de tableurs de budget sont en hausse (Keeper Tax, données Semrush États-Unis, octobre 2026 : « canva templates » et « budget spreadsheets » montent, Notion et agendas numériques ralentissent).
+- Les modèles et imprimables sont les produits numériques les plus vendus (Etsy, Gumroad) ; la plupart sont en anglais et pensés pour les États-Unis : **en français et adaptés à la France** (CAF, APL, livret A, CROUS), la concurrence est plus faible. Demande française à mesurer : `À VÉRIFIER` sur Google Trends France (fiche I09).
+- Aucun fournisseur, aucun stock, aucune livraison : marge proche du prix de vente.
+- Contenu idéal sans visage : captures d'écran (« je note mon salaire, tout se calcule »), tournées seul sur l'ordinateur.
+- L'humain est étudiant en informatique : formules et automatisation sont son terrain.
+
+## Cible
+- Cœur : 18-35 ans qui débutent dans la vie active ou étudiants, qui veulent « voir clair » sans appli bancaire ni abonnement.
+- Secondaire : couples et familles qui veulent un budget commun.
 
 ## Mots-clés
-- Utiliser : « maquette en bois », « maquette bois à monter », « maquette mécanique », « kit à assembler adulte », « idée cadeau homme / femme ».
-- Éviter en titre principal : « puzzle 3D » (faible volume de recherche).
+- Utiliser : « tableau budget », « tableur budget Excel », « budget Google Sheets », « gérer son budget », « budget mensuel », « reste à vivre », « budget étudiant ».
 
 ## Garde-fous
-- **Aucune copie** de modèles de marques (Rokr / Robotime, Ugears, etc.).
-- **Produits de marque authentiques autorisés** s'ils sont achetés via un canal officiel (fabricant ou distributeur agréé). On peut alors citer la marque pour décrire le produit, sans jamais laisser croire que la boutique est la marque ou son partenaire officiel (décision du 2026-11-12).
-- Pour les produits génériques : aucun nom de marque tierce dans nos textes.
-- **Produits pour adultes, 14 ans et plus.** Un produit marqué moins de 14 ans relève de la réglementation jouets : exclu.
-- **Sans électronique au lancement** (pas de LED, musique, moteur ni pile) : décision du 2026-11-12. À réévaluer plus tard (marquage CE + filière de recyclage DEEE).
-- Chaque produit doit avoir un **responsable établi dans l'UE** (règlement GPSR).
+- **Aucun conseil en investissement, crédit, fiscalité ou assurance** : le produit organise des chiffres saisis par l'utilisateur, il ne dit pas quoi faire de son argent.
+- **Aucune promesse de gain ou d'économie chiffrée** (« économisez 300 € par mois ») ni témoignage inventé.
+- Aucune copie de modèle concurrent.
+- Produits testés dans Excel, Google Sheets et LibreOffice avant vente (fiches O07, O11).
+
+## Gamme
+Voir `produits/README.md` : budget mensuel (n°1), budget étudiant, remboursement de dettes, objectifs d'épargne, pack complet.
 
 ## Calendrier
-- Hiver 2026-2027 : construction de la boutique et du contenu.
-- Juin 2027 : premier test autour de la fête des pères.
-- Décembre 2027 : objectif principal, Noël.
+- Novembre 2026 : produit n°1, site adapté, premiers contenus.
+- Janvier 2027 : temps fort (« bonnes résolutions », reprise après les fêtes).
+- Septembre 2027 : rentrée étudiante (budget étudiant).
 
 ## Plan B
-Kits de crochet pour adultes débutants : c'est la seule tendance en hausse sur Google Trends.
+Kits Canva pour petits commerces français (posts, menus, tarifs).

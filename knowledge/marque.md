@@ -1,5 +1,11 @@
 # Marque
 
+> **2026-11-14 : nouvelle niche (tableurs de budget).** Tout ce fichier décrit l'identité de l'ancienne niche et **ne s'applique plus**, sauf la section « Ton ». Nouvelle identité à créer par `studio-visuel` et `architecte-web`.
+>
+> **Nom : à choisir.** Pistes à vérifier par la fiche A16 (INPI, domaines, comptes) avant tout usage : « Budget au clair », « Le Bon Compte », « Centime ». Le premier nom libre partout est retenu.
+> **Couleur de travail** du produit n°1 : vert `#1F6F5B`, police Arial dans les tableurs.
+
+
 **Décision de l'humain du 2026-11-12 : piste C « Laiton » retenue**, dans sa version cinématique (prototype `docs/reference/prototype-accueil.html`).
 
 ## Nom

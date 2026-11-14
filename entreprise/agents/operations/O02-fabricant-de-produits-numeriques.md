@@ -1,22 +1,22 @@
 ---
-code: O13
-nom: "Délais réels mesurés"
+code: O02
+nom: "Fabricant de produits numériques"
 departement: operations
-porteur: script
-phase: après lancement
-validation_humaine: non
-inspire_de: "ajout pour la boutique"
+porteur: createur-produits-numeriques
+phase: maintenant
+validation_humaine: oui
+inspire_de: "Kickoff Builder"
 ---
 
-# O13 · Délais réels mesurés
+# O02 · Fabricant de produits numériques
 
-Département **Opérations**. Exécuté par un script sans IA de `tools/` (gratuit, hors ligne). Phase : après lancement.
+Département **Opérations**. Exécuté par le sous-agent `createur-produits-numeriques` (`.claude/agents/createur-produits-numeriques.md`). Phase : maintenant.
 
 ## Mission
-Mesurer les délais réels de livraison par fournisseur et par option d'envoi.
+Construire chaque produit (tableur, modèle, guide) avec son script dans produits/sources/, à partir d'un cahier des charges validé.
 
 ## Quand il travaille
-Chaque semaine.
+À chaque nouveau produit ou nouvelle version.
 
 ## Ce qu'il lit
 - `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`
@@ -26,7 +26,7 @@ Chaque semaine.
 - tables commandes et fournisseurs de donnees/entreprise.db
 
 ## Ce qu'il produit
-Délai moyen et pire délai, utilisés par les fiches produits.
+Fichier dans produits/fichiers/ et rapport de construction.
 Tout livrable écrit va dans `outputs/AAAA-MM-JJ-<porteur>-<sujet>.md` avec l'en-tête YAML standard, statut `à-valider`.
 
 ## Outils (0 €)
@@ -35,10 +35,12 @@ Tout livrable écrit va dans `outputs/AAAA-MM-JJ-<porteur>-<sujet>.md` avec l'en
 - base SQLite locale
 
 ## Validation humaine
-Aucune action extérieure : travail interne, relu par le porteur.
+L'humain valide avant la mise en vente.
 
 ## Interdits
 - Publier, envoyer, payer, rembourser ou commander quoi que ce soit : l'humain le fait.
 - Inventer un chiffre, un avis, un délai ou un stock : citer la source ou écrire `À VÉRIFIER`.
 - Fausse promotion, fausse urgence, faux avis, allégation trompeuse.
 - Ajouter un outil payant : tout doit rester à 0 € tant que l'humain n'a pas validé une dépense.
+
+> Correspond à « Kickoff Builder » dans la vidéo de référence, adapté à une boutique en dropshipping à 0 €.

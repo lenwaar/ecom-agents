@@ -35,6 +35,7 @@
     { id: "architecte-web", prenom: "Victor", role: "Conception", type: "agent", p: "D", ecran: "cube", cheveux: "#4A2C16" },
     { id: "developpeur-web", prenom: "Nils", role: "Code du site", type: "agent", p: "D", ecran: "lignes", cheveux: "#C9A24A" },
     { id: "redacteur-catalogue", prenom: "Clara", role: "Fiches produits", type: "agent", p: "E", ecran: "lignes", cheveux: "#7A3E2A" },
+    { id: "createur-produits-numeriques", prenom: "Félix", role: "Tableurs, modèles", type: "agent", p: "E", ecran: "barres", cheveux: "#3A2A1A" },
     { id: "createur-contenu", prenom: "Jade", role: "Scripts, calendrier", type: "agent", p: "F", ecran: "lignes", cheveux: "#2A1E14" },
     { id: "studio-visuel", prenom: "Iris", role: "Visuels 3D", type: "agent", p: "F", ecran: "cube", cheveux: "#C0633F" },
     { id: "studio-video", prenom: "Théo", role: "Montage", type: "agent", p: "F", ecran: "timeline", cheveux: "#1C1C24" },

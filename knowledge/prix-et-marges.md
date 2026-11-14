@@ -1,37 +1,35 @@
-# Prix et marges
+# Prix et marges (produits numériques)
 
-> **Statut : proposition de Cowork du 2026-11-12, à valider par l'humain.** Construite à partir du rapport sourcing v2 (section 7), de l'audit conformite-qa et du dossier légal du même jour. Les agents l'appliquent en attendant, en signalant les valeurs `À VÉRIFIER`.
+> **Statut : proposition de Claude du 2026-11-14, sur mandat de l'humain.** Ancienne version (maquettes) dans `archives/prix-et-marges-maquettes.md`.
 
-## Coût de revient par commande
-Prix d'achat + livraison (fournisseur et/ou envoi au client) + taxes d'import éventuelles + emballage + frais de paiement + provision SAV (5 % du prix de vente) + **cotisations micro-entreprise** + **éco-participation REP jouets**.
+## Coût d'une vente
+Il n'y a ni achat de marchandise ni livraison. Une vente coûte :
 
 | Élément | Valeur retenue | Source |
 |---|---|---|
-| Cotisations micro-entreprise (vente de marchandises) | 12,3 % du prix de vente (13,3 % avec versement libératoire) | Dossier conformite-qa du 2026-11-12 |
-| TVA | Non facturée (franchise en base, sous 85 000 € de ventes annuelles) : mention « TVA non applicable, art. 293 B du CGI » | Idem |
-| Frais de paiement | 3 % + 0,30 € par commande | Hypothèse, `À VÉRIFIER` quand la plateforme sera choisie |
-| Taxes import (hors UE) | 3 € + 2 € par catégorie d'article | douane.gouv.fr |
-| Éco-participation REP jouets | `À VÉRIFIER` (barème de l'éco-organisme) | Dossier conformite-qa |
+| Cotisations micro-entreprise : **prestations de services commerciales (BIC)**, catégorie des produits numériques | 21,2 % du chiffre d'affaires (22,9 % avec versement libératoire) | service-public.gouv.fr (F36232) ; URSSAF, taux 2026 |
+| Frais Stripe, cartes européennes | `À VÉRIFIER` sur stripe.com/fr/pricing (hypothèse de travail : 1,5 % + 0,25 €) | à vérifier |
+| Provision remboursements et litiges | 5 % du prix | hypothèse prudente |
 
-## Seuils (décisions de l'humain, `contraintes.md`)
-- Marge nette ≥ 10 € par commande, **cotisations comprises** : plancher strict.
-- **Objectif : 15 € ou plus par commande** (décision de l'humain du 2026-11-12 : viser plus que le plancher pour être rentable). On fixe le prix de vente pour atteindre l'objectif, tant qu'il reste cohérent avec les prix concurrents.
-- Livraison ≤ 14 jours.
-- Repères indicatifs : coefficient ≥ 2,5 ; prix de vente entre 25 et 60 €.
+Exemple pour un produit à 12 € : 12 − 2,54 (21,2 %) − 0,43 (Stripe, hypothèse) − 0,60 (provision) = **environ 8,43 € net**. Calcul à refaire avec les vrais frais Stripe.
 
-## Coûts fixes annuels (hors marge par commande)
-| Poste | Estimation | Statut |
+## Seuils
+- L'ancien plancher « 10 € de marge par commande » ne s'applique plus tel quel : il visait des produits physiques. Nouvelle règle : **au moins 70 % du prix de vente reste après cotisations, frais et provision.**
+- Plafond de chiffre d'affaires micro-entreprise pour les services : 83 600 € par an (relevé en février 2026, `À VÉRIFIER` sur le site de l'URSSAF au moment de l'immatriculation).
+
+## Prix proposés (à tester)
+| Produit | Prix | Repère |
 |---|---|---|
-| Adhésion emballages (Citeo ou Léko) | environ 110 € HT/an | `À VÉRIFIER` à l'adhésion |
-| Adhésion REP jouets | inconnue | `À VÉRIFIER` |
-| Médiateur de la consommation | inconnue | `À VÉRIFIER` |
-| Plateforme de la boutique | 0 € visé | Phase 3 |
+| Budget mensuel | 12 € | modèles seuls vendus entre 9 et 49 $ (Enter, guide 2026) |
+| Budget étudiant | 9 € | public au budget serré |
+| Remboursement de dettes, Objectifs d'épargne | 12 € chacun | |
+| Pack complet (4 produits) | 29 € | packs entre 29 et 149 $ (même source) |
 
-**Seuil de rentabilité** : nombre de ventes par an pour couvrir les coûts fixes = total des coûts fixes ÷ marge nette moyenne par commande. Exemple : 250 € de coûts fixes ÷ 10 € = 25 ventes par an.
+Prix revus après 30 ventes ou 1 000 visites de la page produit.
 
-## Promotions et prix barrés
-- Un prix barré affiche comme prix de référence **le prix le plus bas pratiqué par la boutique dans les 30 jours précédant la réduction** (article L112-1-1 du code de la consommation). La réduction se calcule sur ce prix.
-- Jamais de fausse promotion permanente ni de compte à rebours trompeur.
+## TVA
+- Franchise en base : « TVA non applicable, art. 293 B du CGI » tant que le seuil des prestations de services n'est pas dépassé (seuil 2026 : `À VÉRIFIER` sur impots.gouv.fr).
+- Ventes à des particuliers d'autres pays de l'UE : en dessous de 10 000 € par an pour toute l'UE, règles françaises ; au-delà, TVA du pays du client via le guichet unique (OSS). Au lancement, vente en France seulement.
 
-## Révision
-À revoir dès que la plateforme, le fournisseur officiel et les adhésions sont connus.
+## Promotions
+- Prix barré : uniquement le prix le plus bas pratiqué dans les 30 jours précédents (article L112-1-1 du code de la consommation). Jamais de fausse promotion permanente ni de compte à rebours trompeur.
