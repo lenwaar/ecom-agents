@@ -13,7 +13,15 @@ Option : --base <chemin> pour viser une autre base.
 import datetime as dt, pathlib, shutil, sqlite3, sys
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
-BASE = RACINE / 'donnees/entreprise.db'
+# Console Windows (cp1252) : forcer l'UTF-8 pour afficher « € » et les accents
+for _flux in (sys.stdout, sys.stderr):
+    try: _flux.reconfigure(encoding='utf-8')
+    except (AttributeError, ValueError): pass
+# Lancé depuis un worktree de Claude Code (.claude/worktrees/<nom>/) : utiliser la base du dépôt principal,
+# sinon chaque worktree aurait sa propre base vide et les validations seraient perdues.
+_parties = RACINE.parts
+DEPOT = pathlib.Path(*_parties[:_parties.index('.claude')]) if '.claude' in _parties and 'worktrees' in _parties else RACINE
+BASE = DEPOT / 'donnees/entreprise.db'
 SCHEMA = RACINE / 'donnees/schema.sql'
 
 def connecter(chemin=BASE, creer=False):
@@ -123,7 +131,7 @@ def main(argv):
         k = argv.index('--base'); base = RACINE / argv[k + 1]; del argv[k:k + 2]
     cmd = argv[0] if argv else 'statut'
     if cmd == 'init':
-        connecter(base, creer=True).commit(); print(f'Base prête : {base.relative_to(RACINE)}')
+        connecter(base, creer=True).commit(); print(f'Base prête : {base}')
     elif cmd == 'statut': statut(connecter(base))
     elif cmd == 'attente': attente(connecter(base))
     elif cmd == 'valider':
@@ -131,8 +139,8 @@ def main(argv):
         cx.execute("UPDATE validations SET statut=?, decide_le=datetime('now') WHERE id=?", (d, int(argv[1]))); cx.commit(); print(f'Validation {argv[1]} : {d}')
     elif cmd == 'sauvegarde':
         connecter(base)
-        cible = RACINE / 'donnees/sauvegardes' / f'entreprise-{dt.datetime.now():%Y-%m-%d-%H%M}.db'
-        cible.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(base, cible); print(f'Sauvegarde : {cible.relative_to(RACINE)}')
+        cible = DEPOT / 'donnees/sauvegardes' / f'entreprise-{dt.datetime.now():%Y-%m-%d-%H%M}.db'
+        cible.parent.mkdir(parents=True, exist_ok=True); shutil.copy2(base, cible); print(f'Sauvegarde : {cible}')
     elif cmd == 'exemple': exemple()
     else: sys.exit(__doc__)
 
