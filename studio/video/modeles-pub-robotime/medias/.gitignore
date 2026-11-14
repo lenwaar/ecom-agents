@@ -1,0 +1,6 @@
+# Médias officiels Robotime : jamais dans Git (droits, poids)
+*
+!.gitignore
+!ATTENDUS.md
+!*/
+*/*

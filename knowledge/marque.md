@@ -3,7 +3,7 @@
 **Décision de l'humain du 2026-11-12 : piste C « Laiton » retenue**, dans sa version cinématique (prototype `docs/reference/prototype-accueil.html`).
 
 ## Nom
-- Nom de travail : **Rouage & Laiton** (provisoire). Disponibilité **non vérifiée** (INPI, nom de domaine, réseaux sociaux) : à vérifier avant toute mise en ligne publique.
+- Nom de travail : **Rouage & Laiton** (provisoire). Vérification A16 du 2026-11-14 : aucun conflit trouvé (INPI, domaines). Comptes TikTok, Instagram et Pinterest `rouageetlaiton` créés par l'humain le 2026-11-14, sans publication. Recherche de similitude professionnelle **en attente** : le nom reste provisoire jusque-là (`knowledge/decisions.md`).
 
 ## Promesse
 Des maquettes mécaniques en bois à assembler soi-même, pour adultes : le plaisir de construire un objet qui bouge, et un beau cadeau.

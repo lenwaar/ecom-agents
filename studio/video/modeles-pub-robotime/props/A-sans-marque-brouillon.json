@@ -1,0 +1,10 @@
+{
+  "modele": "A",
+  "brouillon": true,
+  "marque": false,
+  "publicite": true,
+  "medias": {},
+  "variables": {"AGE": "Dès 14 ans", "MENTION_MARQUE": "Maquette mécanique en bois"},
+  "lignesRetirees": [],
+  "plansRetires": []
+}

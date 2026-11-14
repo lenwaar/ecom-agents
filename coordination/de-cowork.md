@@ -183,5 +183,29 @@ Crée `docs/exemples/` avec le meilleur livrable existant pour chaque type (rapp
 ### T68 · Clôture · `fait`
 Vérificateur, commit, push, compte rendu, puis demander à l'humain de redémarrer.
 
+---
+
+## Synchro n°16 (2026-11-13) « AliExpress »
+
+En parallèle quand c'est possible, une ligne dans `vers-cowork.md` après chaque tâche.
+
+### T69 · Nouveau modèle dans les décisions · `fait`
+`knowledge/decisions.md` : nouveau modèle décidé par l'humain : dropshipping, 0 € d'avance ; fournisseur prioritaire = boutique officielle Robotime sur AliExpress (robotime.aliexpress.com, store 2884002), offres expédiées depuis un entrepôt UE seulement (livraison ≤ 14 j, pas de droits de 3 €/article) ; règles existantes inchangées (marge ≥ 10 €, note ≥ 4,5, stock ≥ 100). Mets à jour `knowledge/memo.md`.
+
+### T70 · Grille AliExpress · `fait`
+`sourcing-produits` : AliExpress bloque les robots, donc pars du catalogue officiel robotimeonline.com (collection ROKR, sans électronique) : liste 15 modèles candidats avec prix officiel, puis prépare `outputs/…-grille-aliexpress.md` : un tableau que l'humain remplit en 10 min dans son navigateur (lien AliExpress, prix, « expédié depuis », délai, note, ventes, stock), avec la marche à suivre.
+
+### T71 · Calcul de marge · `fait`
+`pilotage-finance` : un script `tools/calcul_marge.py` qui prend ce tableau rempli et sort la marge réelle de chaque produit (Stripe, cotisations, retours) et le prix de vente conseillé.
+
+### T72 · Messages à Robotime · `fait`
+`redacteur-catalogue` : brouillon de message à la boutique Robotime AliExpress et à Robotime Europe : accord pour le dropshipping et droit d'utiliser leurs photos et vidéos officielles dans nos pubs. Rien n'est envoyé.
+
+### T73 · Modèles de pub · `à faire`
+`createur-contenu` + `studio-video` : 3 modèles de pub (accroche, démonstration, avant/après) prêts à recevoir les médias officiels, rendus en brouillon avec des cadres vides marqués « média fournisseur ».
+
+### T74 · Clôture · `à faire`
+Vérificateur, commit, push, compte rendu avec 🔔 ACTION HUMAINE.
+
 ## Règle permanente
 Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.

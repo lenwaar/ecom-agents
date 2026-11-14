@@ -2,6 +2,7 @@ import React from 'react';
 import {Composition} from 'remotion';
 import {TestRendu} from './TestRendu';
 import {DeLaPlancheALObjet, PropsPlanche} from './DeLaPlancheALObjet';
+import {ModelePub, PropsModele, DUREES} from '../modeles-pub-robotime/ModelesPub';
 import {ExAccroche, ExCartes, ExFin, ExOrbite, ExPlanche, ExSousTitres} from './Exemples';
 
 const V = {fps: 30, width: 1080, height: 1920} as const;
@@ -24,5 +25,16 @@ export const Racine: React.FC = () => (
 		<Composition id="ex-orbite-produit" component={ExOrbite} durationInFrames={90} {...V} />
 		<Composition id="ex-cartes-verre" component={ExCartes} durationInFrames={90} {...V} />
 		<Composition id="ex-fin-appel" component={ExFin} durationInFrames={90} {...V} />
+		{/* Modèles de pub « à trous » Robotime (T73) : props dans modeles-pub-robotime/props/ */}
+		{(['A', 'B', 'C'] as const).map((m) => (
+			<Composition
+				key={m}
+				id={`modele-pub-${m}`}
+				component={ModelePub as unknown as React.FC<Record<string, unknown>>}
+				durationInFrames={DUREES[m] * 30}
+				{...V}
+				defaultProps={{modele: m, brouillon: true, marque: true, publicite: true, medias: {}, variables: {}, lignesRetirees: [], plansRetires: []} satisfies PropsModele}
+			/>
+		))}
 	</>
 );

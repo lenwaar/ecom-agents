@@ -3,9 +3,14 @@
 Le détail reste dans chaque fichier : ne lire que ceux utiles à ta tâche.
 
 ## Boutique
-- Rouage & Laiton (nom provisoire, INPI non vérifié) : maquettes mécaniques en bois à assembler, adultes, 14 ans et plus.
-- Toujours un mécanisme, aucune électronique, aucune copie de marque (Rokr, Ugears...).
+- Rouage & Laiton (nom provisoire : INPI vérifié sans conflit le 2026-11-14, recherche de similitude pro en attente ; comptes réseaux `rouageetlaiton` créés, sans publication) : maquettes mécaniques en bois à assembler, adultes, 14 ans et plus.
+- Toujours un mécanisme, aucune électronique, aucune copie ni contrefaçon.
 - France d'abord. Site Astro + Stripe, local tant que l'humain ne valide pas.
+
+## Fournisseur (synchro n°16)
+- Dropshipping, 0 € d'avance. Boutique officielle Robotime sur AliExpress (store 2884002), collection ROKR.
+- Offres expédiées depuis l'UE seulement (≤ 14 j, pas de droits de 3 €/article). Note ≥ 4,5, stock ≥ 100.
+- Photos et vidéos officielles : seulement après accord écrit de Robotime.
 
 ## Ton et style
 - Vouvoiement, phrases courtes, précis et chaleureux. Jamais d'emoji, de superlatif creux ni de fausse urgence.

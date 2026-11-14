@@ -1,6 +1,8 @@
 ---
 agent: developpeur-web
-statut: à-valider
+statut: validé
+valide_par: humain
+date_validation: 2026-11-13
 date: 2026-11-13
 sources: [coordination/de-cowork.md (T67), docs/reference/qg-en-direct.html, outputs/2026-11-13-developpeur-web-studio-en-direct-t57.md, coordination/journal-direct.jsonl (lu seulement)]
 prochaine-etape: conformite-qa (audit du QG) puis validation humaine
