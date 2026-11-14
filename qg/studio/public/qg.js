@@ -274,13 +274,37 @@ function rendreEtat(e) {
   const eq = e.equipe || {};
   $("k-liv").textContent = eq.duJour === null || eq.duJour === undefined ? "—" : eq.duJour;
   const installes = eq.agents ? AGENTS.filter(id => eq.agents.some(a => a.nom === id)).length : null;
-  $("k-actifs-s").textContent = installes === null ? "sur 15 agents (liste illisible)" : installes === 15 ? "sur 15 agents" : `sur 15 agents (${installes} installés)`;
-  $("nb-agents").textContent = installes === null ? "15 agents" : `${installes} sur 15 installés`;
+  const N = AGENTS.length;
+  $("k-pieces-s").textContent = `sur ${PIECES.length}`;
+  $("k-actifs-s").textContent = installes === null ? `sur ${N} agents (liste illisible)` : installes === N ? `sur ${N} agents` : `sur ${N} agents (${installes} installés)`;
+  $("nb-agents").textContent = installes === null ? `${N} agents` : `${installes} sur ${N} installés`;
   (eq.agents || []).forEach(a => { const m = $("membre-" + a.nom); if (m && a.description) m.title = a.description; });
   const np = Q.nonPlaces(etat);
   $("nonplaces").hidden = !np.length;
   $("nonplaces").textContent = np.length ? `Installés, pas encore placés dans une pièce : ${np.join(", ")}.` : "";
   $("src-journal").textContent = e.sources.journal.split(/[\\/]/).pop();
+  rendreEntreprise(e.entreprise);
+}
+
+// ---------- L'entreprise : 137 fiches par département + file de la base ----------
+const PHASE_TXT = { maintenant: "maintenant", avant: "avant lancement", apres: "après lancement" };
+function rendreEntreprise(ent) {
+  const z = $("entreprise");
+  if (!z) return;
+  if (!ent) { $("nb-fiches").textContent = "—"; z.innerHTML = `<div class="vide">Dossier entreprise/agents/ introuvable.</div>`; return; }
+  $("nb-fiches").textContent = `${ent.total} agents`;
+  z.innerHTML = ent.departements.map(d => {
+    const porteurs = Object.entries(d.porteurs).sort((a, b) => b[1] - a[1]).map(([p, n]) => `${esc(p)} ${n}`).join(" · ");
+    const phases = Object.entries(d.phases).filter(([, n]) => n).map(([k, n]) => `<span class="ph ph-${k}">${n} ${PHASE_TXT[k]}</span>`).join("");
+    const liste = d.fiches.map(f => `<li><b>${esc(f.code)}</b> ${esc(f.nom)} <i>${esc(f.porteur)}</i></li>`).join("");
+    return `<details class="dept"><summary><span class="dept-code">${esc(d.code)}</span><span class="dept-nom">${esc(d.nom)}</span><span class="dept-n">${d.total}</span></summary>
+      <div class="dept-ph">${phases}</div><div class="dept-p">${porteurs}</div><ul>${liste}</ul></details>`;
+  }).join("");
+  const v = ent.validations, f = $("file-base");
+  if (v === null) { f.innerHTML = `<div class="vide">Base illisible ici (Node 22.13 ou plus, et <code>py tools/base.py init</code>).</div>`; $("nb-base").textContent = "—"; return; }
+  $("nb-base").textContent = v.length;
+  f.innerHTML = v.length ? v.map(x => `<div class="ligne-base${x.priorite === "haute" ? " haute" : ""}"><b>n° ${x.id}</b> <span class="code">${esc(x.agent)}</span> ${esc(x.sujet)}</div>`).join("")
+    + `<p class="aide-base">Décider : <code>py tools/base.py valider &lt;n°&gt; oui|non</code></p>` : `<div class="vide">Rien n'attend votre décision.</div>`;
 }
 function demarrerDirect() {
   etat = Q.creerEtat(); dernierEtat = null; enConfirmation = null;

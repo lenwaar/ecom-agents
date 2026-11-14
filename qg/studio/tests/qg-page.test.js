@@ -23,6 +23,7 @@ const AGENTS = path.join(TMP, "agents-test");
 const DE_COWORK = path.join(COORDINATION, "de-cowork.md");
 const QUINZE = ["analyste-marche", "architecte-web", "conformite-qa", "createur-contenu", "crm-email", "developpeur-web", "gestion-commandes",
   "media-acquisition", "pilotage-finance", "redacteur-catalogue", "service-client", "sourcing-produits", "studio-video", "studio-visuel", "veille-outils"];
+const TOUS = [...QUINZE, "cerveau", "partenariats", "ventes"];   // + 3 agents de l'entreprise (2026-11-14)
 
 function aujourdhui() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; }
 function heure() { return new Date().toLocaleTimeString("fr-FR", { hour12: false }); }
@@ -54,7 +55,7 @@ let serveur, navigateur;
 test.before(async () => {
   fs.mkdirSync(CAPTURES, { recursive: true });
   [OUTPUTS, COORDINATION, AGENTS].forEach(d => fs.mkdirSync(d));
-  QUINZE.forEach(n => fs.writeFileSync(path.join(AGENTS, n + ".md"), `---\nname: ${n}\ndescription: Agent de test ${n}. Suite.\n---\n`));
+  TOUS.forEach(n => fs.writeFileSync(path.join(AGENTS, n + ".md"), `---\nname: ${n}\ndescription: Agent de test ${n}. Suite.\n---\n`));
   fs.writeFileSync(path.join(OUTPUTS, LIV_MARCHE), CONTENU_MARCHE);
   fs.writeFileSync(path.join(OUTPUTS, LIV_QA), "---\nagent: conformite-qa\nstatut: à-valider # court\ndate: 2099-01-02\n---\n\n# Faux audit\n");
   fs.writeFileSync(path.join(OUTPUTS, LIV_DEV), `---\nagent: developpeur-web\nstatut: validé\ndate: ${aujourdhui()}\n---\n\n# Faux rapport validé\n`);
@@ -92,11 +93,11 @@ async function ouvrir(viewport = { width: 1440, height: 1000 }) {
 }
 const etatDe = (page, id) => page.locator("#membre-" + id).getAttribute("data-etat");
 
-test("QG : 12 pièces, 15 agents, synchro en cours, états tirés des livrables", async () => {
+test("QG : 13 pièces, 18 agents, synchro en cours, états tirés des livrables", async () => {
   const { page, externes } = await ouvrir();
-  assert.strictEqual(await page.locator(".piece").count(), 12);
-  assert.strictEqual(await page.locator('.membre[data-type="agent"]').count(), 15);
-  assert.strictEqual(await page.locator("#nb-agents").textContent(), "15 sur 15 installés");
+  assert.strictEqual(await page.locator(".piece").count(), 13);
+  assert.strictEqual(await page.locator('.membre[data-type="agent"]').count(), 18);
+  assert.strictEqual(await page.locator("#nb-agents").textContent(), "18 sur 18 installés");
   assert.strictEqual(await etatDe(page, "analyste-marche"), "attend");
   assert.strictEqual(await page.locator("#st-analyste-marche").textContent(), "1 livrable à valider");
   assert.strictEqual(await etatDe(page, "conformite-qa"), "attend");
@@ -156,7 +157,7 @@ test("QG : filtres par pôle et par état", async () => {
   assert.deepStrictEqual(await visibles(".piece"), ["piece-A", "piece-B", "piece-J"]);
   await page.screenshot({ path: path.join(CAPTURES, "qg-direct-filtre-a-valider.png"), fullPage: true });
   await page.click('#filtres button[data-f="tous"]');
-  assert.strictEqual((await visibles(".piece")).length, 12);
+  assert.strictEqual((await visibles(".piece")).length, 13);
   await page.close();
 });
 

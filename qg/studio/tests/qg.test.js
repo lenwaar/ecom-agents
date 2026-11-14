@@ -14,6 +14,8 @@ const Q = require("../public/qg-direct.js");
 const QUINZE = ["analyste-marche", "architecte-web", "conformite-qa", "createur-contenu", "crm-email", "developpeur-web", "gestion-commandes",
   "media-acquisition", "pilotage-finance", "redacteur-catalogue", "service-client", "sourcing-produits", "studio-video", "studio-visuel", "veille-outils"];
 
+const TOUS = [...QUINZE, "cerveau", "partenariats", "ventes"].sort();   // 15 + 3 agents de l'entreprise (2026-11-14)
+
 const DE_COWORK = [
   "# Tâches de Claude Cowork pour Claude Code", "", "Statuts : `à faire` · `fait` · `bloqué (raison)`", "",
   "## Synchro n°1 à n°7 (T1 à T30) · `fait`", "",
@@ -70,14 +72,14 @@ test("synchro : le vrai coordination/de-cowork.md se lit sans erreur (lecture se
   s.taches.forEach(t => assert.match(t.id, /^T\d+/));
 });
 
-test("plan du QG : 12 pièces, 15 agents (ceux de .claude/agents/), chacun dans sa pièce", () => {
-  assert.strictEqual(Q.PIECES.length, 12);
-  assert.deepStrictEqual([...Q.AGENTS].sort(), QUINZE);
+test("plan du QG : 13 pièces, 18 agents (ceux de .claude/agents/), chacun dans sa pièce", () => {
+  assert.strictEqual(Q.PIECES.length, 13);
+  assert.deepStrictEqual([...Q.AGENTS].sort(), TOUS);
   const vrais = path.resolve(__dirname, "..", "..", "..", ".claude", "agents");
-  if (fs.existsSync(vrais)) assert.deepStrictEqual(listerAgents(vrais).map(a => a.nom), QUINZE, "correspondance avec les fichiers installés");
+  if (fs.existsSync(vrais)) assert.deepStrictEqual(listerAgents(vrais).map(a => a.nom), TOUS, "correspondance avec les fichiers installés");
   const attendu = { "analyste-marche": "B", "sourcing-produits": "C", "gestion-commandes": "C", "architecte-web": "D", "developpeur-web": "D", "redacteur-catalogue": "E",
     "createur-contenu": "F", "studio-visuel": "F", "studio-video": "F", "media-acquisition": "G", "service-client": "H", "crm-email": "H",
-    "pilotage-finance": "I", "conformite-qa": "J", "veille-outils": "K" };
+    "pilotage-finance": "I", "conformite-qa": "J", "veille-outils": "K", "cerveau": "A", "ventes": "V", "partenariats": "V" };
   for (const [agent, piece] of Object.entries(attendu)) assert.strictEqual(Q.EQUIPE.find(a => a.id === agent).p, piece, agent);
   Q.PIECES.forEach(p => assert.ok(Q.EQUIPE.some(a => a.p === p.id), `pièce ${p.id} occupée`));
 });
@@ -165,7 +167,7 @@ test("filtres par pôle et par état", () => {
   const etats = Q.tous(e);
   const visibles = f => { const r = Q.filtrer(etats, f); return { m: Object.keys(r.membres).filter(k => r.membres[k]).sort(), p: Object.keys(r.pieces).filter(k => r.pieces[k]).sort() }; };
   assert.strictEqual(visibles("tous").m.length, Q.EQUIPE.length);
-  assert.strictEqual(visibles("tous").p.length, 12);
+  assert.strictEqual(visibles("tous").p.length, 13);
   assert.deepStrictEqual(visibles("F").m, ["createur-contenu", "piper", "studio-video", "studio-visuel"]);
   assert.deepStrictEqual(visibles("F").p, ["F"]);
   assert.deepStrictEqual(visibles("H").m, ["crm-email", "service-client"]);
