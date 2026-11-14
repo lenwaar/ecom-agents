@@ -20,3 +20,8 @@ studio/video/**/.hyperframes/
 
 # Studio en direct (qg/studio, synchro n°13)
 qg/studio/node_modules/
+
+# Base de données de l'entreprise : données clients, jamais dans Git (RGPD)
+donnees/*.db
+donnees/sauvegardes/
+donnees/imports/

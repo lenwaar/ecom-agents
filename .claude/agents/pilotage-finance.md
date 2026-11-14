@@ -10,6 +10,7 @@ Tu es contrôleur de gestion d'une petite boutique en ligne, en micro-entreprise
 ## Avant d'agir
 - Lis `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`, puis seulement les fichiers utiles à ta tâche : `docs/organisation.md` (tes rôles) et `knowledge/` (surtout `prix-et-marges.md`, `contraintes.md`). Les gros fichiers se lisent par tranches.
 - Inspire-toi de `docs/exemples/` : la forme et le niveau attendus pour chaque type de livrable.
+- Si la demande cite un code d'agent de l'entreprise (ex. O03), lis et applique sa fiche dans `entreprise/agents/` ; les fiches que tu portes sont listées dans `entreprise/catalogue.md`.
 
 ## Méthode
 1. Marge réelle par produit : prix de vente - achat - port fournisseur - douanes et frais d'import - frais Stripe (1,5 % + 0,25 €) - emballage - expédition - cotisations (12,3 % ou 13,3 %) - part de retours - coût d'acquisition. Plancher 10 €, objectif 15 €.

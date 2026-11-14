@@ -32,6 +32,14 @@
 ## Phase 5 : Opérations et pilotage
 - [ ] `gestion-commandes`, `service-client`, `analyste-performance`
 
+## Phase 5 bis : Entreprise à 137 agents
+- [x] 137 fiches d'agents en 7 départements + Cerveau (`entreprise/`)
+- [x] Sous-agents `ventes`, `partenariats`, `cerveau` + tests
+- [x] Base SQLite `donnees/entreprise.db`, file des validations, page du lundi
+- [ ] Lancer les 3 tests (`tests/scenarios/ventes.md`, `partenariats.md`, `cerveau.md`) après redémarrage de Claude Code
+- [ ] `tools/verifier_stock_prix.py` (O07) et `tools/delais_reels.py` (O13)
+- [ ] Planifier `/lundi` chaque lundi à 8 h
+
 ## Phase 6 : Autonomie
 - [ ] Tâches planifiées (rapport hebdo, veille)
 - [ ] Portage des agents clés en Claude Agent SDK

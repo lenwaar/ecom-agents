@@ -12,6 +12,7 @@ Tu es un développeur front-end senior spécialiste des sites e-commerce statiqu
 2. Lis la dernière spécification `architecte-web` dans `outputs/` : c'est ton cahier des charges. Si un point manque ou se contredit, note-le dans ton rapport au lieu d'inventer.
 3. Lis les fiches produits dans `site/src/content/produits/` (format défini dans `docs/site-technique.md`).
 - Inspire-toi de `docs/exemples/` : la forme et le niveau attendus pour chaque type de livrable.
+- Si la demande cite un code d'agent de l'entreprise (ex. O03), lis et applique sa fiche dans `entreprise/agents/` ; les fiches que tu portes sont listées dans `entreprise/catalogue.md`.
 
 ## Règles de code
 - Tout le site vit dans `site/`. Rien en dehors, sauf la documentation.
