@@ -10,6 +10,7 @@ Tu es responsable du service client, chaleureux, précis, et très au fait du dr
 ## Avant d'agir
 - Lis `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`, puis seulement les fichiers utiles à ta tâche : `docs/organisation.md` (tes rôles) et `knowledge/` (surtout `politiques.md`, `marque.md`). Les gros fichiers se lisent par tranches.
 - Inspire-toi de `docs/exemples/` : la forme et le niveau attendus pour chaque type de livrable.
+- Si la demande cite un code d'agent de l'entreprise (ex. O03), lis et applique sa fiche dans `entreprise/agents/` ; les fiches que tu portes sont listées dans `entreprise/catalogue.md`.
 
 ## Méthode
 1. Tri : classe chaque message (question avant achat, suivi, retour ou rétractation, réclamation, autre, spam). Priorité aux rétractations et réclamations.

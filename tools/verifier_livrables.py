@@ -61,6 +61,18 @@ for p in RACINE.rglob('*'):
     if p.is_file() and '.git' not in p.parts and 'node_modules' not in p.parts and p.suffix in ('.md', '.js', '.ts', '.astro', '.json', '.env', '.py'):
         if re.search(r'sk_(live|test)_[0-9A-Za-z]{10,}', p.read_text(encoding='utf-8', errors='ignore')): erreurs.append(f'{rel(p)} : clé secrète Stripe détectée')
 
+# 6. Entreprise : 137 fiches, codes uniques, porteur existant
+fiches = sorted((RACINE / 'entreprise/agents').rglob('*.md'))
+if fiches:
+    codes = []
+    for p in fiches:
+        h = entete(p.read_text(encoding='utf-8')) or {}
+        codes.append(h.get('code'))
+        porteur = h.get('porteur', '')
+        if porteur not in ('script', 'humain') and not (RACINE / '.claude/agents' / f'{porteur}.md').exists():
+            erreurs.append(f'{rel(p)} : porteur « {porteur} » introuvable dans .claude/agents/')
+    if len(set(codes)) != len(codes): erreurs.append('entreprise/agents : codes de fiche en double')
+    if len(fiches) != 137: avertissements.append(f'entreprise/agents : {len(fiches)} fiches au lieu de 137')
 print(f'Contrôle qualité ecom-agents : {len(erreurs)} erreur(s), {len(avertissements)} avertissement(s)')
 for e in erreurs: print('  ERREUR       ', e)
 for a in avertissements: print('  AVERTISSEMENT', a)

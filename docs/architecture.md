@@ -8,6 +8,15 @@
 4. **Rien ne part en ligne sans validation.** Tout ce qui est public (page, pub, mail client, prix) passe par l'agent Conformité-QA puis par l'humain.
 5. **Chaque agent est testé.** Un scénario dans `tests/scenarios/` décrit une demande type et les critères d'un bon livrable.
 
+## Couche « entreprise » : 137 agents (2026-11-14)
+
+Au-dessus des sous-agents, l'entreprise est découpée en **137 fiches d'agents** : 7 départements (Ventes 22, Offres et partenariats 18, Marketing 22, Opérations 20, Intelligence 16, Clients 20, Back office 18) et un Cerveau. Chaque fiche dit qui l'exécute (un sous-agent, un script sans IA ou l'humain). Carte et mode d'emploi : `entreprise/README.md`. Catalogue : `entreprise/catalogue.md`.
+
+- Nouveaux sous-agents : `ventes`, `partenariats`, `cerveau` (18 au total, sous la limite de 20-25).
+- Système de référence : `donnees/entreprise.db` (SQLite, schéma `donnees/schema.sql`).
+- Ce qui interrompt la boucle : `entreprise/interruptions.md`.
+- Commandes : `/agent <code> <demande>` et `/lundi`.
+
 ## Organigramme (12 agents, 5 pôles)
 
 > Organisation complète à 100 rôles (environ 15 agents et des scripts sans IA) : voir `docs/organisation.md`.

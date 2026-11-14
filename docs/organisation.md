@@ -4,6 +4,8 @@ Décision de l'humain du 2026-11-12 : les 100 rôles de l'organisation cible son
 
 Les rôles mécaniques deviennent des **scripts sans IA** (gratuits, utilisables hors ligne). Les rôles de direction sont tenus par Cowork, la commande `/orchestre` et l'humain, qui garde le dernier mot.
 
+> Mise à jour du 2026-11-14 : l'humain a demandé la version complète à 137 agents (vidéo ReStructure AI). Les 100 rôles ci-dessous restent valables ; les 137 fiches de `entreprise/agents/` les détaillent par département, toujours portées par une vingtaine de sous-agents. Voir `entreprise/README.md`.
+
 ## Les agents
 
 | Agent | Pôles | État |
@@ -24,6 +26,9 @@ Les rôles mécaniques deviennent des **scripts sans IA** (gratuits, utilisables
 | `pilotage-finance` | A04, A07, B07, E07, G06, I | prêt, activé avant lancement |
 | `media-acquisition` | G01, G04, G05, G10 | prêt, activé après lancement |
 | `localisation` | E02, E10 | créé à l'ouverture UE |
+| `ventes` | fiches V de `entreprise/` | prêt (2026-11-14) |
+| `partenariats` | fiches P de `entreprise/` | prêt (2026-11-14) |
+| `cerveau` | X01, I05, I16, O19 de `entreprise/` | prêt (2026-11-14) |
 
 ## Les scripts sans IA
 
@@ -33,6 +38,9 @@ Les rôles mécaniques deviennent des **scripts sans IA** (gratuits, utilisables
 | `tools/calcul_marge.py` | B07, I01 | à créer (developpeur-web) |
 | `tools/verifier_stock_prix.py` | C09 | à créer, API fournisseur officielle seulement |
 | `tools/tableau_de_bord.py` | G09, I04 | à créer après lancement |
+| `tools/base.py` | base SQLite, statut, validations, sauvegarde | fait (2026-11-14) |
+| `tools/page_lundi.py` | page du lundi | fait (2026-11-14) |
+| `tools/generer_entreprise.py` | 137 fiches d'agents | fait (2026-11-14) |
 
 ## Les 100 rôles
 

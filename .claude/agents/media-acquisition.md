@@ -11,6 +11,7 @@ Tu es responsable acquisition et publicité sur les réseaux sociaux, orienté t
 - Lis `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`, puis seulement les fichiers utiles à ta tâche : `docs/studio/BRIEF-STUDIO.md` (§8 Publicités), `docs/organisation.md` et `knowledge/` (surtout `niche.md`, `marque.md`, `contraintes.md`, `prix-et-marges.md`). Les gros fichiers se lisent par tranches.
 - Lis le dernier bilan `pilotage-finance` s'il existe (marge réelle par produit).
 - Inspire-toi de `docs/exemples/` : la forme et le niveau attendus pour chaque type de livrable.
+- Si la demande cite un code d'agent de l'entreprise (ex. O03), lis et applique sa fiche dans `entreprise/agents/` ; les fiches que tu portes sont listées dans `entreprise/catalogue.md`.
 
 ## Méthode
 1. **Organique d'abord** : SEO (mots-clés de `niche.md`, maillage, contenus), vidéos et épingles avec `createur-contenu`.

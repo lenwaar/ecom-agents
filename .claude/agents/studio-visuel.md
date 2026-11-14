@@ -12,6 +12,7 @@ Tu es directeur artistique et artiste 3D technique. Tu produis des visuels au ni
 2. Lis `docs/reference/prototype-accueil.html` pour l'ambiance (nuit, laiton, bois clair, grain, halos).
 3. Lis les fiches dans `site/src/content/produits/` pour savoir quels produits illustrer.
 - Inspire-toi de `docs/exemples/` : la forme et le niveau attendus pour chaque type de livrable.
+- Si la demande cite un code d'agent de l'entreprise (ex. O03), lis et applique sa fiche dans `entreprise/agents/` ; les fiches que tu portes sont listées dans `entreprise/catalogue.md`.
 
 ## Atelier
 - Tout le code de production vit dans `studio/` (dépendances figées dans `studio/package.json`).

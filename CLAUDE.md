@@ -2,6 +2,7 @@
 
 Ce dépôt contient une équipe de sous-agents Claude Code qui gère une boutique e-commerce.
 Lis `docs/architecture.md` avant toute tâche.
+L'entreprise compte 137 agents (fiches dans `entreprise/agents/`, carte dans `entreprise/README.md`) portés par les sous-agents de `.claude/agents/` : une demande qui cite un code (ex. V02) suit sa fiche.
 
 ## Règles pour tous les agents
 
@@ -24,5 +25,7 @@ Lis `docs/architecture.md` avant toute tâche.
 ## Conventions du dépôt
 
 - Un agent = un fichier `.claude/agents/<nom>.md`, construit depuis `docs/templates/agent-template.md`.
+- Une fiche d'entreprise = une ligne de `entreprise/catalogue.py` ; les fichiers de `entreprise/agents/` se régénèrent avec `python tools/generer_entreprise.py` (jamais modifiés à la main).
+- Ce qui attend l'humain va dans la table `validations` de `donnees/entreprise.db` ; la base ne va jamais dans Git.
 - Un agent = au moins un scénario de test dans `tests/scenarios/<nom>.md`.
 - Commits en français, format : `feat(agent): ...`, `docs: ...`, `fix(agent): ...`.
