@@ -14,7 +14,7 @@ const Q = require("../public/qg-direct.js");
 const QUINZE = ["analyste-marche", "architecte-web", "conformite-qa", "createur-contenu", "crm-email", "developpeur-web", "gestion-commandes",
   "media-acquisition", "pilotage-finance", "redacteur-catalogue", "service-client", "sourcing-produits", "studio-video", "studio-visuel", "veille-outils"];
 
-const TOUS = [...QUINZE, "cerveau", "partenariats", "ventes"].sort();   // 15 + 3 agents de l'entreprise (2026-11-14)
+const TOUS = [...QUINZE, "cerveau", "createur-produits-numeriques", "partenariats", "ventes"].sort();   // 15 + 3 agents de l'entreprise (2026-11-14)
 
 const DE_COWORK = [
   "# Tâches de Claude Cowork pour Claude Code", "", "Statuts : `à faire` · `fait` · `bloqué (raison)`", "",
@@ -72,14 +72,14 @@ test("synchro : le vrai coordination/de-cowork.md se lit sans erreur (lecture se
   s.taches.forEach(t => assert.match(t.id, /^T\d+/));
 });
 
-test("plan du QG : 13 pièces, 18 agents (ceux de .claude/agents/), chacun dans sa pièce", () => {
+test("plan du QG : 13 pièces, 19 agents (ceux de .claude/agents/), chacun dans sa pièce", () => {
   assert.strictEqual(Q.PIECES.length, 13);
   assert.deepStrictEqual([...Q.AGENTS].sort(), TOUS);
   const vrais = path.resolve(__dirname, "..", "..", "..", ".claude", "agents");
   if (fs.existsSync(vrais)) assert.deepStrictEqual(listerAgents(vrais).map(a => a.nom), TOUS, "correspondance avec les fichiers installés");
   const attendu = { "analyste-marche": "B", "sourcing-produits": "C", "gestion-commandes": "C", "architecte-web": "D", "developpeur-web": "D", "redacteur-catalogue": "E",
     "createur-contenu": "F", "studio-visuel": "F", "studio-video": "F", "media-acquisition": "G", "service-client": "H", "crm-email": "H",
-    "pilotage-finance": "I", "conformite-qa": "J", "veille-outils": "K", "cerveau": "A", "ventes": "V", "partenariats": "V" };
+    "pilotage-finance": "I", "conformite-qa": "J", "veille-outils": "K", "cerveau": "A", "createur-produits-numeriques": "E", "ventes": "V", "partenariats": "V" };
   for (const [agent, piece] of Object.entries(attendu)) assert.strictEqual(Q.EQUIPE.find(a => a.id === agent).p, piece, agent);
   Q.PIECES.forEach(p => assert.ok(Q.EQUIPE.some(a => a.p === p.id), `pièce ${p.id} occupée`));
 });

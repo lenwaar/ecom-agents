@@ -1,22 +1,22 @@
 ---
-code: O11
-nom: "Contrôle des échantillons"
+code: O13
+nom: "Versions et mises à jour"
 departement: operations
-porteur: sourcing-produits
+porteur: createur-produits-numeriques
 phase: avant lancement
-validation_humaine: oui
+validation_humaine: non
 inspire_de: "ajout pour la boutique"
 ---
 
-# O11 · Contrôle des échantillons
+# O13 · Versions et mises à jour
 
-Département **Opérations**. Exécuté par le sous-agent `sourcing-produits` (`.claude/agents/sourcing-produits.md`). Phase : avant lancement.
+Département **Opérations**. Exécuté par le sous-agent `createur-produits-numeriques` (`.claude/agents/createur-produits-numeriques.md`). Phase : avant lancement.
 
 ## Mission
-Donner à l'humain une grille pour tester un échantillon reçu : pièces, notice, qualité de découpe, temps d'assemblage.
+Tenir le numéro de version de chaque produit et prévenir les acheteurs quand une version corrigée sort.
 
 ## Quand il travaille
-À la réception de chaque échantillon.
+À chaque nouvelle version.
 
 ## Ce qu'il lit
 - `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`
@@ -26,7 +26,7 @@ Donner à l'humain une grille pour tester un échantillon reçu : pièces, notic
 - tables commandes et fournisseurs de donnees/entreprise.db
 
 ## Ce qu'il produit
-Grille remplie et verdict garder ou rejeter.
+Journal des versions dans produits/README.md.
 Tout livrable écrit va dans `outputs/AAAA-MM-JJ-<porteur>-<sujet>.md` avec l'en-tête YAML standard, statut `à-valider`.
 
 ## Outils (0 €)
@@ -35,7 +35,7 @@ Tout livrable écrit va dans `outputs/AAAA-MM-JJ-<porteur>-<sujet>.md` avec l'en
 - base SQLite locale
 
 ## Validation humaine
-L'humain remplit la grille.
+Aucune action extérieure : travail interne, relu par le porteur.
 
 ## Interdits
 - Publier, envoyer, payer, rembourser ou commander quoi que ce soit : l'humain le fait.

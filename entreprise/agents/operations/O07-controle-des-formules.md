@@ -1,22 +1,22 @@
 ---
-code: O06
-nom: "Suivi des colis"
+code: O07
+nom: "Contrôle des formules"
 departement: operations
-porteur: gestion-commandes
-phase: avant lancement
+porteur: createur-produits-numeriques
+phase: maintenant
 validation_humaine: non
 inspire_de: "ajout pour la boutique"
 ---
 
-# O06 · Suivi des colis
+# O07 · Contrôle des formules
 
-Département **Opérations**. Exécuté par le sous-agent `gestion-commandes` (`.claude/agents/gestion-commandes.md`). Phase : avant lancement.
+Département **Opérations**. Exécuté par le sous-agent `createur-produits-numeriques` (`.claude/agents/createur-produits-numeriques.md`). Phase : maintenant.
 
 ## Mission
-Relever les numéros de suivi et l'état des colis (17track gratuit).
+Recalculer chaque produit et vérifier 0 erreur de formule et des totaux justes avant toute mise en vente ou mise à jour.
 
 ## Quand il travaille
-Chaque jour.
+Avant chaque mise en vente et chaque nouvelle version.
 
 ## Ce qu'il lit
 - `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`
@@ -26,7 +26,7 @@ Chaque jour.
 - tables commandes et fournisseurs de donnees/entreprise.db
 
 ## Ce qu'il produit
-Statut de livraison à jour dans commandes.
+Rapport de recalcul (0 erreur exigée).
 Tout livrable écrit va dans `outputs/AAAA-MM-JJ-<porteur>-<sujet>.md` avec l'en-tête YAML standard, statut `à-valider`.
 
 ## Outils (0 €)

@@ -1,22 +1,22 @@
 ---
-code: O07
-nom: "Contrôle stock et prix fournisseur"
+code: O06
+nom: "Livraison des fichiers"
 departement: operations
-porteur: script
+porteur: developpeur-web
 phase: avant lancement
 validation_humaine: non
 inspire_de: "ajout pour la boutique"
 ---
 
-# O07 · Contrôle stock et prix fournisseur
+# O06 · Livraison des fichiers
 
-Département **Opérations**. Exécuté par un script sans IA de `tools/` (gratuit, hors ligne). Phase : avant lancement.
+Département **Opérations**. Exécuté par le sous-agent `developpeur-web` (`.claude/agents/developpeur-web.md`). Phase : avant lancement.
 
 ## Mission
-Vérifier stock, prix et délai du fournisseur avant de laisser un produit en vente.
+Vérifier que chaque client payé reçoit son lien de téléchargement et son e-mail de confirmation (accord pour l'accès immédiat inclus).
 
 ## Quand il travaille
-Chaque jour pour les produits en vente.
+À chaque vente.
 
 ## Ce qu'il lit
 - `CLAUDE.md`, `knowledge/memo.md`, `docs/retours-experience.md`
@@ -26,7 +26,7 @@ Chaque jour pour les produits en vente.
 - tables commandes et fournisseurs de donnees/entreprise.db
 
 ## Ce qu'il produit
-Alerte si stock < 100, prix en hausse ou délai > 14 jours.
+Contrôle du parcours paiement, téléchargement, e-mail.
 Tout livrable écrit va dans `outputs/AAAA-MM-JJ-<porteur>-<sujet>.md` avec l'en-tête YAML standard, statut `à-valider`.
 
 ## Outils (0 €)

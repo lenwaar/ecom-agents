@@ -2,6 +2,12 @@
 
 Décisions prises par Cowork le 2026-11-12 pour ne pas bloquer la construction du site. L'humain peut les changer à tout moment.
 
+## Passage aux produits numériques (décisions de l'humain du 2026-11-14)
+- **Changement complet de niche** : la boutique vend des **tableurs de budget en français** (Excel et Google Sheets), téléchargés après paiement. Raison : aucune maquette n'était rentable au prix public du fournisseur (sourcing v3), et l'humain veut un marché à forte demande.
+- **Mandat** : « gère le business de A à Z, tu as toute mon autorisation ». Claude décide et construit. Restent à l'humain, parce qu'ils demandent son identité ou son argent : immatriculation de la micro-entreprise, compte Stripe, publication depuis ses comptes réseaux, toute dépense.
+- Les sections ci-dessous sur le site, l'accueil, les produits de démonstration, le catalogue, le fournisseur et le nom « Rouage & Laiton » concernent **l'ancienne niche** : elles restent pour mémoire mais ne s'appliquent plus. La technique du site (Astro + Stripe, Cloudflare) est conservée.
+- Les comptes réseaux `rouageetlaiton` seront renommés quand le nouveau nom sera choisi (action de l'humain).
+
 ## Modèle d'approvisionnement (décision de l'humain du 2026-11-13, synchro n°16)
 - **Dropshipping, 0 € d'avance** : aucun stock acheté à l'avance ; on commande au fournisseur seulement après le paiement du client (toujours avec l'accord de l'humain).
 - **Fournisseur prioritaire** : la boutique officielle Robotime sur AliExpress (robotime.aliexpress.com, store 2884002). Produits visés : collection ROKR de Robotime, sans électronique.

@@ -9,7 +9,7 @@
 | Ventes | V | 22 | Transformer l'intérêt en commandes : visiteurs du site, messages des réseaux, acheteurs professionnels. |
 | Offres et partenariats | P | 18 | Conclure les accords : créateurs de contenu, revendeurs officiels, entreprises, fournisseurs. |
 | Marketing | M | 22 | Faire connaître la boutique : contenu organique sans visage, vidéos, visuels, e-mails, puis publicité quand le budget existera. |
-| Opérations | O | 20 | Livrer chaque commande en 14 jours maximum : commande fournisseur, suivi, incidents, qualité. |
+| Opérations | O | 20 | Fabriquer, tester et livrer les produits numériques ; les fiches de logistique physique sont en pause depuis le passage au numérique (2026-11-14). |
 | Intelligence | I | 16 | Mesurer, comprendre et prévoir : d'où vient l'argent, ce qui est à risque, ce qu'il faut faire ensuite. |
 | Clients | C | 20 | Rendre chaque client content après l'achat : réponses, retours, avis, fidélité. |
 | Back office | A | 18 | Tenir l'administratif d'une micro-entreprise : factures, paiements, déclarations, juridique, sauvegardes. |
@@ -25,21 +25,22 @@ Un sous-agent Claude Code porte plusieurs fiches : au-delà de 20 à 25 sous-age
 | `ventes` | 16 |
 | `partenariats` | 15 |
 | `service-client` | 12 |
-| `gestion-commandes` | 10 |
 | `crm-email` | 9 |
 | `createur-contenu` | 9 |
 | `conformite-qa` | 8 |
-| `sourcing-produits` | 6 |
+| `gestion-commandes` | 8 |
+| `sourcing-produits` | 5 |
 | `analyste-marche` | 5 |
-| `script` | 5 |
 | `media-acquisition` | 4 |
+| `createur-produits-numeriques` | 4 |
 | `cerveau` | 4 |
 | `redacteur-catalogue` | 3 |
 | `studio-video` | 3 |
+| `script` | 3 |
 | `architecte-web` | 2 |
 | `studio-visuel` | 2 |
+| `developpeur-web` | 2 |
 | `veille-outils` | 2 |
-| `developpeur-web` | 1 |
 | `humain` | 1 |
 
 ## Ventes (22)
@@ -124,18 +125,18 @@ Un sous-agent Claude Code porte plusieurs fiches : au-delà de 20 à 25 sous-age
 | Code | Agent | Vu dans la vidéo | Porteur | Phase | Validation |
 |---|---|---|---|---|---|
 | O01 | [Ouverture de commande](agents/operations/O01-ouverture-de-commande.md) | Project Setup | `gestion-commandes` | avant lancement | non |
-| O02 | [Préparateur de commande fournisseur](agents/operations/O02-preparateur-de-commande-fournisseur.md) | Kickoff Builder | `gestion-commandes` | avant lancement | oui |
+| O02 | [Fabricant de produits numériques](agents/operations/O02-fabricant-de-produits-numeriques.md) | Kickoff Builder | `createur-produits-numeriques` | maintenant | oui |
 | O03 | [Gardien des délais](agents/operations/O03-gardien-des-delais.md) | Deadline Watcher | `gestion-commandes` | avant lancement | non |
 | O04 | [Nouvelles au client](agents/operations/O04-nouvelles-au-client.md) | Client Update Writer | `gestion-commandes` | avant lancement | oui |
 | O05 | [Déclencheur de facture](agents/operations/O05-declencheur-de-facture.md) | Invoice Trigger | `gestion-commandes` | avant lancement | non |
-| O06 | [Suivi des colis](agents/operations/O06-suivi-des-colis.md) | - | `gestion-commandes` | avant lancement | non |
-| O07 | [Contrôle stock et prix fournisseur](agents/operations/O07-controle-stock-et-prix-fournisseur.md) | - | `script` | avant lancement | non |
+| O06 | [Livraison des fichiers](agents/operations/O06-livraison-des-fichiers.md) | - | `developpeur-web` | avant lancement | non |
+| O07 | [Contrôle des formules](agents/operations/O07-controle-des-formules.md) | - | `createur-produits-numeriques` | maintenant | non |
 | O08 | [Fournisseur de secours](agents/operations/O08-fournisseur-de-secours.md) | - | `sourcing-produits` | maintenant | non |
 | O09 | [Incidents de livraison](agents/operations/O09-incidents-de-livraison.md) | - | `gestion-commandes` | avant lancement | oui |
 | O10 | [Retours logistiques](agents/operations/O10-retours-logistiques.md) | - | `gestion-commandes` | avant lancement | oui |
-| O11 | [Contrôle des échantillons](agents/operations/O11-controle-des-echantillons.md) | - | `sourcing-produits` | avant lancement | oui |
+| O11 | [Test utilisateur](agents/operations/O11-test-utilisateur.md) | - | `createur-produits-numeriques` | maintenant | non |
 | O12 | [Fiche fournisseur](agents/operations/O12-fiche-fournisseur.md) | - | `sourcing-produits` | avant lancement | non |
-| O13 | [Délais réels mesurés](agents/operations/O13-delais-reels-mesures.md) | - | `script` | après lancement | non |
+| O13 | [Versions et mises à jour](agents/operations/O13-versions-et-mises-a-jour.md) | - | `createur-produits-numeriques` | avant lancement | non |
 | O14 | [Conformité produit](agents/operations/O14-conformite-produit.md) | - | `conformite-qa` | maintenant | non |
 | O15 | [Catalogue à jour](agents/operations/O15-catalogue-a-jour.md) | - | `developpeur-web` | après lancement | oui |
 | O16 | [Procédures](agents/operations/O16-procedures.md) | - | `gestion-commandes` | avant lancement | non |
