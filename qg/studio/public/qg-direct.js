@@ -1,5 +1,5 @@
 // QG en direct : correspondance entre le journal de Claude Code, les livrables, la synchro
-// et les 12 pièces du QG. Logique pure (aucun accès à la page) : utilisée par qg.js dans le navigateur
+// et les pièces du QG. Logique pure (aucun accès à la page) : utilisée par qg.js dans le navigateur
 // et par les tests Node. Les phrases du journal sont traduites par direct.js (mêmes règles que le Studio).
 (function (racine) {
   "use strict";
@@ -19,13 +19,15 @@
     { id: "I", nom: "Finance", salle: "Coffre", c: "#D9A35B" },
     { id: "J", nom: "Conformité", salle: "Greffe", c: "#6BD58A" },
     { id: "K", nom: "Recherche", salle: "Laboratoire", c: "#5AC8F2" },
+    { id: "V", nom: "Ventes", salle: "Comptoir", c: "#F28B5A" },
     { id: "Q", nom: "Automates", salle: "Quai des automates", c: "#A9B0C2" }
   ];
 
-  // type « agent » : un des 15 fichiers de .claude/agents/ (id = nom technique).
+  // type « agent » : un des fichiers de .claude/agents/ (id = nom technique).
   // Les autres postes de la maquette : Cowork, toi, Piper (outil local) et deux scripts sans IA.
   const EQUIPE = [
     { id: "cowork", prenom: "Cowork", role: "Chef d'orchestre", agent: "Cowork", type: "cowork", p: "A", ecran: "lignes", cheveux: "#C8A15A" },
+    { id: "cerveau", prenom: "Mémo", role: "Cerveau, page du lundi", type: "agent", p: "A", ecran: "barres", cheveux: "#3A2A1A" },
     { id: "toi", prenom: "Toi", role: "Décide", agent: "l'humain", type: "humain", p: "A", ecran: "coches", cheveux: "#2A1E14" },
     { id: "analyste-marche", prenom: "Margaux", role: "Veille marché", type: "agent", p: "B", ecran: "barres", cheveux: "#5B3A1E" },
     { id: "sourcing-produits", prenom: "Hugo", role: "Fournisseurs", type: "agent", p: "C", ecran: "lignes", cheveux: "#3A2A1A" },
@@ -43,6 +45,8 @@
     { id: "pilotage-finance", prenom: "Basile", role: "Marges, budget", type: "agent", p: "I", ecran: "courbe", cheveux: "#5B3A1E" },
     { id: "conformite-qa", prenom: "Louise", role: "Audit, droit", type: "agent", p: "J", ecran: "coches", cheveux: "#8A5A2E" },
     { id: "veille-outils", prenom: "Ada", role: "Outils, licences", type: "agent", p: "K", ecran: "barres", cheveux: "#1C1C24" },
+    { id: "ventes", prenom: "Lucas", role: "Prospects, devis", type: "agent", p: "V", ecran: "courbe", cheveux: "#2A1E14" },
+    { id: "partenariats", prenom: "Rose", role: "Créateurs, accords", type: "agent", p: "V", ecran: "envoi", cheveux: "#7A3E2A" },
     { id: "auto-verif", prenom: "Vérif.", role: "verifier_livrables", agent: "script sans IA", type: "automate", p: "Q", ecran: "coches", robot: true },
     { id: "auto-liens", prenom: "Liens", role: "verifier_liens", agent: "script sans IA", type: "automate", p: "Q", ecran: "coches", robot: true }
   ];

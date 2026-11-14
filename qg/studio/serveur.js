@@ -19,6 +19,7 @@ const { entete, estAValider, texteValide } = require("./livrables.js");
 const { creerSuivi } = require("./cowork.js");
 const { listerAgents, lireLivrables, resumeLivrables } = require("./equipe.js");
 const { lireSynchro } = require("./synchro.js");
+const { lireEntreprise } = require("./entreprise.js");
 
 const HOTE = "127.0.0.1";
 const PORT = Number(process.env.STUDIO_PORT) || 4178;
@@ -157,6 +158,7 @@ function etat() {
     videos: videos(),
     rapportVideo: rapportStudioVideo(),
     cowork: suiviCowork.etat(),
+    entreprise: lireEntreprise(RACINE),
     // Aucune source réelle pour l'instant : le client affiche « — ».
     cout: null,
     abonnes: null,
