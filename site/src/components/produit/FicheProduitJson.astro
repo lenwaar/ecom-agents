@@ -1,0 +1,191 @@
+---
+/**
+ * Fiche d'un produit lu dans data/produits/<slug>.json (page /produit/<slug>/).
+ * Mobile d'abord : visuel, puis nom, prix, port, délai, âge, bouton ; sur ordinateur, visuel à gauche
+ * et colonne d'achat à droite. Puis description, sécurité du produit (GPSR) et avis vérifiés.
+ * - Démonstration (leçon 10) : valeurs null ou « À VÉRIFIER » affichées sobrement (« Prix non fixé »,
+ *   « Non communiqué ») ; bouton de paiement désactivé (<button disabled>, aria-disabled), aucun lien.
+ * - Vrai produit : le chargeur refuse déjà toute valeur manquante (lib/produits-json.ts) ; le lien
+ *   de paiement n'est posé que si paiement.actif et un lien https://buy.stripe.com/.
+ * - Visuel « illustration » ou « rendu-3d » : mention visible sous l'image (leçon 11).
+ */
+import Truck from '@lucide/astro/icons/truck';
+import Clock from '@lucide/astro/icons/clock';
+import LockKeyhole from '@lucide/astro/icons/lock-keyhole';
+import ShieldCheck from '@lucide/astro/icons/shield-check';
+import Badge from '../ui/Badge.astro';
+import Bouton from '../ui/Bouton.astro';
+import Avis from './Avis.astro';
+import { formatPrix } from '../../lib/donnees';
+import { texteConnu, type ProduitJson, type PersonneGpsr } from '../../lib/produits-json';
+
+interface Props {
+  produit: ProduitJson;
+}
+
+const { produit: p } = Astro.props;
+const NC = 'Non communiqué';
+
+const nom = texteConnu(p.nom) ?? 'Produit sans nom';
+const paragraphes = (texteConnu(p.description) ?? '').split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+const prix = p.prix_ttc === null ? 'Prix non fixé' : formatPrix(p.prix_ttc);
+const port = p.frais_port_ttc === null ? NC : p.frais_port_ttc === 0 ? 'Aucun frais de port' : formatPrix(p.frais_port_ttc);
+const { min, max } = p.delai_livraison_jours;
+const delai = max === null ? NC : min === null || min === max ? `${max} jours au plus` : `${min} à ${max} jours`;
+
+const lien = p.paiement.lien?.trim() ?? '';
+const lienAchat = !p.demo && p.paiement.actif && lien.startsWith('https://buy.stripe.com/') ? lien : null;
+
+const LEGENDES = { illustration: 'Illustration', 'rendu-3d': 'Rendu 3D de démonstration', photo: '' } as const;
+
+const personnes: { titre: string; personne: PersonneGpsr }[] = [
+  { titre: 'Fabricant', personne: p.gpsr.fabricant },
+  { titre: "Personne responsable dans l'Union européenne", personne: p.gpsr.responsable_ue },
+];
+const lignes = (x: PersonneGpsr) => [x.nom, x.adresse, x.email].map(texteConnu).filter((v): v is string => v !== null);
+const avertissements = p.gpsr.avertissements.map(texteConnu).filter((v): v is string => v !== null);
+const reference = texteConnu(p.gpsr.reference);
+---
+
+<div class="conteneur pt-6 pb-24 md:pt-8">
+  <div class="grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)] lg:gap-12">
+    <!-- Visuels -->
+    <div class="flex flex-col gap-5">
+      {
+        p.visuels.length > 0 ? (
+          p.visuels.map((v, i) => (
+            <figure>
+              <img
+                src={v.src}
+                alt={texteConnu(v.alt) ?? ''}
+                width="1200"
+                height="1200"
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+                class="aspect-square w-full rounded-carte border border-bordure bg-encart object-contain"
+              />
+              {LEGENDES[v.type] && <figcaption class="mt-2 text-[14px] font-medium text-gris-fort">{LEGENDES[v.type]}</figcaption>}
+            </figure>
+          ))
+        ) : (
+          <p class="flex aspect-square w-full items-center justify-center rounded-carte border border-bordure bg-encart text-[15px] text-gris-fort">
+            Aucun visuel pour l'instant
+          </p>
+        )
+      }
+    </div>
+
+    <!-- Colonne d'achat -->
+    <div class="flex flex-col gap-6 lg:sticky lg:top-24 lg:self-start">
+      <div>
+        <h1 class="titre-serif text-[34px] leading-[1.05] break-words md:text-[44px]">{nom}</h1>
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+          <Badge>{p.age_minimum} ans et plus</Badge>
+          {p.demo && <Badge variante="demo">Démonstration</Badge>}
+        </div>
+      </div>
+
+      <div>
+        <p class="text-[28px] leading-tight font-semibold">{prix}</p>
+        {p.prix_ttc !== null && <p class="mt-1 text-[14px] text-gris-fort">Prix TTC, prix final.</p>}
+      </div>
+
+      <dl class="flex flex-col gap-3 text-[15px]">
+        <div class="flex gap-3">
+          <Truck size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+          <dt class="font-medium">Frais de port :</dt>
+          <dd>{port}</dd>
+        </div>
+        <div class="flex gap-3">
+          <Clock size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+          <dt class="font-medium">Délai de livraison :</dt>
+          <dd>{delai}</dd>
+        </div>
+      </dl>
+
+      <div>
+        {
+          lienAchat ? (
+            <Bouton href={lienAchat} pleineLargeur data-lien-paiement>
+              Acheter
+            </Bouton>
+          ) : (
+            <button
+              type="button"
+              disabled
+              aria-disabled="true"
+              class="inline-flex min-h-12 w-full cursor-not-allowed items-center justify-center rounded-full bg-bleu-nuit px-6 py-3 text-center text-[15px] leading-tight font-medium text-white opacity-50"
+            >
+              {p.demo ? 'Paiement inactif : produit de démonstration' : 'Indisponible pour le moment'}
+            </button>
+          )
+        }
+        <p class="mt-3 flex gap-2 text-[14px] text-gris-fort">
+          <LockKeyhole size={16} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+          <span>
+            {p.demo ? "Aucun paiement n'est possible sur cette page." : 'Paiement sur la page sécurisée de Stripe, notre prestataire.'}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-14 grid gap-10 lg:max-w-[820px]">
+    <section aria-labelledby="titre-description">
+      <h2 id="titre-description" class="text-[22px] font-semibold md:text-[28px]">Description</h2>
+      {
+        paragraphes.length > 0 ? (
+          paragraphes.map((t) => <p class="mt-3 max-w-[72ch] text-[16px]">{t}</p>)
+        ) : (
+          <p class="mt-3 text-[15px] text-gris-fort">{NC}</p>
+        )
+      }
+    </section>
+
+    <section aria-labelledby="titre-securite" class="rounded-carte border border-bordure bg-carte p-5 md:p-6">
+      <h2 id="titre-securite" class="flex items-center gap-2.5 text-[22px] font-semibold">
+        <ShieldCheck size={22} stroke-width={1.75} aria-hidden="true" class="text-laiton-fonce" />
+        Sécurité du produit
+      </h2>
+      <p class="mt-4 font-medium">Âge : {p.age_minimum} ans et plus. Ne convient pas aux enfants de moins de {p.age_minimum} ans.</p>
+      {p.demo && <p class="mt-2 text-[15px] text-gris-fort">Produit de démonstration, non vendu : les informations du fabricant ne sont pas encore connues.</p>}
+      <dl class="mt-4 grid gap-4 text-[15px] sm:grid-cols-2">
+        {
+          personnes.map(({ titre, personne }) => {
+            const l = lignes(personne);
+            return (
+              <div>
+                <dt class="font-semibold">{titre}</dt>
+                <dd class="mt-1 break-words">
+                  {l.length > 0 ? l.map((x) => <span class="block">{x}</span>) : <span class="text-gris-fort">{NC}</span>}
+                </dd>
+              </div>
+            );
+          })
+        }
+        <div>
+          <dt class="font-semibold">Référence</dt>
+          <dd class="mt-1">{reference ?? <span class="text-gris-fort">{NC}</span>}</dd>
+        </div>
+        <div>
+          <dt class="font-semibold">Avertissements</dt>
+          <dd class="mt-1">
+            {
+              avertissements.length > 0 ? (
+                <ul class="list-disc space-y-1 pl-5">
+                  {avertissements.map((a) => (
+                    <li>{a}</li>
+                  ))}
+                </ul>
+              ) : (
+                <span class="text-gris-fort">{NC}</span>
+              )
+            }
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <Avis slug={p.slug} />
+  </div>
+</div>

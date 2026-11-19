@@ -39,7 +39,22 @@ site/public/               images et fichiers statiques (produits/<slug>/<vue>.w
 site/outils/verifier-liens.mjs  lanceur de tools/verifier_liens.py après la construction (postbuild)
 tools/verifier_liens.py    vérification des liens internes et des ancres de site/dist/ (Python standard)
 studio/                    production des visuels 3D (Three.js + rendu automatisé), voir agent studio-visuel
+data/produits/*.json       (racine du dépôt) produits lus par la page /produit/<slug>/ (format ci-dessous)
+data/avis.json             (racine) avis clients { avis: [...] } ; vide tant qu'il n'y a pas de vrai avis
+data/commandes.json        (racine) commandes réelles importées de Stripe ; seule source qui valide un avis
+site/src/lib/produits-json.ts   lecture de data/ à la construction (node:fs), validation, filtrage des avis
+site/src/pages/produit/[slug].astro  page produit modèle (V1-1), une par fichier de data/produits/
+site/src/components/produit/FicheProduitJson.astro, Avis.astro  fiche et avis de cette page
 ```
+
+## Page produit modèle /produit/<slug>/ (données de data/)
+Format d'un fichier `data/produits/<slug>.json` : `slug, demo, nom, description, prix_ttc (nombre ou null), frais_port_ttc, delai_livraison_jours {min,max}, age_minimum, gpsr {fabricant, responsable_ue : {nom, adresse, email}, reference, avertissements[]}, visuels [{src, alt, type: illustration|photo|rendu-3d}], paiement {lien, actif}`. Texte inconnu : « À VÉRIFIER » ; nombre inconnu : null.
+
+`npm run build` **échoue** (message listant les champs) si : un produit `demo: true` a un lien de paiement ou `paiement.actif: true` ; un produit `demo: false` contient « À VÉRIFIER » ou a un prix, des frais de port ou un délai maximum à null, ou un paiement actif sans lien `https://buy.stripe.com/` ; `age_minimum` est inférieur à 14 ; le JSON est mal formé. Dossier ou fichier absent ou vide : aucune page, pas d'erreur. Le site ne lit jamais `data/commandes.exemple.json`.
+
+Sur une démonstration : bandeau « Page de démonstration, produit non vendu », `noindex, nofollow` (prop `noindex` de `Base.astro`), bouton `<button disabled aria-disabled="true">` sans lien, valeurs inconnues affichées « Prix non fixé » ou « Non communiqué ». Mention « Illustration » ou « Rendu 3D de démonstration » sous chaque visuel de ce type. Le site n'a pas de sitemap.
+
+**Règle des avis** : un avis de `data/avis.json` n'est affiché que si sa `reference_commande` est non vide et correspond à une commande `statut: "payee"` de `data/commandes.json` portant sur le même produit, avec une note entière de 1 à 5. Sinon il est ignoré et un avertissement `[avis] ...` s'écrit dans la console de construction. Aucun avis : « Aucun avis pour l'instant ». Avis affichés : mention « lié à une commande vérifiée », note écrite en toutes lettres (pas d'étoiles).
 
 ## Format d'une fiche produit (première version, à affiner par architecte-web)
 ```yaml
@@ -78,7 +93,7 @@ Description du produit (rédigée par redacteur-catalogue).
 ```
 cd site
 npm install
-npm run build       # doit passer sans erreur ni avertissement (58 pages à l'étape 3)
+npm run build       # doit passer sans erreur ni avertissement (59 pages avec /produit/exemple-demo/)
 npm run preview     # aperçu de dist/ sur http://localhost:4321/
 ```
 Une fiche `demo: false` qui contient encore « À VÉRIFIER » fait échouer `npm run build` (le message liste les champs à compléter). Sur une fiche `demo: true`, ces valeurs ne sont pas affichées.

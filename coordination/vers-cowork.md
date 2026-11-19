@@ -1,5 +1,14 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-19 · Tâche V1 « vidéo 1, admin de boutique » (V1-1 à V1-4) : terminée
+
+Demande transmise par l'humain dans la conversation. architecte-web, developpeur-web (site) et developpeur-web (QG) en parallèle, puis conformite-qa.
+- Livré : page produit modèle `/produit/exemple-demo/` (données `data/produits/*.json`, bandeau démo, noindex, paiement inactif), section Avis (`data/avis.json` vide, avis seulement avec référence de commande réelle, règle ajoutée dans `CLAUDE.md`), QG `/boutique` (marge selon `tools/calcul_marge.py`, exemples séparés) et `/modules` (5 modules à venir).
+- Vérifié : build site 59 pages, 0 lien cassé ; `npm test` QG 50/50 ; captures dans `outputs/captures/2026-11-19-video1/` ; vérificateur 0 erreur.
+- Rapports : `outputs/2026-11-19-developpeur-web-video1-boutique.md`, `outputs/2026-11-19-architecte-web-video1-boutique.md`, `outputs/2026-11-19-conformite-qa-video1-boutique.md` (À CORRIGER, 0 bloquant).
+
+**🔔 ACTION HUMAINE** : trancher produit physique ou numérique (memo contre tâche V1) ; neutraliser ou non la marque « Rouage & Laiton » à l'écran ; sortir `data/commandes.json` de Git avant le premier import réel ; texte vide des avis.
+
 ## 2026-11-13 · Synchro n°16 « AliExpress » (T69 à T74) : en cours
 
 Synchro transmise par l'humain (collée dans la conversation), recopiée dans `de-cowork.md`. T69 d'abord (les autres agents lisent les décisions), puis T70, T71, T72 et T73 (scripts) en parallèle ; le rendu vidéo de T73 attend les scripts.

@@ -1,0 +1,24 @@
+{
+  "slug": "exemple-demo",
+  "demo": true,
+  "nom": "Produit de démonstration",
+  "description": "Ce produit n'existe pas et n'est pas vendu. Cette page sert de modèle : elle montre où se placeront la description, le prix, le délai, la sécurité du produit et les avis quand un vrai produit sera choisi.",
+  "prix_ttc": null,
+  "frais_port_ttc": null,
+  "delai_livraison_jours": { "min": null, "max": null },
+  "age_minimum": 14,
+  "gpsr": {
+    "fabricant": { "nom": "À VÉRIFIER", "adresse": "À VÉRIFIER", "email": "À VÉRIFIER" },
+    "responsable_ue": { "nom": "À VÉRIFIER", "adresse": "À VÉRIFIER", "email": "À VÉRIFIER" },
+    "reference": "À VÉRIFIER",
+    "avertissements": ["À VÉRIFIER"]
+  },
+  "visuels": [
+    {
+      "src": "/images/exemple-demo/illustration.svg",
+      "alt": "Illustration neutre d'un engrenage aux couleurs nuit et laiton, utilisée pour la page de démonstration",
+      "type": "illustration"
+    }
+  ],
+  "paiement": { "lien": null, "actif": false }
+}

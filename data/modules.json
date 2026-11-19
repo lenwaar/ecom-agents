@@ -1,0 +1,39 @@
+{
+  "modules": [
+    {
+      "id": "paiement",
+      "nom": "Paiement",
+      "etat": "a-venir",
+      "description": "Aucun lien de paiement Stripe réel n'existe. Le bouton d'achat sait afficher un lien Stripe public, mais seulement pour un vrai produit en vente ; aucun produit ne l'est. Il faut le compte Stripe de l'humain.",
+      "preuve": "site/src/components/produit/BlocAchat.astro"
+    },
+    {
+      "id": "avis",
+      "nom": "Avis clients",
+      "etat": "a-venir",
+      "description": "La section Avis affiche seulement des avis liés à une commande réelle de data/commandes.json. Aucune commande réelle, donc aucun avis.",
+      "preuve": "data/avis.json"
+    },
+    {
+      "id": "contact",
+      "nom": "Contact",
+      "etat": "a-venir",
+      "description": "La page Contact n'a pas de formulaire : elle propose des liens email, désactivés tant que l'adresse de la boutique n'est pas fixée.",
+      "preuve": "site/src/pages/contact.astro"
+    },
+    {
+      "id": "lettre-information",
+      "nom": "Lettre d'information",
+      "etat": "a-venir",
+      "description": "Le formulaire d'inscription est visible mais désactivé : aucun service d'envoi d'emails n'est choisi, aucune adresse n'est collectée.",
+      "preuve": "site/src/components/atelier/LettreAtelier.astro"
+    },
+    {
+      "id": "sav",
+      "nom": "Service après-vente",
+      "etat": "a-venir",
+      "description": "Les pages Livraison et retours et Renoncer au contrat existent, mais le formulaire de rétractation en ligne est désactivé et l'email de la boutique n'est pas fixé : aucune demande ne peut encore être reçue.",
+      "preuve": "site/src/pages/renoncer-au-contrat.astro"
+    }
+  ]
+}

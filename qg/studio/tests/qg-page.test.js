@@ -1,6 +1,6 @@
 // Test de bout en bout du QG en direct : serveur + page dans Chromium (playwright-core).
 // Journal factice, livrables de test, agents de test et de-cowork.md de test, tous dans un dossier temporaire :
-// aucun vrai fichier du dépôt n'est lu pour l'état ni modifié (sauf les captures dans outputs/qg/).
+// aucun vrai fichier du dépôt n'est lu pour l'état ni modifié (captures dans un dossier temporaire, ou STUDIO_CAPTURES).
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert");
@@ -12,7 +12,9 @@ const { spawn } = require("node:child_process");
 const { chromium } = require("playwright-core");
 
 const RACINE = path.resolve(__dirname, "..", "..", "..");
-const CAPTURES = path.join(RACINE, "outputs", "qg");
+// Captures : dossier temporaire par défaut, pour que npm test ne modifie jamais outputs/ ;
+// STUDIO_CAPTURES=outputs/qg (par exemple) pour les régénérer volontairement.
+const CAPTURES = path.resolve(process.env.STUDIO_CAPTURES || path.join(os.tmpdir(), "qg-captures-test"));
 const PORT = 4192;
 const ORIGINE = `http://127.0.0.1:${PORT}`;
 const TMP = fs.mkdtempSync(path.join(os.tmpdir(), "qg-direct-test-"));

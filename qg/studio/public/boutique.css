@@ -1,0 +1,51 @@
+/* Pages /boutique et /modules : compléments à qg.css (mêmes couleurs, polices locales). */
+.tete-bloc { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 4px 16px; }
+.tete-bloc h2 { margin: 0; font: 600 20px/1.2 var(--display); color: var(--texte); }
+.source-bloc { margin: 0; font: 400 11.5px/1.4 var(--mono); color: var(--doux); }
+.kpis-boutique .v small { font: 400 12px var(--mono); color: var(--doux); }
+.kpi.non-mesure .v { color: var(--doux); font-size: 20px; }
+.mention-verif { margin: 0; padding: 10px 14px; border: 1px solid color-mix(in srgb, var(--laiton) 55%, transparent); border-radius: 12px; background: rgba(200,161,90,.08); color: var(--texte); font-size: 13px; line-height: 1.5; }
+.mention-verif strong { color: var(--laiton-vif); }
+.mention-verif code, .vide-boutique code { font: 12px var(--mono); color: var(--laiton); }
+.bloc-reel { display: grid; gap: 12px; }
+.bloc-exemple { display: grid; gap: 12px; border: 2px dashed #6E7BB0; background: repeating-linear-gradient(135deg, rgba(110,123,176,.06) 0 12px, transparent 12px 24px), linear-gradient(180deg, #121A30, #0E1424); }
+.bloc-exemple .tete-bloc h2 { color: #AEB8E8; }
+.tete-bloc h2 .tag-exemple { margin: 0 6px 0 0; font-size: 11px; padding: 4px 6px; }
+.bloc-exemple .kpi { border-style: dashed; border-color: rgba(110,123,176,.5); }
+.bloc-exemple .kpi .v { color: #AEB8E8; }
+.avert-exemple { margin: 0; color: #AEB8E8; font-size: 13px; }
+.tag-exemple { display: inline-block; font: 700 9.5px/1 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: #0B0E1C; background: #AEB8E8; border-radius: 5px; padding: 3px 5px; margin-left: 6px; vertical-align: middle; }
+.vide-boutique { margin: 0; padding: 18px; border-radius: 12px; border: 1px dashed var(--trait); color: var(--doux); font-size: 14px; line-height: 1.5; }
+.vide-boutique strong { color: var(--texte); }
+.vide-boutique.alerte { border-color: color-mix(in srgb, var(--rouge) 60%, transparent); }
+.vide-boutique.alerte strong { color: var(--rouge); }
+.seuils { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 400 12px/1.4 var(--mono); color: var(--doux); }
+.seuils b { color: var(--texte); }
+.niv::before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; background: currentColor; }
+.objectif { color: var(--vert); }
+.plancher { color: var(--laiton-vif); }
+.sous-plancher { color: var(--rouge); }
+.incalculable { color: var(--doux); }
+.table-defile { overflow-x: auto; }
+table.commandes { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.commandes caption { text-align: left; font: 400 11.5px var(--mono); color: var(--doux); padding-bottom: 6px; }
+table.commandes th { text-align: left; font: 600 10.5px/1.2 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--doux); padding: 8px; border-bottom: 1px solid var(--trait); white-space: nowrap; }
+table.commandes td { padding: 8px; border-bottom: 1px solid rgba(255,255,255,.05); vertical-align: top; }
+table.commandes td:nth-child(-n+2) { white-space: nowrap; }
+table.commandes td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.commandes td small { color: var(--doux); font: 10.5px var(--mono); }
+table.commandes s { color: var(--doux); }
+.ignorees { margin: 0; color: var(--rouge); font-size: 12.5px; }
+.note-bas a { color: var(--laiton); }
+ul.modules { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
+.module { display: grid; gap: 6px; align-content: start; }
+.module-tete { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.module h2 { margin: 0; font: 600 15px/1.3 var(--ui); }
+.module p { margin: 0; font-size: 13px; line-height: 1.5; }
+.module .preuve { font: 11.5px/1.4 var(--mono); color: var(--doux); }
+.module.a-venir, .module.inconnu { opacity: .8; border-style: dashed; }
+.etat-module { font: 700 10.5px/1 var(--mono); padding: 4px 7px; border-radius: 6px; border: 1px solid; white-space: nowrap; }
+.etat-module.actif { color: var(--vert); border-color: color-mix(in srgb, var(--vert) 55%, transparent); }
+.etat-module.a-venir, .etat-module.inconnu { color: var(--doux); border-color: var(--trait); }
+.compte-modules { margin: 0 0 10px; color: var(--doux); font-size: 13px; }
+@media (max-width: 1100px) { .kpis-boutique { grid-template-columns: repeat(2, minmax(0, 1fr)); } .kpis-boutique .kpi:last-child { grid-column: 1 / -1; } }
