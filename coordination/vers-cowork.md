@@ -1,5 +1,19 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-19 · Synchro n°17 « V1, admin de boutique (vidéo 1) » + V1 bis : fait
+
+Tâches V1-1 à V1-5 `fait` (demandées par l'humain, recopiées dans `de-cowork.md`), puis V1 bis (corrections de conformité) et étape 2 (modèle numérique, validée par l'humain). T73 et T74 de la synchro n°16 restent `à faire` (non traitées dans cette session).
+
+- **Rapport** : `outputs/2026-11-19-developpeur-web-video1-boutique.md` (à-valider). Page produit modèle `/produits/exemple-demo/` (données `data/produits/*.json`, type numérique ou physique, démo noindex, paiement inactif), avis lus depuis `data/avis.json` (vide, référence de commande réelle obligatoire, règle dans `CLAUDE.md`), QG `/boutique` (marge réelle, exemples séparés) et `/modules`. Cotisations passées à 21,2 % dans `tools/calcul_marge.py` et le QG. Nom « [Nom de marque à choisir] », Stripe retiré, liens maquettes retirés. Tests : QG 51/51, site 15/15, build 60 pages, 0 lien cassé.
+- **Spec** (architecte-web) : `outputs/2026-11-19-architecte-web-spec-v1-boutique.md`. Ordre des blocs, mentions GPSR, règles des avis, indicateurs. Références D111-16 à D111-19 et L121-4 21°/22° à corriger (M5 de l'audit).
+- **Audit** (conformite-qa) : `outputs/2026-11-19-conformite-qa-audit-v1-boutique.md`. Démo locale À CORRIGER, sans bloquant (D1 à D3 corrigés). Mise en ligne BLOQUANTE : pages physiques (M1), case d'accord exprès et e-mail de confirmation absents (M2), avis (M3, dès le premier avis).
+- Fichiers clés : `site/src/components/produit-modele/`, `site/src/lib/produit-modele.ts`, `avis.ts`, `donnees-partagees.ts`, `site/src/pages/produits/[slug].astro`, `verification-des-avis.astro`, `qg/studio/boutique.js`, `serveur.js`, `public/boutique.*`, `public/modules.*`, `data/`, `knowledge/politiques.md`, `.gitignore`.
+
+### 🔔 ACTION HUMAINE
+- Regarder à l'écran : `cd site && npm run build && npm run preview`, puis `/produits/exemple-demo/` ; QG `cd qg/studio && npm start`, puis http://127.0.0.1:4178/boutique et /modules.
+- Trancher avec un juriste : sans la case d'accord exprès, accès différé à 14 jours ou paiement impossible (M6).
+- Décider quand réécrire CGV, livraison, rétractation, FAQ, contact pour le numérique (M1) et construire le parcours de paiement avec case et e-mail (M2).
+
 ## 2026-11-13 · Synchro n°16 « AliExpress » (T69 à T74) : en cours
 
 Synchro transmise par l'humain (collée dans la conversation), recopiée dans `de-cowork.md`. T69 d'abord (les autres agents lisent les décisions), puis T70, T71, T72 et T73 (scripts) en parallèle ; le rendu vidéo de T73 attend les scripts.

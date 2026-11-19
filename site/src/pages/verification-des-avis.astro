@@ -1,0 +1,26 @@
+---
+/**
+ * Comment nous vérifions les avis (V1 bis, art. L111-7-2 du Code de la consommation).
+ * Texte provisoire : à faire relire par un juriste avant toute mise en ligne.
+ */
+import PageTexte from '../layouts/PageTexte.astro';
+import AValider from '../components/ui/AValider.astro';
+---
+
+<PageTexte
+  titre="Comment nous vérifions les avis"
+  titreSeo="Comment nous vérifions les avis | [Nom de marque à choisir]"
+  description="Qui peut laisser un avis, comment nous le contrôlons et dans quel ordre il s'affiche."
+  noindex
+>
+  <AValider bloc>À faire relire par un juriste avant la mise en ligne.</AValider>
+
+  <h2>Qui peut laisser un avis</h2>
+  <p>Seuls les clients ayant passé une commande payée peuvent laisser un avis. Chaque avis publié est rattaché à une référence de commande réelle. Nous ne publions aucun avis sans commande.</p>
+
+  <h2>Ce que nous ne faisons pas</h2>
+  <p>Aucun avis n'est supprimé ni masqué en raison de sa note. Nous n'écrivons pas d'avis nous-mêmes et n'en achetons pas.</p>
+
+  <h2>Dans quel ordre ils s'affichent</h2>
+  <p>Les avis s'affichent dans l'ordre chronologique, du plus récent au plus ancien, avec leur date de publication.</p>
+</PageTexte>

@@ -1,0 +1,9 @@
+{
+  "_note": "EXEMPLE FICTIF pour montrer le format d'import. Valeurs inventées, jamais additionnées aux vrais chiffres, jamais lues par le QG. Ne pas copier dans commandes.json.",
+  "source": "exemple",
+  "importe_le": null,
+  "commandes": [
+    { "id": "EXEMPLE-001", "date": "2099-01-01", "montant_ttc": 10.00, "frais_stripe": null, "cout_produit": 0, "cout_port": 0, "statut": "payee", "exemple": true },
+    { "id": "EXEMPLE-002", "date": "2099-01-02", "montant_ttc": 10.00, "frais_stripe": null, "cout_produit": 0, "cout_port": 0, "statut": "remboursee", "exemple": true }
+  ]
+}

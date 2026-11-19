@@ -9,7 +9,6 @@
  * - Sans JavaScript ou sans animation : tout est visible, immobile.
  */
 import Truck from '@lucide/astro/icons/truck';
-import LockKeyhole from '@lucide/astro/icons/lock-keyhole';
 import Bouton from '../ui/Bouton.astro';
 import Roue from './Roue.astro';
 import { premiereRoue, roueVoisine } from '../../lib/engrenages';
@@ -56,7 +55,6 @@ const fond = premiereRoue(0, 0, 40, 12);
   </div>
 
   <div data-texte-heros class="conteneur relative z-[1] py-16">
-    <p class="kicker text-laiton" data-entree-bloc>Maquettes mécaniques en bois</p>
     <h1 id="titre-heros" class="titre-serif ombre-texte mt-6 text-[52px] leading-[0.92] md:text-[clamp(54px,9.2vw,132px)]">
       <span data-ligne class="block overflow-hidden pb-[0.06em]"><span class="block">La mécanique,</span></span>
       <span data-ligne class="block overflow-hidden pb-[0.06em]"><span class="block"><em>pièce par pièce.</em></span></span>
@@ -69,10 +67,6 @@ const fond = premiereRoue(0, 0, 40, 12);
     <p class="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-creme-secondaire" data-entree-bloc>
       <span class="inline-flex items-center gap-1.5">
         <Truck size={16} stroke-width={1.75} aria-hidden="true" class="text-laiton" />{livraison}
-      </span>
-      <span aria-hidden="true">·</span>
-      <span class="inline-flex items-center gap-1.5">
-        <LockKeyhole size={16} stroke-width={1.75} aria-hidden="true" class="text-laiton" />Paiement par Stripe
       </span>
     </p>
   </div>

@@ -2,7 +2,7 @@
 # Source : knowledge/politiques.md (proposition conformite-qa du 2026-11-12, à valider par l'humain).
 # Toute valeur encore inconnue vaut exactement "[À VALIDER]" : le site l'affiche surlignée,
 # pour qu'aucune page ne soit publiée avec une valeur manquante.
-nom_commercial: "Rouage & Laiton"   # nom de travail : disponibilité INPI, domaine, réseaux non vérifiée
+nom_commercial: "[Nom de marque à choisir]"   # nom de travail : disponibilité INPI, domaine, réseaux non vérifiée
 
 vendeur:
   nom_ei: "[À VALIDER]"            # « Prénom Nom EI »

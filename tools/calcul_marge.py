@@ -37,12 +37,13 @@ STRIPE_A_VERIFIER = True
 STRIPE_TAUX_PRUDENT = Decimal("0.03")
 STRIPE_FIXE_PRUDENT = Decimal("0.30")
 
-# Cotisations micro-entreprise, vente de marchandises : 12,3 % du chiffre d'affaires
-# (13,3 % avec versement libératoire, option --versement-liberatoire).
-# Source : knowledge/prix-et-marges.md, knowledge/memo.md, leçon 4 de docs/retours-experience.md.
-# Taux à confirmer par l'URSSAF ou un expert-comptable.
-COTISATIONS = Decimal("0.123")
-COTISATIONS_VL = Decimal("0.133")
+# Cotisations micro-entreprise, prestations de services commerciales (BIC), catégorie des
+# produits numériques : 21,2 % du chiffre d'affaires (22,9 % avec versement libératoire,
+# option --versement-liberatoire). Source : knowledge/prix-et-marges.md (service-public.gouv.fr
+# F36232 ; URSSAF, taux 2026), knowledge/memo.md. Ancien taux 12,3 % (marchandises) abandonné
+# avec le passage au numérique (2026-11-14). Taux à confirmer par l'URSSAF ou un expert-comptable.
+COTISATIONS = Decimal("0.212")
+COTISATIONS_VL = Decimal("0.229")
 
 # Provision retours/SAV : 5 % du prix de vente.
 # Source : knowledge/memo.md (« SAV (5 %) »), knowledge/prix-et-marges.md.
@@ -298,7 +299,7 @@ def main(argv=None):
     ap.add_argument("--sortie", help="écrit aussi le tableau dans ce fichier Markdown")
     ap.add_argument("--frais-prudents", action="store_true",
                     help="frais de paiement 3 %% + 0,30 € (hypothèse de knowledge/prix-et-marges.md)")
-    ap.add_argument("--versement-liberatoire", action="store_true", help="cotisations 13,3 %% au lieu de 12,3 %%")
+    ap.add_argument("--versement-liberatoire", action="store_true", help="cotisations 22,9 %% au lieu de 21,2 %%")
     args = ap.parse_args(argv)
     texte = Path(args.grille).read_text(encoding="utf-8")
     try:

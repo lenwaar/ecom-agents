@@ -39,7 +39,23 @@ site/public/               images et fichiers statiques (produits/<slug>/<vue>.w
 site/outils/verifier-liens.mjs  lanceur de tools/verifier_liens.py après la construction (postbuild)
 tools/verifier_liens.py    vérification des liens internes et des ancres de site/dist/ (Python standard)
 studio/                    production des visuels 3D (Three.js + rendu automatisé), voir agent studio-visuel
+data/                      données partagées site + QG (racine du dépôt), lues par le site à la construction (node:fs)
+data/produits/<slug>.json  un produit du modèle de page (V1-1) ; exemple-demo.json = produit de démonstration
+data/avis.json             avis clients (V1-2), [] au départ ; champ produit = slug
+site/src/pages/produits/[slug].astro   route /produits/<slug>/ : une page par fichier de data/produits/
+site/src/components/produit-modele/    FicheProduit, BlocGpsr, Avis, Coordonnees, ADefinir
+site/src/lib/produit-modele.ts  validation pure d'un produit (erreursProduit)
+site/src/lib/avis.ts       filtrage pur des avis (avisDuProduit, raisonRejet, noteMoyenne)
+site/src/lib/donnees-partagees.ts  lecture de data/ (remonte depuis le dossier courant ; BOUTIQUE_DATA pour forcer)
+site/outils/verifier-produit-avis.test.mjs  tests (npm test)
+site/outils/captures-produit.mjs  captures pleine page 390 et 1280 px (npm run captures)
 ```
+
+## Produits du modèle de page (data/produits/)
+Champs : `slug` (= nom du fichier), `nom`, `demo`, `prix_ttc` (nombre ou null), `frais_port_ttc` (nombre, null ou « sans objet »), `delai`, `age_minimum`, `gpsr` { `fabricant` {nom, adresse, contact}, `personne_responsable_ue` {…}, `avertissements` [liste], `reference` }, `description`, `visuels` [{src, alt}], `paiement` {actif, url}. Inconnu = `null`.
+- La construction échoue si un produit `demo: false` a un champ obligatoire à null, `paiement.actif` faux ou pas d'url https ; ou si un produit `demo: true` a `paiement.actif: true` ou une url.
+- Démonstration : bandeau « Page de démonstration, produit non vendu », `noindex, nofollow`, bouton de paiement inactif (aria-disabled, sans lien), valeur null affichée « À définir », aucun avis.
+- Avis affiché seulement si : `reference_commande` non vide et sans « exemple », « demo », « test » ; note entière 1 à 5 ; texte ; date ISO réelle ; auteur = prénom et/ou initiale. Un avis écarté est signalé en console à la construction. Sans avis : « Aucun avis pour le moment. Seuls les clients ayant commandé peuvent en laisser un. » et un lien « Comment nous vérifions les avis », ni note moyenne ni étoiles.
 
 ## Format d'une fiche produit (première version, à affiner par architecte-web)
 ```yaml
@@ -78,9 +94,12 @@ Description du produit (rédigée par redacteur-catalogue).
 ```
 cd site
 npm install
-npm run build       # doit passer sans erreur ni avertissement (58 pages à l'étape 3)
+npm run build       # doit passer sans erreur ni avertissement (59 pages avec /produits/exemple-demo/)
 npm run preview     # aperçu de dist/ sur http://localhost:4321/
+npm test            # règles des produits et des avis (node --test, Node 22.18+)
+npm run captures -- exemple-demo 2026-11-19   # après la build : outputs/captures/<date>-produit-demo-390.png et -1280.png
 ```
+Captures : `site/outils/captures-produit.mjs` sert `dist/` sur un port libre et utilise `playwright-core` de `qg/studio/node_modules` (Chromium installé par Playwright, comme `qg/studio/tests/qg-page.test.js`) ; depuis un worktree sans ces dépendances, il prend celles du dépôt principal. Il échoue si la page déborde horizontalement ou lève une erreur JavaScript.
 Une fiche `demo: false` qui contient encore « À VÉRIFIER » fait échouer `npm run build` (le message liste les champs à compléter). Sur une fiche `demo: true`, ces valeurs ne sont pas affichées.
 
 **Vérification des liens** : `npm run build` lance ensuite `tools/verifier_liens.py` (script `postbuild`), qui parcourt `site/dist/` et échoue s'il trouve un lien interne (href, src, srcset) vers une page ou un fichier absent, ou une ancre `#id` absente de la page cible.

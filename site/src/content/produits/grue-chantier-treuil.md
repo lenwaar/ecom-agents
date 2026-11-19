@@ -85,7 +85,7 @@ faq:
   - { question: "Combien de temps faut-il prévoir ?", reponse: "Environ cinq heures selon notre estimation, souvent en deux séances. Le réglage du treuil demande un peu de patience." }
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Écrivez-nous avec une photo. Nous vous envoyons la pièce ou un kit de remplacement : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
 seo:
-  titre: "Maquette grue de chantier en bois | Rouage & Laiton"
+  titre: "Maquette grue de chantier en bois"
   description: "Grue de chantier en bois à assembler, avec un treuil qui enroule le fil et soulève le crochet. Environ 5 h, niveau moyen, 14 ans et plus."
 audit_conformite: ""
 ---

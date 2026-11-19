@@ -209,3 +209,15 @@ Vérificateur, commit, push, compte rendu avec 🔔 ACTION HUMAINE.
 
 ## Règle permanente
 Quand une tâche installe ou modifie un agent dans `.claude/agents/`, ne lance pas cet agent dans la même session : termine la synchro et demande à l'humain de redémarrer Claude Code.
+
+---
+
+## Synchro n°17 (2026-11-19, demandée par l'humain) : V1, admin de boutique (vidéo 1)
+
+Produit et fournisseur non décidés (Robotime refuse le dropshipping, minimum 1 000 €) : tout se construit avec un produit de démonstration.
+
+### V1-1 · Page produit modèle (Astro, data/produits/*.json, exemple-demo) · `fait`
+### V1-2 · Section avis clients (data/avis.json vide, règle dans CLAUDE.md) · `fait`
+### V1-3 · Route /boutique du QG (data/commandes.json, marge de tools/calcul_marge.py) · `fait`
+### V1-4 · Page Modules (data/modules.json) · `fait`
+### V1-5 · Contrôle conformite-qa et rapport outputs/2026-11-19-developpeur-web-video1-boutique.md · `fait`

@@ -85,7 +85,7 @@ faq:
   - { question: "Est-ce un bon cadeau pour un amateur de voitures anciennes ?", reponse: "C'est l'idée : une silhouette de voiture d'autrefois, à construire puis à faire rouler. Le niveau moyen suppose d'avoir déjà monté une maquette." }
   - { question: "Faut-il de la colle ou des outils ?", reponse: "À VÉRIFIER. La réponse sera reprise de la notice du fabricant dès que le modèle réel sera choisi." }
 seo:
-  titre: "Maquette voiture rétro en bois à monter | Rouage & Laiton"
+  titre: "Maquette voiture rétro en bois à monter"
   description: "Voiture rétro en bois à assembler, propulsée par un moteur élastique : remontez-la, posez-la, elle roule. Environ 6 h, niveau moyen, 14 ans et plus."
 audit_conformite: ""
 ---

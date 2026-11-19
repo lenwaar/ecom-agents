@@ -83,7 +83,7 @@ faq:
   - { question: "Faut-il de la colle ou des outils ?", reponse: "À VÉRIFIER. La réponse sera reprise de la notice du fabricant dès que le modèle réel sera choisi." }
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Envoyez-nous une photo par email. Nous vous faisons parvenir la pièce ou un kit de remplacement : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
 seo:
-  titre: "Maquette moulin à vent en bois à monter | Rouage & Laiton"
+  titre: "Maquette moulin à vent en bois à monter"
   description: "Moulin à vent en bois à assembler : une manivelle, des ailes qui tournent, environ 3 h de montage. Niveau facile, pour adultes, 14 ans et plus."
 audit_conformite: ""
 ---

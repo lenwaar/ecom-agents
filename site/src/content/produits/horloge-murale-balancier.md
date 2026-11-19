@@ -88,7 +88,7 @@ faq:
   - { question: "Je débute. Puis-je commencer par ce modèle ?", reponse: "Nous ne le conseillons pas. Le niveau expert s'adresse aux habitués. Commencez par un modèle facile ou moyen, puis revenez à celui-ci." }
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Envoyez-nous une photo par email. Nous vous envoyons la pièce ou un kit de remplacement : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
 seo:
-  titre: "Horloge à balancier en bois à monter | Rouage & Laiton"
+  titre: "Horloge à balancier en bois à monter"
   description: "Horloge murale en bois à assembler : vous construisez l'échappement, les roues et le balancier. Environ 12 h, niveau expert, 14 ans et plus."
 audit_conformite: ""
 ---

@@ -1,5 +1,6 @@
 // Liens de navigation et du pied de page (§4.0 de la spécification v2).
 // Une seule source pour la barre, le panneau mobile et le pied de page.
+// Catalogue des maquettes (abandonné, modèle numérique) : liens retirés le 2026-11-19 (audit conformite-qa D3), pages encore construites.
 // `existe: false` = page prévue à une étape suivante : affichée en texte non cliquable (aucun lien vers une page absente).
 
 export interface Lien {
@@ -9,15 +10,12 @@ export interface Lien {
 }
 
 export const LIENS_NAVIGATION: Lien[] = [
-  { libelle: 'Maquettes', href: '/maquettes/', existe: true },
-  { libelle: 'Idées cadeaux', href: '/collections/idees-cadeaux/', existe: true },
   { libelle: "L'atelier", href: '/atelier/', existe: true },
   { libelle: 'Aide', href: '/faq/', existe: true },
 ];
 
 /** Liens ajoutés dans le panneau mobile. */
 export const LIENS_PANNEAU_MOBILE: Lien[] = [
-  { libelle: 'Trouver ma maquette', href: '/trouver-ma-maquette/', existe: true },
   { libelle: 'Livraison et retours', href: '/livraison-et-retours/', existe: true },
   { libelle: 'Contact', href: '/contact/', existe: true },
 ];
@@ -26,9 +24,6 @@ export const COLONNES_PIED_DE_PAGE: { titre: string; liens: Lien[] }[] = [
   {
     titre: 'Boutique',
     liens: [
-      { libelle: 'Maquettes', href: '/maquettes/', existe: true },
-      { libelle: 'Collections', href: '/collections/mecanique/', existe: true },
-      { libelle: 'Trouver ma maquette', href: '/trouver-ma-maquette/', existe: true },
       { libelle: "L'atelier", href: '/atelier/', existe: true },
       { libelle: 'À propos', href: '/a-propos/', existe: true },
     ],
@@ -39,7 +34,6 @@ export const COLONNES_PIED_DE_PAGE: { titre: string; liens: Lien[] }[] = [
       { libelle: 'Livraison et retours', href: '/livraison-et-retours/', existe: true },
       { libelle: 'FAQ', href: '/faq/', existe: true },
       { libelle: 'Contact', href: '/contact/', existe: true },
-      { libelle: 'Pièce manquante', href: '/contact/#piece-manquante', existe: true },
       { libelle: 'Renoncer au contrat ici', href: '/renoncer-au-contrat/', existe: true },
     ],
   },

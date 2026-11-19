@@ -1,0 +1,17 @@
+{
+  "slug": "exemple-demo",
+  "nom": "Produit de démonstration",
+  "type": "numerique",
+  "demo": true,
+  "format": null,
+  "prix_ttc": null,
+  "frais_port_ttc": "sans objet",
+  "delai": null,
+  "age_minimum": "sans objet",
+  "gpsr": "sans objet",
+  "description": "Cette page est un modèle de fiche produit numérique. Elle montre où apparaîtront le prix, le format du fichier, les conditions d'accès au téléchargement et les avis clients. Aucun produit n'est en vente pour l'instant.",
+  "visuels": [
+    { "src": "/produits/exemple-demo/visuel-modele.svg", "alt": "Emplacement réservé au visuel du produit : cadre gris neutre, aucune photo." }
+  ],
+  "paiement": { "actif": false, "url": null }
+}

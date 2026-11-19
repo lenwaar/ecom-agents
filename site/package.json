@@ -9,6 +9,8 @@
     "postbuild": "node outils/verifier-liens.mjs",
     "verifier-liens": "node outils/verifier-liens.mjs",
     "preview": "astro preview",
+    "test": "node --test \"outils/*.test.mjs\"",
+    "captures": "node outils/captures-produit.mjs",
     "check": "astro check"
   },
   "dependencies": {

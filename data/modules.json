@@ -1,0 +1,34 @@
+{
+  "modules": [
+    {
+      "id": "paiement",
+      "nom": "Paiement",
+      "statut": "à venir",
+      "description": "Aucun compte de paiement configuré. Le compte Stripe se crée au nom de l'humain, sur son accord."
+    },
+    {
+      "id": "avis",
+      "nom": "Avis clients",
+      "statut": "actif",
+      "description": "Le composant d'avis existe sur le site. Aucun avis publié : la liste est vide au départ et ne contient que de vrais avis."
+    },
+    {
+      "id": "contact",
+      "nom": "Contact",
+      "statut": "à venir",
+      "description": "Une page Contact existe, sans formulaire : des liens e-mail, désactivés tant que l'adresse de la boutique est « À VALIDER ». Téléphone et adresse postale également « À VALIDER »."
+    },
+    {
+      "id": "lettre-information",
+      "nom": "Lettre d'information",
+      "statut": "à venir",
+      "description": "Aucun outil d'envoi configuré ni formulaire d'inscription sur le site."
+    },
+    {
+      "id": "sav",
+      "nom": "Service après-vente",
+      "statut": "à venir",
+      "description": "Aucun outil de suivi des demandes. Les demandes passeraient par l'e-mail de la boutique, pas encore défini."
+    }
+  ]
+}

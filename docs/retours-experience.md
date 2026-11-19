@@ -7,7 +7,7 @@ Leçons tirées des synchros, à appliquer par **tous les agents et par Claude C
 | 1 | Un livrable de plus de 40 Ko s'écrit **en plusieurs fois** (création puis ajouts). Un seul très gros fichier bloque l'agent. | Blocage de l'architecte (synchro n°7) |
 | 2 | Un gros fichier se **lit par tranches**, jamais d'un coup. | Blocage de l'audit (synchro n°7) |
 | 3 | Un agent installé ou modifié n'est chargé **qu'au redémarrage** de Claude Code. | Synchro n°2 |
-| 4 | La marge nette inclut **toujours** les cotisations micro-entreprise (12,3 %) et l'éco-participation. | Audit du sourcing v2 |
+| 4 | La marge nette inclut **toujours** les cotisations micro-entreprise : 21,2 % depuis le passage au numérique (services BIC, 22,9 % avec versement libératoire) ; 12,3 % et éco-participation pour l'ancien modèle physique. `tools/calcul_marge.py` et `qg/studio/boutique.js` restent alignés (test de concordance). | Audit du sourcing v2 |
 | 5 | Les taxes d'import (3 € + 2 €) se comptent **par catégorie d'article**, pas par colis. | Audit du sourcing v2 |
 | 6 | Une niche doit être **tournable par l'humain** (ressources pour filmer) avant d'être notée. | Analyste-marche v1 (chat d'appartement) |
 | 7 | Mesurer la **demande d'achat**, pas la taille d'une population ; vérifier Google Trends avec des mots-clés produit. | Analyste-marche v1 et capture du padel |

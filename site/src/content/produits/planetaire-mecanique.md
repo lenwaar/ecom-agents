@@ -85,7 +85,7 @@ faq:
   - { question: "Est-ce un bon cadeau pour un amateur d'astronomie ?", reponse: "Oui, s'il a déjà monté quelques maquettes. Comptez environ dix heures d'assemblage." }
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Écrivez-nous avec une photo. Nous vous envoyons la pièce ou un kit de remplacement : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
 seo:
-  titre: "Planétaire mécanique en bois à monter | Rouage & Laiton"
+  titre: "Planétaire mécanique en bois à monter"
   description: "Planétaire mécanique en bois à assembler : les planètes tournent autour du Soleil, chacune à son rythme. Environ 10 h, niveau expert, 14 ans et plus."
 audit_conformite: ""
 ---

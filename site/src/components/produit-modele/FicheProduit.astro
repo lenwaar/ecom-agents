@@ -1,0 +1,161 @@
+---
+/**
+ * Fiche produit modèle (V1-1), alimentée par data/produits/<slug>.json.
+ * Mobile d'abord : une colonne ; deux colonnes à partir de lg (visuels à gauche, achat à droite).
+ * Démonstration : bandeau « Page de démonstration, produit non vendu », bouton de paiement inactif
+ * (aria-disabled, sans lien), valeurs inconnues affichées « À définir », aucun avis.
+ * Produit numérique (V1 bis) : format et accès au fichier ; ni frais de port, ni âge, ni bloc GPSR.
+ * Produit physique : frais de port, délai, âge minimum mis en évidence, bloc GPSR.
+ */
+import Info from '@lucide/astro/icons/info';
+import UserRoundCheck from '@lucide/astro/icons/user-round-check';
+import Badge from '../ui/Badge.astro';
+import Bouton from '../ui/Bouton.astro';
+import AValider from '../ui/AValider.astro';
+import ADefinir from './ADefinir.astro';
+import BlocGpsr from './BlocGpsr.astro';
+import Avis from './Avis.astro';
+import { SANS_OBJET, formatEuros, type ProduitModele } from '../../lib/produit-modele';
+
+interface Props {
+  produit: ProduitModele;
+}
+
+const { produit: p } = Astro.props;
+const numerique = p.type === 'numerique';
+const paiementPossible = !p.demo && p.paiement.actif && p.paiement.url !== null;
+---
+
+{
+  p.demo && (
+    <div class="border-b border-bordure bg-encart" data-bandeau-demo>
+      <p class="conteneur flex items-start gap-2.5 py-3 text-[15px] font-medium text-encre">
+        <Info size={20} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+        <span>Page de démonstration, produit non vendu</span>
+      </p>
+    </div>
+  )
+}
+
+<article class="conteneur pt-6 pb-20 md:pt-10">
+  <div class="grid gap-8 lg:grid-cols-2 lg:gap-12">
+    <!-- Visuels -->
+    <div class="grid gap-4 lg:self-start">
+      {
+        p.visuels.map((v, i) => (
+          <img
+            src={v.src}
+            alt={v.alt}
+            width="800"
+            height="800"
+            loading={i === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+            class="aspect-square w-full rounded-carte border border-bordure bg-encart object-cover"
+          />
+        ))
+      }
+    </div>
+
+    <!-- Achat -->
+    <div class="min-w-0 lg:sticky lg:top-24 lg:self-start">
+      <div class="flex flex-wrap gap-2">
+        {p.demo && <Badge variante="demo">Démonstration</Badge>}
+      </div>
+      <h1 class="mt-3 text-[28px] leading-tight font-semibold break-words md:text-[36px]">{p.nom}</h1>
+
+      <div class="mt-5">
+        <p class="flex flex-wrap items-baseline gap-2 text-[24px] font-semibold">
+          <span class="sr-only">Prix :</span>
+          {
+            p.prix_ttc === null ? (
+              <ADefinir />
+            ) : (
+              <Fragment>
+                {formatEuros(p.prix_ttc)} <span class="text-[15px] font-medium text-gris-fort">TTC</span>
+              </Fragment>
+            )
+          }
+        </p>
+        <p class="mt-1 text-[13px] text-gris-fort">TVA non applicable, art. 293 B du CGI</p>
+      </div>
+
+      <dl class="mt-5 grid gap-3 border-y border-bordure py-4 text-[15px]">
+        {
+          numerique ? (
+            <Fragment>
+              <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                <dt class="text-gris-fort">Format</dt>
+                <dd class="font-medium">{p.format === null || p.format === SANS_OBJET ? <ADefinir /> : p.format}</dd>
+              </div>
+              <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                <dt class="text-gris-fort">Accès au fichier</dt>
+                <dd class="font-medium">{p.delai === null ? <ADefinir /> : p.delai}</dd>
+              </div>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                <dt class="text-gris-fort">Frais de port</dt>
+                <dd class="font-medium">
+                  {p.frais_port_ttc === null ? <ADefinir /> : p.frais_port_ttc === SANS_OBJET ? 'Sans objet' : `${formatEuros(p.frais_port_ttc)} TTC`}
+                </dd>
+              </div>
+              <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+                <dt class="text-gris-fort">Délai</dt>
+                <dd class="font-medium">{p.delai === null ? <ADefinir /> : p.delai}</dd>
+              </div>
+            </Fragment>
+          )
+        }
+      </dl>
+
+      {
+        numerique ? (
+          <p class="mt-5 rounded-carte border border-bordure bg-carte p-4 text-[14px] leading-relaxed" data-acces-immediat>
+            Fichier à télécharger. Pour accéder au fichier dès le paiement, vous cochez une case, non cochée par défaut :
+            vous demandez expressément l'accès immédiat et reconnaissez perdre votre droit de rétractation dès le début du
+            téléchargement. Une confirmation de cet accord vous est envoyée par e-mail. Sans cette case :
+            <AValider>règle à trancher par un juriste</AValider>.
+          </p>
+        ) : (
+          <div class="mt-5 flex items-start gap-3 rounded-carte border border-laiton-fonce/40 bg-carte p-4" data-age-minimum>
+            <UserRoundCheck size={22} stroke-width={1.75} aria-hidden="true" class="mt-0.5 shrink-0 text-laiton-fonce" />
+            <p class="text-[15px]">
+              <strong class="font-semibold">Âge minimum : </strong>
+              {
+                p.age_minimum === null || p.age_minimum === SANS_OBJET ? (
+                  <ADefinir />
+                ) : (
+                  <Fragment>
+                    {p.age_minimum} ans et plus. Ne convient pas aux enfants de moins de {p.age_minimum} ans.
+                  </Fragment>
+                )
+              }
+            </p>
+          </div>
+        )
+      }
+
+      <div class="mt-6">
+        {
+          paiementPossible ? (
+            <Bouton href={p.paiement.url!} pleineLargeur>
+              Payer
+            </Bouton>
+          ) : (
+            <Bouton desactive pleineLargeur fleche={false}>
+              Paiement indisponible (démonstration)
+            </Bouton>
+          )
+        }
+      </div>
+
+      <p class="mt-6 text-[16px] leading-relaxed text-encre">{p.description}</p>
+    </div>
+  </div>
+
+  <div class:list={['mt-14 grid gap-8', !numerique && p.gpsr !== SANS_OBJET ? 'lg:grid-cols-2 lg:gap-12' : 'max-w-3xl']}>
+    {!numerique && p.gpsr !== SANS_OBJET && <BlocGpsr gpsr={p.gpsr} />}
+    <Avis slug={p.slug} demo={p.demo} />
+  </div>
+</article>

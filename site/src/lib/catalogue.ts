@@ -178,9 +178,9 @@ export function collections(produits: Produit[]): Collection[] {
       phrase: mecaBouge
         ? 'Engrenages, cames et mécanismes à assembler. Des objets qui bougent vraiment.'
         : 'Engrenages, cames et mécanismes à assembler.',
-      titreSeo: 'Maquettes mécaniques en bois à assembler | Rouage & Laiton',
+      titreSeo: 'Catalogue de démonstration | [Nom de marque à choisir]',
       descriptionSeo:
-        "Maquettes mécaniques en bois à assembler soi-même, pour adultes, à partir de 14 ans. Temps d'assemblage et difficulté indiqués sur chaque fiche.",
+        "Produits de démonstration : rien n'est en vente pour le moment.",
       visuel: 'situation',
     },
     {
@@ -190,7 +190,7 @@ export function collections(produits: Produit[]): Collection[] {
       phrase: vehiRoule
         ? 'Locomotive, voiture rétro : des roues qui tournent.'
         : 'Locomotive, voiture rétro : des véhicules en bois à assembler.',
-      titreSeo: 'Maquettes de véhicules en bois à assembler | Rouage & Laiton',
+      titreSeo: 'Maquettes de véhicules en bois à assembler | [Nom de marque à choisir]',
       descriptionSeo:
         "Maquettes de véhicules en bois à assembler soi-même, pour adultes, à partir de 14 ans. Temps d'assemblage et difficulté sur chaque fiche.",
       visuel: 'situation',
@@ -202,7 +202,7 @@ export function collections(produits: Produit[]): Collection[] {
       phrase: autoBouge
         ? 'Une manivelle à tourner, et la scène se met en mouvement.'
         : 'Des automates en bois à manivelle, à assembler.',
-      titreSeo: 'Automates en bois à manivelle à assembler | Rouage & Laiton',
+      titreSeo: 'Automates en bois à manivelle à assembler | [Nom de marque à choisir]',
       descriptionSeo:
         "Automates en bois à manivelle à assembler soi-même, pour adultes, à partir de 14 ans. Temps d'assemblage et difficulté indiqués sur chaque fiche.",
       visuel: 'situation',
@@ -212,7 +212,7 @@ export function collections(produits: Produit[]): Collection[] {
       nom: 'Pour débuter',
       ligneItalique: 'une première maquette.',
       phrase: 'Nos modèles de niveau Facile, pour une première maquette.',
-      titreSeo: 'Maquettes en bois faciles pour débuter | Rouage & Laiton',
+      titreSeo: 'Maquettes en bois faciles pour débuter | [Nom de marque à choisir]',
       descriptionSeo:
         "Maquettes en bois de niveau Facile, pour une première maquette. Pour adultes, à partir de 14 ans. Temps d'assemblage indiqué sur chaque fiche.",
       visuel: 'situation',
@@ -222,7 +222,7 @@ export function collections(produits: Produit[]): Collection[] {
       nom: 'Idées cadeaux',
       ligneItalique: 'qui se construisent.',
       phrase: "Une sélection de maquettes à offrir. Chaque fiche indique le temps d'assemblage et la difficulté.",
-      titreSeo: 'Idées cadeaux : maquettes en bois à assembler | Rouage & Laiton',
+      titreSeo: 'Idées cadeaux : maquettes en bois à assembler | [Nom de marque à choisir]',
       descriptionSeo:
         "Maquettes en bois à offrir, à assembler soi-même. Pour adultes, à partir de 14 ans. Temps d'assemblage et difficulté indiqués sur chaque fiche.",
       visuel: 'situation',

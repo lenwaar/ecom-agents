@@ -86,7 +86,7 @@ faq:
   - { question: "Faut-il de la colle ou des outils ?", reponse: "À VÉRIFIER. La réponse sera reprise de la notice du fabricant dès que le modèle réel sera choisi." }
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Écrivez-nous avec une photo. Nous vous envoyons la pièce ou un kit de remplacement : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
 seo:
-  titre: "Boîte à musique en bois à monter | Rouage & Laiton"
+  titre: "Boîte à musique en bois à monter"
   description: "Boîte à musique à manivelle à assembler : un boîtier en bois, un mécanisme à peigne, environ 3 h de montage. Niveau facile, 14 ans et plus."
 audit_conformite: ""
 ---

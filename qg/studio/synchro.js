@@ -10,7 +10,8 @@
 
 const TITRE_SYNCHRO = /^##\s+Synchro\s+n°\s*(\d+)\b(.*)$/i;
 const TITRE_SECTION = /^##\s/;
-const TITRE_TACHE = /^###\s+(T\d+[a-z]?)\b\s*(.*)$/i;
+// Identifiants de tâche : « T60 », « T31b » ou « V1-3 » (tâches d'une vidéo, depuis la synchro n°17).
+const TITRE_TACHE = /^###\s+(T\d+[a-z]?|V\d+-\d+)\b\s*(.*)$/i;
 
 // « `bloqué (le fournisseur ne répond pas)` » -> { statut: "bloque", raison: "le fournisseur ne répond pas" }
 function lireStatut(brut) {
