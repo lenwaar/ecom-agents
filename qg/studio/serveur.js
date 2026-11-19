@@ -175,9 +175,9 @@ function pousserSiChange() {
   // Appelée par un minuteur et par fs.watchFile : une exception ici arrêterait le serveur.
   let s, donnees;
   try {
-    s = JSON.stringify(etat());
+    donnees = etat();                   // une seule lecture de l'état, sans reparser
+    s = JSON.stringify(donnees);
     if (s === signature) return;
-    donnees = JSON.parse(s);
   } catch (e) {
     console.error("QG : état illisible, envoi ignoré :", e && e.message);
     return;
