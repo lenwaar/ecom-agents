@@ -2,6 +2,8 @@
 
 ## 2026-11-19 · Synchro n°17 « V1, admin de boutique (vidéo 1) » + V1 bis : fait
 
+Fusion avec `main` : la version V1 ci-dessous (commit 12896ab, route `/produit/`) est remplacée par celle-ci (route `/produits/`, V1 bis, modèle numérique), sur décision de l'humain le 2026-11-19 ; ses doublons de code sont supprimés, ses rapports restent dans `outputs/` pour l'historique.
+
 Tâches V1-1 à V1-5 `fait` (demandées par l'humain, recopiées dans `de-cowork.md`), puis V1 bis (corrections de conformité) et étape 2 (modèle numérique, validée par l'humain). T73 et T74 de la synchro n°16 restent `à faire` (non traitées dans cette session).
 
 - **Rapport** : `outputs/2026-11-19-developpeur-web-video1-boutique.md` (à-valider). Page produit modèle `/produits/exemple-demo/` (données `data/produits/*.json`, type numérique ou physique, démo noindex, paiement inactif), avis lus depuis `data/avis.json` (vide, référence de commande réelle obligatoire, règle dans `CLAUDE.md`), QG `/boutique` (marge réelle, exemples séparés) et `/modules`. Cotisations passées à 21,2 % dans `tools/calcul_marge.py` et le QG. Nom « [Nom de marque à choisir] », Stripe retiré, liens maquettes retirés. Tests : QG 51/51, site 15/15, build 60 pages, 0 lien cassé.
@@ -13,6 +15,15 @@ Tâches V1-1 à V1-5 `fait` (demandées par l'humain, recopiées dans `de-cowork
 - Regarder à l'écran : `cd site && npm run build && npm run preview`, puis `/produits/exemple-demo/` ; QG `cd qg/studio && npm start`, puis http://127.0.0.1:4178/boutique et /modules.
 - Trancher avec un juriste : sans la case d'accord exprès, accès différé à 14 jours ou paiement impossible (M6).
 - Décider quand réécrire CGV, livraison, rétractation, FAQ, contact pour le numérique (M1) et construire le parcours de paiement avec case et e-mail (M2).
+
+## 2026-11-19 · Tâche V1 « vidéo 1, admin de boutique » (V1-1 à V1-4) : terminée
+
+Demande transmise par l'humain dans la conversation. architecte-web, developpeur-web (site) et developpeur-web (QG) en parallèle, puis conformite-qa.
+- Livré : page produit modèle `/produit/exemple-demo/` (données `data/produits/*.json`, bandeau démo, noindex, paiement inactif), section Avis (`data/avis.json` vide, avis seulement avec référence de commande réelle, règle ajoutée dans `CLAUDE.md`), QG `/boutique` (marge selon `tools/calcul_marge.py`, exemples séparés) et `/modules` (5 modules à venir).
+- Vérifié : build site 59 pages, 0 lien cassé ; `npm test` QG 50/50 ; captures dans `outputs/captures/2026-11-19-video1/` ; vérificateur 0 erreur.
+- Rapports : `outputs/2026-11-19-developpeur-web-video1-boutique.md`, `outputs/2026-11-19-architecte-web-video1-boutique.md`, `outputs/2026-11-19-conformite-qa-video1-boutique.md` (À CORRIGER, 0 bloquant).
+
+**🔔 ACTION HUMAINE** : trancher produit physique ou numérique (memo contre tâche V1) ; neutraliser ou non la marque « Rouage & Laiton » à l'écran ; sortir `data/commandes.json` de Git avant le premier import réel ; texte vide des avis.
 
 ## 2026-11-13 · Synchro n°16 « AliExpress » (T69 à T74) : en cours
 
