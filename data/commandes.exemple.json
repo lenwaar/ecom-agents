@@ -1,40 +1,9 @@
 {
-  "exemple": true,
-  "source": "Données fictives pour montrer le tableau de bord. Jamais additionnées aux vraies commandes.",
-  "visiteurs": 500,
+  "_note": "EXEMPLE FICTIF pour montrer le format d'import. Valeurs inventées, jamais additionnées aux vrais chiffres, jamais lues par le QG. Ne pas copier dans commandes.json.",
+  "source": "exemple",
+  "importe_le": null,
   "commandes": [
-    {
-      "exemple": true,
-      "reference": "EXEMPLE-001",
-      "date": "2026-01-05",
-      "produit": "exemple-demo",
-      "quantite": 1,
-      "montant_ttc": 30.00,
-      "cout_fournisseur": 12.00,
-      "frais_stripe_reels": null,
-      "statut": "payee"
-    },
-    {
-      "exemple": true,
-      "reference": "EXEMPLE-002",
-      "date": "2026-01-06",
-      "produit": "exemple-demo",
-      "quantite": 2,
-      "montant_ttc": 60.00,
-      "cout_fournisseur": 24.00,
-      "frais_stripe_reels": null,
-      "statut": "payee"
-    },
-    {
-      "exemple": true,
-      "reference": "EXEMPLE-003",
-      "date": "2026-01-07",
-      "produit": "exemple-demo",
-      "quantite": 1,
-      "montant_ttc": 30.00,
-      "cout_fournisseur": null,
-      "frais_stripe_reels": null,
-      "statut": "remboursee"
-    }
+    { "id": "EXEMPLE-001", "date": "2099-01-01", "montant_ttc": 10.00, "frais_stripe": null, "cout_produit": 0, "cout_port": 0, "statut": "payee", "exemple": true },
+    { "id": "EXEMPLE-002", "date": "2099-01-02", "montant_ttc": 10.00, "frais_stripe": null, "cout_produit": 0, "cout_port": 0, "statut": "remboursee", "exemple": true }
   ]
 }

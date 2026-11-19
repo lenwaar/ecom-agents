@@ -1,5 +1,6 @@
-// V1-3 et V1-4 : indicateurs de /boutique et liste de /modules.
-// Données en mémoire et dossiers temporaires (os.tmpdir) seulement : les vrais data/ et outputs/ ne sont jamais lus ni écrits.
+// V1-3 et V1-4 : calcul de la boutique (concordance avec tools/calcul_marge.py), séparation exemple/réel,
+// fichiers vide, absent ou invalide, API et pages /boutique et /modules.
+// Toutes les données de test vivent dans un dossier temporaire (STUDIO_DATA) : rien n'est écrit dans data/ ni outputs/.
 "use strict";
 const test = require("node:test");
 const assert = require("node:assert");
@@ -7,246 +8,207 @@ const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
 const http = require("node:http");
-const { spawn, execFileSync } = require("node:child_process");
+const { spawn, spawnSync } = require("node:child_process");
 const b = require("../boutique.js");
 
 const RACINE = path.resolve(__dirname, "..", "..", "..");
-const ok = donnees => ({ etat: "ok", donnees });
-const cmd = (o = {}) => ({ reference: "R1", date: "2099-01-01", produit: "Produit test", quantite: 1, montant_ttc: 40, cout_fournisseur: 10, frais_stripe_reels: null, statut: "payee", ...o });
+const PORT = 4193;
+const ORIGINE = `http://127.0.0.1:${PORT}`;
+const TMP = fs.mkdtempSync(path.join(os.tmpdir(), "qg-boutique-test-"));
+const PYTHON = ["py", "python3", "python"].find(c => spawnSync(c, ["--version"], { encoding: "utf8" }).status === 0);
 
-function dossierTemp() { return fs.mkdtempSync(path.join(os.tmpdir(), "qg-boutique-test-")); }
+function dossier(nom, commandes, modules) {
+  const d = path.join(TMP, nom);
+  fs.mkdirSync(d, { recursive: true });
+  if (commandes !== undefined) fs.writeFileSync(path.join(d, "commandes.json"), typeof commandes === "string" ? commandes : JSON.stringify(commandes));
+  if (modules !== undefined) fs.writeFileSync(path.join(d, "modules.json"), typeof modules === "string" ? modules : JSON.stringify(modules));
+  return d;
+}
+const cmd = (id, montant, statut = "payee", extra = {}) => ({ id, date: "2099-01-01", montant_ttc: montant, frais_stripe: null, cout_produit: 0, cout_port: 0, statut, exemple: false, ...extra });
 
-test("lecture tolérante : fichier absent, vide, JSON invalide", () => {
-  const d = dossierTemp();
-  try {
-    assert.strictEqual(b.lireJson(path.join(d, "commandes.json")).etat, "absent");
-    fs.writeFileSync(path.join(d, "vide.json"), "  \n");
-    assert.strictEqual(b.lireJson(path.join(d, "vide.json")).etat, "vide");
-    fs.writeFileSync(path.join(d, "casse.json"), "{ commandes: [");
-    assert.strictEqual(b.lireJson(path.join(d, "casse.json")).etat, "invalide");
-    fs.writeFileSync(path.join(d, "bom.json"), "﻿{\"commandes\":[]}");
-    assert.strictEqual(b.lireJson(path.join(d, "bom.json")).etat, "ok");
-    const r = b.donneesBoutique(d);
-    assert.strictEqual(r.reel.etat, "absent");
-    assert.strictEqual(r.exemple.etat, "absent");
-    const page = b.renduBoutique(r);
-    assert.match(page, /Aucune commande importée pour l'instant/);
-    assert.doesNotMatch(page, /0,00 €/, "aucun zéro présenté comme une performance");
-  } finally { fs.rmSync(d, { recursive: true, force: true }); }
+test.after(() => fs.rmSync(TMP, { recursive: true, force: true }));
+
+// ---------- Calcul ----------
+test("marge nette : formule de tools/calcul_marge.py, arrondie au centime", () => {
+  // Cotisations 21,2 %. 9,90 € sans coût : 9,90 - (0,1485 + 0,25) - 2,0988 - 0,495 = 6,9077 -> 6,91
+  assert.strictEqual(b.margeNette(9.9, 0), 6.91);
+  // 29,90 € avec 12,40 € de coût : 29,90 - 12,40 - 0,6985 - 6,3388 - 1,495 = 8,9677 -> 8,97
+  assert.strictEqual(b.margeNette(29.9, 12.4), 8.97);
+  // Frais Stripe réel : remplace l'estimation. 9,90 - 0,40 - 2,0988 - 0,495 = 6,9062 -> 6,91
+  assert.strictEqual(b.margeNette(9.9, 0, b.parametres(), 0.4), 6.91);
+  assert.strictEqual(b.margeNette(10, 0, b.parametres(), 0.5), 6.88);   // 10 - 0,50 - 2,12 - 0,50
 });
 
-test("fichier sans commande : « Aucune commande importée », pas de zéro trompeur", () => {
-  const r = b.calculerBoutique(ok({ source: "export Stripe", visiteurs: null, commandes: [] }));
-  assert.strictEqual(r.etat, "vide");
-  const page = b.renduBoutique({ reel: r, exemple: b.calculerBoutique({ etat: "absent" }, { exemple: true }) });
-  assert.match(page, /Aucune commande importée pour l'instant/);
-  assert.doesNotMatch(page, /Ventes TTC/);
-  const casse = b.calculerBoutique({ etat: "invalide", erreur: "Unexpected token" });
-  assert.match(b.renduBoutique({ reel: casse, exemple: casse }), /Fichier illisible/);
-  assert.strictEqual(b.calculerBoutique(ok([1, 2])).etat, "invalide", "un tableau à la racine est refusé");
-});
-
-test("payées et remboursées : la remboursée compte 0 en ventes et sort de la marge", () => {
-  const r = b.calculerBoutique(ok({ visiteurs: null, commandes: [
-    cmd({ reference: "A", montant_ttc: 40, cout_fournisseur: 10 }),
-    cmd({ reference: "B", montant_ttc: 29.9, cout_fournisseur: 5 }),
-    cmd({ reference: "C", montant_ttc: 50, cout_fournisseur: 10, statut: "remboursee" })
-  ] }));
-  assert.strictEqual(r.etat, "ok");
-  assert.strictEqual(r.nbPayees, 2);
-  assert.strictEqual(r.nbRemboursees, 1);
-  assert.strictEqual(r.ventesCentimes, 6990);
-  // A : 40 - 10 - (0,60 + 0,25) - 4,92 - 2 = 22,23 ; B : 29,90 - 5 - (0,4485 + 0,25) - 3,6777 - 1,495 = 19,0288
-  assert.strictEqual(r.commandes[0].margeCentimes, 2223);
-  assert.strictEqual(r.commandes[1].margeCentimes, 1903);
-  assert.strictEqual(r.margeCentimes, 4126, "total calculé avant arrondi : 22,23 + 19,0288 = 41,2588");
-  assert.strictEqual(r.commandes[2].margeCentimes, null);
-  assert.strictEqual(r.objectifAtteint, 2);
-});
-
-test("coût fournisseur null : marge incalculable, exclue du total, compteur visible", () => {
-  const r = b.calculerBoutique(ok({ visiteurs: null, commandes: [
-    cmd({ reference: "A", montant_ttc: 40, cout_fournisseur: 10 }),
-    cmd({ reference: "B", montant_ttc: 40, cout_fournisseur: null })
-  ] }));
-  assert.strictEqual(r.ventesCentimes, 8000, "la vente compte quand même");
-  assert.strictEqual(r.nbIncalculables, 1);
-  assert.strictEqual(r.nbMargeCalculee, 1);
-  assert.strictEqual(r.margeCentimes, 2223);
-  const page = b.renduBoutique({ reel: r, exemple: b.calculerBoutique({ etat: "absent" }, { exemple: true }) });
-  assert.match(page, /1 incalculable\(s\) exclue\(s\)/);
-  assert.match(page, /incalculable/);
-  const seule = b.calculerBoutique(ok({ commandes: [cmd({ cout_fournisseur: null })] }));
-  assert.strictEqual(seule.margeCentimes, null, "aucune marge inventée quand aucun coût n'est connu");
-});
-
-test("frais Stripe réels : remplacent l'estimation et sont signalés", () => {
-  const r = b.calculerBoutique(ok({ commandes: [cmd({ montant_ttc: 40, cout_fournisseur: 10, frais_stripe_reels: 1.2 })] }));
-  // 40 - 10 - 1,20 - 4,92 - 2 = 21,88
-  assert.strictEqual(r.commandes[0].margeCentimes, 2188);
-  assert.strictEqual(r.commandes[0].fraisReels, true);
-  assert.strictEqual(r.nbFraisReels, 1);
-  assert.match(r.commandes[0].note, /frais Stripe réels/);
-  const page = b.renduBoutique({ reel: r, exemple: b.calculerBoutique({ etat: "absent" }, { exemple: true }) });
-  assert.match(page, /remplacent l'estimation/);
-  assert.match(page, /Frais Stripe et éco-participation À VÉRIFIER/);
-  assert.match(page, /Plancher <b>10,00 €<\/b> · objectif <b>15,00 €<\/b>/);
-});
-
-test("seuils par commande : plancher 10 €, objectif 15 €", () => {
-  assert.strictEqual(b.niveauMarge(1500), "objectif");
-  assert.strictEqual(b.niveauMarge(1499), "plancher");
-  assert.strictEqual(b.niveauMarge(1000), "plancher");
-  assert.strictEqual(b.niveauMarge(999), "sous-plancher");
-  assert.strictEqual(b.niveauMarge(-50), "sous-plancher");
-});
-
-test("visiteurs null : « Non mesuré », pas de taux de conversion ; visiteurs connus : taux calculé", () => {
-  const sans = b.calculerBoutique(ok({ visiteurs: null, commandes: [cmd()] }));
-  assert.strictEqual(sans.tauxConversion, null);
-  const page = b.renduBoutique({ reel: sans, exemple: b.calculerBoutique({ etat: "absent" }, { exemple: true }) });
-  assert.match(page, /Non mesuré/);
-  assert.match(page, /aucun outil de mesure installé/);
-  const avec = b.calculerBoutique(ok({ visiteurs: 200, commandes: [cmd(), cmd({ reference: "R2", statut: "remboursee" })] }));
-  assert.strictEqual(avec.tauxConversion, 1 / 200);
-  assert.match(b.renduBoutique({ reel: avec, exemple: sans }), /0,5 %/);
-});
-
-test("séparation exemple / réel : jamais additionnés, chaque chiffre d'exemple étiqueté", () => {
-  const d = dossierTemp();
-  try {
-    fs.writeFileSync(path.join(d, "commandes.json"), JSON.stringify({ source: "test", visiteurs: null, commandes: [cmd({ montant_ttc: 40 })] }));
-    fs.writeFileSync(path.join(d, "commandes.exemple.json"), JSON.stringify({ exemple: true, source: "exemple", visiteurs: 1000, commandes: [
-      cmd({ reference: "EX-1", montant_ttc: 100, exemple: true }), cmd({ reference: "EX-2", montant_ttc: 60, exemple: true })
-    ] }));
-    const r = b.donneesBoutique(d);
-    assert.strictEqual(r.reel.ventesCentimes, 4000, "le réel ne contient que commandes.json");
-    assert.strictEqual(r.exemple.ventesCentimes, 16000);
-    assert.strictEqual(r.reel.exemple, false);
-    assert.strictEqual(r.exemple.exemple, true);
-    const page = b.renduBoutique(r);
-    const [reel, exemple] = page.split('class="panneau bloc-exemple"');
-    assert.doesNotMatch(reel, /200,00|160,00/, "aucune somme réel + exemple");
-    assert.doesNotMatch(reel, /tag-exemple/);
-    assert.match(exemple, /exemple<\/span> Données fictives, jamais additionnées aux chiffres réels/);
-    const tuiles = exemple.match(/<div class="panneau kpi[^"]*"><div class="etiq">[^<]*<span class="tag-exemple">exemple<\/span>/g) || [];
-    assert.strictEqual(tuiles.length, 5, "les 5 indicateurs d'exemple portent l'étiquette");
-    assert.match(exemple, /160,00 €/);
-  } finally { fs.rmSync(d, { recursive: true, force: true }); }
-});
-
-test("garde-fous : commande d'exemple dans le vrai fichier refusée, lignes invalides ignorées et comptées", () => {
-  const r = b.calculerBoutique(ok({ commandes: [
-    cmd({ reference: "OK" }), cmd({ reference: "EX", exemple: true }), cmd({ reference: "S", statut: "en-cours" }),
-    cmd({ reference: "M", montant_ttc: "40" }), null
-  ] }));
-  assert.strictEqual(r.nbPayees, 1);
-  assert.strictEqual(r.ignorees.length, 4);
-  assert.strictEqual(b.calculerBoutique(ok({ exemple: true, commandes: [cmd()] })).etat, "invalide", "un fichier réel marqué exemple n'est pas compté");
-  const ex = b.calculerBoutique(ok({ exemple: true, commandes: [cmd({ exemple: true }), cmd({ reference: "VRAI" })] }), { exemple: true });
-  assert.strictEqual(ex.nbPayees, 1, "le fichier d'exemple n'accepte que des commandes marquées exemple");
-  const page = b.renduBoutique({ reel: b.calculerBoutique(ok({ commandes: [cmd({ produit: "<script>x</script>" })] })), exemple: ex });
-  assert.doesNotMatch(page, /<script>x/, "texte échappé");
-});
-
-test("arrondis en centimes exacts (pas d'erreur de virgule flottante)", () => {
-  assert.strictEqual(b.centimes(0.1 + 0.2), 30);
-  assert.strictEqual(b.centimes(29.9), 2990);
-  assert.strictEqual(b.centimes(1.005), 101);
-  assert.strictEqual(b.arrondiCentimes(1500), 2);
-  assert.strictEqual(b.arrondiCentimes(-1500), -2, "demi vers l'extérieur, comme ROUND_HALF_UP");
-  assert.strictEqual(b.euros(123456), "1 234,56 €");
-  assert.strictEqual(b.euros(-5), "-0,05 €");
-});
-
-test("parité avec tools/calcul_marge.py (ignoré si py est absent)", t => {
-  const cas = [[40, 10], [29.9, 5], [19.9, 12.35], [9.9, 0], [149.9, 63.17], [5, 9.99], [24.9, 7.77]];
-  let py;
+test("concordance avec tools/calcul_marge.py (py)", { skip: PYTHON ? false : "py, python3 ou python absent" }, () => {
+  const cas = [[9.9, 0], [4.9, 0], [19.9, 0], [29.9, 12.4], [14.9, 3.75], [1, 2.5], [0.5, 0], [99.9, 41.37], [7.33, 1.11]];
+  const variantes = [[false, false], [true, false], [false, true], [true, true]];
   const script = [
-    "import sys, json; sys.path.insert(0, 'tools'); import calcul_marge as m",
+    "import sys, json",
+    `sys.path.insert(0, ${JSON.stringify(path.join(RACINE, "tools"))})`,
+    "import calcul_marge as m",
     "from decimal import Decimal, ROUND_HALF_UP",
-    "p = m.parametres()",
-    "cas = json.loads(sys.argv[1])",
-    "print(json.dumps([int((m.marge_nette(Decimal(str(a)), Decimal(str(c)), p) * 100).quantize(Decimal('1'), rounding=ROUND_HALF_UP)) for a, c in cas]))"
+    "cas, variantes = json.loads(sys.argv[1]), json.loads(sys.argv[2])",
+    "out = []",
+    "for fp, vl in variantes:",
+    "    p = m.parametres(fp, vl)",
+    "    for prix, cout in cas:",
+    "        r = m.marge_nette(Decimal(str(prix)), Decimal(str(cout)), p)",
+    "        out.append(str(r.quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)))",
+    "print(json.dumps(out))"
   ].join("\n");
-  try {
-    py = execFileSync("py", ["-c", script, JSON.stringify(cas)], { cwd: RACINE, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], timeout: 30000 });
-  } catch (e) {
-    if (e.code === "ENOENT") return t.skip("py introuvable : test de parité ignoré");
-    throw e;
-  }
-  const attendu = JSON.parse(py.trim());
-  const obtenu = cas.map(([a, c]) => b.margeCommande(b.centimes(a), b.centimes(c)).centimes);
+  const r = spawnSync(PYTHON, ["-X", "utf8", "-c", script, JSON.stringify(cas), JSON.stringify(variantes)], { encoding: "utf8" });
+  assert.strictEqual(r.status, 0, r.stderr);
+  const attendu = JSON.parse(r.stdout).map(Number);
+  const obtenu = [];
+  for (const [fp, vl] of variantes) for (const [prix, cout] of cas) obtenu.push(b.margeNette(prix, cout, b.parametres(fp, vl)));
   assert.deepStrictEqual(obtenu, attendu);
 });
 
-test("modules : Actif / À venir, description telle quelle, fichier absent ou invalide", () => {
-  const r = b.lireModules(ok({ modules: [
-    { id: "boutique", nom: "Tableau de la boutique", etat: "actif", description: "Ventes et marge lues dans data/.", preuve: "qg/studio/boutique.js" },
-    { id: "avis", nom: "Avis clients", etat: "a-venir", description: "Pas encore construit.", preuve: "" },
-    { id: "x", etat: "actif" }
-  ] }));
-  assert.strictEqual(r.modules.length, 2);
-  assert.strictEqual(r.ignores, 1);
-  assert.deepStrictEqual(r.modules.map(m => m.libelle), ["Actif", "À venir"]);
-  const page = b.renduModules(r);
-  assert.match(page, />Actif</);
-  assert.match(page, />À venir</);
-  assert.match(page, /Ventes et marge lues dans data\/\./);
-  assert.match(page, /href="\/boutique"/);
-  assert.match(b.renduModules(b.lireModules({ etat: "absent" })), /Aucun module listé/);
-  assert.match(b.renduModules(b.lireModules({ etat: "invalide", erreur: "x" })), /Fichier illisible/);
-  assert.strictEqual(b.lireModules(ok({ modules: [] })).etat, "vide");
-  assert.strictEqual(b.lireModules(ok({})).etat, "invalide");
+test("totaux : CA, panier moyen, remboursement, frais réel", () => {
+  const p = b.parametres();
+  const t = b.totaux([cmd("a", 9.9), cmd("b", 19.9, "payee", { frais_stripe: 0.55 }), cmd("c", 9.9, "remboursee")], p);
+  assert.strictEqual(t.commandes, 3);
+  assert.strictEqual(t.payees, 2);
+  assert.strictEqual(t.ca_ttc, 29.8);
+  assert.strictEqual(t.panier_moyen, 14.9);
+  assert.deepStrictEqual(t.remboursements, { nombre: 1, montant: 9.9 });
+  // a : 6,9077 ; b : 19,90 - 0,55 - 4,2188 - 0,995 = 14,1362 ; c (remboursée) : -0,25 => 20,7939 -> 20,79
+  assert.strictEqual(t.marge_nette_totale, 20.79);
+  assert.strictEqual(t.marge_par_commande, 6.93);  // 20,7939 / 3 = 6,9313 -> 6,93
+  // Remboursée avec frais réel connu et coût engagé : - (0,40 + 1,00)
+  assert.strictEqual(b.totaux([cmd("d", 9.9, "remboursee", { frais_stripe: 0.4, cout_produit: 1 })], p).marge_nette_totale, -1.4);
 });
 
-// ---------- Routes HTTP, serveur lancé sur un dossier de données temporaire ----------
-const PORT = 4193;
-const ORIGINE = `http://127.0.0.1:${PORT}`;
+// ---------- Lecture des fichiers ----------
+test("exemple et réel séparés : les exemples ne sont jamais additionnés", () => {
+  const d = dossier("separe", { source: "test", importe_le: "2099-01-02", commandes: [cmd("r1", 9.9), cmd("e1", 100, "payee", { exemple: true }), cmd("e2", 50, "remboursee", { exemple: true })] });
+  const r = b.lireBoutique(d);
+  assert.strictEqual(r.etat, "ok");
+  assert.strictEqual(r.reel.commandes, 1);
+  assert.strictEqual(r.reel.ca_ttc, 9.9);
+  assert.strictEqual(r.reel.marge_nette_totale, 6.91);
+  assert.strictEqual(r.exemple.commandes, 2);
+  assert.strictEqual(r.exemple.ca_ttc, 100);
+  assert.strictEqual(r.source, "test");
+});
+
+test("seulement des exemples : vrais chiffres à 0 et message d'import", () => {
+  const r = b.lireBoutique(dossier("que-exemples", { source: "test", importe_le: null, commandes: [cmd("e1", 100, "payee", { exemple: true })] }));
+  assert.strictEqual(r.etat, "vide");
+  assert.strictEqual(r.reel.ca_ttc, 0);
+  assert.strictEqual(r.exemple.ca_ttc, 100);
+});
+
+test("fichier vide (modèle de data/) : tout à 0, message, visiteurs sans source", () => {
+  const r = b.lireBoutique(dossier("vide", { source: "aucune", importe_le: null, commandes: [] }));
+  assert.strictEqual(r.etat, "vide");
+  assert.strictEqual(r.message, "Aucune commande importée. Import manuel d'un export Stripe prévu plus tard.");
+  assert.deepStrictEqual(r.reel, { commandes: 0, payees: 0, ca_ttc: 0, panier_moyen: null, remboursements: { nombre: 0, montant: 0 }, marge_nette_totale: 0, marge_par_commande: null });
+  assert.strictEqual(r.exemple, null);
+  assert.deepStrictEqual(r.visiteurs, { valeur: null, note: "Aucune source de mesure" });
+  assert.ok(r.hypotheses.some(h => h.includes("À VÉRIFIER")));
+});
+
+test("data/commandes.vide.json du dépôt : modèle vide versionné", () => {
+  const vide = JSON.parse(fs.readFileSync(path.join(RACINE, "data", "commandes.vide.json"), "utf8"));
+  assert.deepStrictEqual(vide.commandes, []);
+});
+
+test("data/commandes.exemple.json du dépôt : toutes les lignes marquées exemple, jamais lu comme vraies commandes", () => {
+  const ex = JSON.parse(fs.readFileSync(path.join(RACINE, "data", "commandes.exemple.json"), "utf8"));
+  assert.ok(ex.commandes.length > 0 && ex.commandes.every(c => c.exemple === true));
+  // Même placé seul dans un dossier de données, le fichier d'exemple n'est pas lu (seuls commandes.json et commandes.vide.json le sont).
+  const d = dossier("exemple-seul");
+  fs.copyFileSync(path.join(RACINE, "data", "commandes.exemple.json"), path.join(d, "commandes.exemple.json"));
+  assert.strictEqual(b.lireBoutique(d).etat, "absent");
+});
+
+test("commandes.json absent (hors Git) : repli sur commandes.vide.json", () => {
+  const d = dossier("repli");
+  fs.writeFileSync(path.join(d, "commandes.vide.json"), JSON.stringify({ source: "aucune", importe_le: null, commandes: [] }));
+  const r = b.lireBoutique(d);
+  assert.strictEqual(r.etat, "vide");
+  assert.strictEqual(r.fichier, "data/commandes.vide.json");
+  // Dès que commandes.json existe, il est prioritaire.
+  fs.writeFileSync(path.join(d, "commandes.json"), JSON.stringify({ source: "t", importe_le: null, commandes: [cmd("r1", 9.9)] }));
+  assert.strictEqual(b.lireBoutique(d).reel.ca_ttc, 9.9);
+});
+
+test("fichier absent ou JSON invalide : message lisible, pas d'exception", () => {
+  const absent = b.lireBoutique(dossier("absent"));
+  assert.strictEqual(absent.etat, "absent");
+  assert.match(absent.message, /introuvable/);
+  assert.strictEqual(absent.reel.ca_ttc, 0);
+  const invalide = b.lireBoutique(dossier("invalide", "{ pas du json"));
+  assert.strictEqual(invalide.etat, "invalide");
+  assert.match(invalide.message, /JSON invalide/);
+  const malForme = b.lireBoutique(dossier("mal-forme", { source: "x" }));
+  assert.strictEqual(malForme.etat, "invalide");
+});
+
+test("lignes douteuses : statut inconnu ou montant invalide ignorés et signalés", () => {
+  const r = b.lireBoutique(dossier("douteux", { source: "t", importe_le: null, commandes: [cmd("ok", 9.9), cmd("x", 9.9, "en_attente"), cmd("y", "9,90"), { id: "z", montant_ttc: 5, statut: "payee" }] }));
+  assert.strictEqual(r.reel.commandes, 2);
+  assert.strictEqual(r.avertissements.length, 3);
+});
+
+test("modules : badge actif ou à venir, statut inconnu = à venir", () => {
+  const r = b.lireModules(dossier("modules", undefined, { modules: [{ id: "a", nom: "A", statut: "actif", description: "x" }, { id: "b", nom: "B", statut: "bientôt" }, { id: "c", nom: "C" }] }));
+  assert.deepStrictEqual(r.modules.map(m => m.statut), ["actif", "à venir", "à venir"]);
+  assert.strictEqual(b.lireModules(dossier("modules-absent")).etat, "absent");
+  assert.strictEqual(b.lireModules(dossier("modules-invalide", undefined, "[")).etat, "invalide");
+});
+
+test("data/modules.json du dépôt : cinq modules, statuts honnêtes, aucune date", () => {
+  const r = b.lireModules(path.join(RACINE, "data"));
+  assert.strictEqual(r.etat, "ok");
+  const statuts = Object.fromEntries(r.modules.map(m => [m.id, m.statut]));
+  assert.deepStrictEqual(statuts, { paiement: "à venir", avis: "actif", contact: "à venir", "lettre-information": "à venir", sav: "à venir" });
+  for (const m of r.modules) assert.ok(!/\b(20\d\d|janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre|bientôt|prochainement)\b/i.test(m.description), m.id);
+});
+
+// ---------- Serveur ----------
 function obtenir(chemin) {
   return new Promise((res, rej) => {
-    http.get(ORIGINE + chemin, rep => { let d = ""; rep.on("data", c => d += c); rep.on("end", () => res({ code: rep.statusCode, type: rep.headers["content-type"], corps: d })); }).on("error", rej);
+    http.get(ORIGINE + chemin, rep => { let d = ""; rep.on("data", c => d += c); rep.on("end", () => res({ code: rep.statusCode, type: rep.headers["content-type"], csp: rep.headers["content-security-policy"], corps: d })); }).on("error", rej);
   });
 }
 
-test("routes /boutique, /api/boutique, /modules, /api/modules (STUDIO_DATA temporaire)", async () => {
-  const tmp = dossierTemp();
-  const data = path.join(tmp, "data");
-  fs.mkdirSync(data);
-  fs.writeFileSync(path.join(data, "commandes.json"), JSON.stringify({ source: "test", visiteurs: null, commandes: [] }));
-  fs.writeFileSync(path.join(data, "modules.json"), JSON.stringify({ modules: [{ id: "m", nom: "Module test", etat: "a-venir", description: "Description test.", preuve: "" }] }));
-  const vide = path.join(tmp, "vide");
-  [vide, path.join(tmp, "outputs"), path.join(tmp, "coordination"), path.join(tmp, "agents")].forEach(d => fs.mkdirSync(d));
+test("API et pages sur un serveur lancé avec STUDIO_DATA temporaire", async t => {
+  const data = dossier("serveur", { source: "test", importe_le: null, commandes: [cmd("r1", 19.9), cmd("e1", 9.9, "payee", { exemple: true })] },
+    { modules: [{ id: "paiement", nom: "Paiement", statut: "à venir", description: "Aucun compte de paiement configuré." }] });
+  const vide = path.join(TMP, "vide-serveur"); fs.mkdirSync(vide);
   const serveur = spawn(process.execPath, [path.join(__dirname, "..", "serveur.js")], {
-    env: { ...process.env, STUDIO_PORT: String(PORT), STUDIO_DATA: data, STUDIO_RACINE: tmp, STUDIO_JOURNAL: path.join(tmp, "journal.jsonl"),
-      STUDIO_OUTPUTS: path.join(tmp, "outputs"), STUDIO_COORDINATION: path.join(tmp, "coordination"), STUDIO_AGENTS: path.join(tmp, "agents"),
-      STUDIO_CALENDRIER: path.join(tmp, "calendrier.md"), STUDIO_MEDIAS: path.join(tmp, "medias") },
+    env: { ...process.env, STUDIO_PORT: String(PORT), STUDIO_DATA: data, STUDIO_JOURNAL: path.join(vide, "j.jsonl"), STUDIO_OUTPUTS: vide, STUDIO_COORDINATION: vide, STUDIO_AGENTS: vide, STUDIO_MEDIAS: vide, STUDIO_CALENDRIER: path.join(vide, "c.md") },
     stdio: ["ignore", "pipe", "pipe"]
   });
-  try {
-    await new Promise((res, rej) => {
-      serveur.stdout.on("data", d => { if (String(d).includes("QG en direct")) res(); });
-      serveur.on("exit", c => rej(new Error("serveur arrêté : " + c)));
-      setTimeout(() => rej(new Error("serveur non démarré")), 10000);
-    });
-    const page = await obtenir("/boutique");
-    assert.strictEqual(page.code, 200);
-    assert.match(page.type, /text\/html/);
-    assert.match(page.corps, /Aucune commande importée pour l'instant/);
-    assert.match(page.corps, /href="\/modules"/);
-    assert.doesNotMatch(page.corps, /<script/, "page sans script");
-    const api = JSON.parse((await obtenir("/api/boutique")).corps);
-    assert.strictEqual(api.reel.etat, "vide");
-    assert.strictEqual(api.exemple.etat, "absent");
-    const mod = await obtenir("/modules");
-    assert.match(mod.corps, /Module test/);
-    assert.match(mod.corps, /À venir/);
-    assert.strictEqual(JSON.parse((await obtenir("/api/modules")).corps).modules[0].libelle, "À venir");
-    const qg = await obtenir("/");
-    assert.match(qg.corps, /<a href="\/boutique">Boutique<\/a>/, "lien depuis la page QG");
-  } finally {
-    serveur.kill();
-    await new Promise(r => serveur.exitCode !== null ? r() : serveur.once("exit", r));
-    fs.rmSync(tmp, { recursive: true, force: true });
+  t.after(async () => { serveur.kill(); await new Promise(r => serveur.once("exit", r)); });
+  await new Promise((res, rej) => {
+    serveur.stdout.on("data", d => { if (String(d).includes("QG en direct")) res(); });
+    serveur.on("exit", c => rej(new Error("serveur arrêté : " + c)));
+    setTimeout(() => rej(new Error("serveur non démarré")), 10000);
+  });
+
+  const api = await obtenir("/api/boutique");
+  assert.strictEqual(api.code, 200);
+  const d = JSON.parse(api.corps);
+  assert.strictEqual(d.reel.ca_ttc, 19.9);
+  assert.strictEqual(d.exemple.ca_ttc, 9.9);
+  assert.strictEqual(d.visiteurs.valeur, null);
+
+  const mods = JSON.parse((await obtenir("/api/modules")).corps);
+  assert.strictEqual(mods.modules[0].statut, "à venir");
+
+  for (const chemin of ["/boutique", "/modules", "/boutique.js", "/modules.js", "/boutique.css"]) {
+    const r = await obtenir(chemin);
+    assert.strictEqual(r.code, 200, chemin);
+    assert.match(r.csp, /script-src 'self'/);
   }
+  const page = (await obtenir("/boutique")).corps;
+  assert.match(page, /href="\/modules"/);
+  assert.match(page, /href="\/"/);
+  assert.ok(!/<script>|style="/.test(page), "pas de script en ligne");
+  const accueil = (await obtenir("/")).corps;
+  assert.match(accueil, /href="\/boutique">Boutique</);
+  assert.match(accueil, /href="\/modules">Modules</);
 });

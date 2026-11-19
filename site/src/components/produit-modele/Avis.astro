@@ -1,0 +1,67 @@
+---
+/**
+ * Avis clients (V1-2). Lit data/avis.json au moment de la construction et n'affiche que les avis
+ * valides de ce produit (référence de commande réelle, note entière 1 à 5, date ISO, prénom ou initiale).
+ * Produit de démonstration : aucun avis, jamais. Sans avis : pas de note moyenne ni d'étoiles.
+ */
+import Star from '@lucide/astro/icons/star';
+import MessageSquareText from '@lucide/astro/icons/message-square-text';
+import { avisAffichables } from '../../lib/donnees-partagees';
+import { noteMoyenne } from '../../lib/avis';
+
+interface Props {
+  slug: string;
+  demo: boolean;
+}
+
+const { slug, demo } = Astro.props;
+const { valides } = avisAffichables(slug, demo);
+const moyenne = noteMoyenne(valides);
+const formatDate = (iso: string) =>
+  new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(
+    new Date(iso.length === 10 ? `${iso}T00:00:00Z` : iso),
+  );
+const virgule = (n: number) => n.toLocaleString('fr-FR', { maximumFractionDigits: 1 });
+---
+
+<section aria-labelledby="titre-avis" class="rounded-carte border border-bordure bg-carte p-5 md:p-6">
+  <h2 id="titre-avis" class="flex items-center gap-2.5 text-[20px] font-semibold md:text-[22px]">
+    <MessageSquareText size={22} stroke-width={1.75} aria-hidden="true" class="shrink-0 text-laiton-fonce" />
+    Avis clients
+  </h2>
+
+  {
+    moyenne === null ? (
+      <p class="mt-4 text-gris-fort">Aucun avis pour le moment. Seuls les clients ayant commandé peuvent en laisser un.</p>
+    ) : (
+      <Fragment>
+        <p class="mt-4 font-medium">
+          {virgule(moyenne)} sur 5, d'après {valides.length} avis de clients ayant passé commande.
+        </p>
+        <ul class="mt-5 grid gap-4">
+          {valides.map((a) => (
+            <li class="border-t border-bordure pt-4">
+              <p class="flex items-center gap-1" aria-label={`Note : ${a.note} sur 5`}>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star
+                    size={16}
+                    stroke-width={1.75}
+                    aria-hidden="true"
+                    class={i <= a.note ? 'fill-laiton-fonce text-laiton-fonce' : 'text-contour'}
+                  />
+                ))}
+              </p>
+              <p class="mt-2 text-[15px]">{a.texte}</p>
+              <p class="mt-2 text-[13px] text-gris-fort">
+                {a.auteur}, <time datetime={a.date}>{formatDate(a.date)}</time>
+              </p>
+            </li>
+          ))}
+        </ul>
+      </Fragment>
+    )
+  }
+  <p class="mt-4 text-[14px]">
+    <a href="/verification-des-avis/" class="underline underline-offset-4 hover:text-laiton-fonce">Comment nous vérifions les avis</a>
+  </p>
+</section>

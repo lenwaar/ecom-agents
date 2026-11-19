@@ -25,3 +25,10 @@ qg/studio/node_modules/
 donnees/*.db
 donnees/sauvegardes/
 donnees/imports/
+
+# Boutique (V1) : vraies commandes importées depuis Stripe, jamais dans Git.
+# Versionnés : data/commandes.vide.json (modèle vide lu par défaut) et data/commandes.exemple.json (format fictif).
+data/commandes.json
+# Exports bruts (Stripe ou autre) : données personnelles, jamais dans Git (audit conformite-qa M7).
+data/*.csv
+data/imports/

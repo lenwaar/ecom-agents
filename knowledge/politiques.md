@@ -30,13 +30,16 @@ Les valeurs `À VÉRIFIER` doivent être remplies avant toute mise en ligne.
 - Frais de livraison : `À VÉRIFIER`.
 - En cas de retard au-delà du délai annoncé, le client peut annuler ; remboursement sous 14 jours, jamais d'avoir imposé.
 
-## Droit de rétractation
-- 14 jours à compter de la réception, sans motif.
-- Le client peut se rétracter par le formulaire type, par email, ou par le bouton « renoncer au contrat ici » sur le site, visible pendant tout le délai.
-- Accusé de réception envoyé par email (date et heure).
-- Frais de retour : `À VÉRIFIER` (à notre charge ou à celle du client ; si à la charge du client, le dire avant la commande).
-- Remboursement de toutes les sommes versées, frais de livraison initiaux inclus (livraison standard), dans les 14 jours suivant la rétractation. Remboursement différable jusqu'à la récupération du produit ou la preuve d'expédition.
-- Le client peut être tenu responsable d'une dépréciation due à des manipulations autres que celles nécessaires pour constater la nature du produit (ex. kit assemblé). Formulation exacte à faire valider.
+## Droit de rétractation : téléchargement immédiat (produits numériques)
+**Mis à jour le 2026-11-19 (V1 bis, boutique 100 % numérique validée par l'humain). Formulation à faire relire par un juriste.**
+Base : contenu numérique fourni sans support matériel, exception au droit de rétractation (Code de la consommation, art. L221-28, 13° ; confirmation : art. L221-13). Numéros d'articles `À VÉRIFIER` sur Légifrance.
+- Par défaut, le client dispose de 14 jours pour se rétracter, sans motif, à compter de la conclusion du contrat.
+- **Accès immédiat seulement avec accord exprès** : avant le paiement, une case **non pré-cochée** que le client coche lui-même : « Je demande l'accès immédiat au fichier et je reconnais perdre mon droit de rétractation dès le début du téléchargement. » Formulation exacte `À VÉRIFIER`.
+- Case non cochée : pas de téléchargement avant la fin du délai de 14 jours (ou paiement impossible : choix technique `À VÉRIFIER`). Jamais d'accès immédiat sans la case.
+- **Confirmation par e-mail** après l'achat, sur support durable : récapitulatif de la commande, accord exprès donné et renonciation au droit de rétractation, avec date et heure.
+- Tant que le téléchargement n'a pas commencé, le client peut se rétracter par le formulaire type, par e-mail ou par le bouton « renoncer au contrat ici » ; accusé de réception par e-mail (date et heure) ; remboursement de toutes les sommes versées sous 14 jours.
+- Ni frais de retour ni dépréciation : il n'y a rien à renvoyer.
+- Ancienne politique (maquettes physiques : 14 jours à compter de la réception, frais de retour, dépréciation) : abandonnée avec le modèle physique, voir l'historique Git de ce fichier.
 
 ## Garanties
 - Garantie légale de conformité : 2 ans à compter de la livraison (réparation ou remplacement, à défaut réduction du prix ou remboursement).

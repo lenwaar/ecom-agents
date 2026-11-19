@@ -84,7 +84,7 @@ faq:
   - { question: "Combien de séances prévoir ?", reponse: "Environ sept heures au total selon notre estimation. Trois soirées sont un rythme raisonnable." }
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Écrivez-nous avec une photo. Nous vous envoyons la pièce ou un kit de remplacement : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
 seo:
-  titre: "Maquette locomotive à vapeur en bois | Rouage & Laiton"
+  titre: "Maquette locomotive à vapeur en bois"
   description: "Locomotive à vapeur en bois à assembler : chaudière, cabine et roues, pièce par pièce. Environ 7 h, niveau moyen, 14 ans et plus."
 audit_conformite: ""
 ---

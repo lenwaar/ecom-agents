@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boutique · QG</title>
+<link rel="preload" href="polices/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="qg.css">
+<link rel="stylesheet" href="boutique.css">
+<script src="boutique.js" defer></script>
+</head><body>
+
+<div class="page">
+  <header class="tete">
+    <div>
+      <h1>Boutique <em>chiffres</em></h1>
+      <p>Ventes et marge nette réelle, calculées depuis data/commandes.json.</p>
+    </div>
+    <nav class="onglets" aria-label="Pages du tableau de bord"><a href="/">QG</a><a href="/studio">Studio</a><a href="/boutique" aria-current="page">Boutique</a><a href="/modules">Modules</a></nav>
+  </header>
+
+  <p class="message" id="message" role="status">Chargement…</p>
+
+  <section class="panneau" aria-labelledby="t-reel">
+    <div class="etiq"><span id="t-reel">Chiffres réels</span> <b id="source">—</b></div>
+    <div class="grille-kpi" id="reel"></div>
+  </section>
+
+  <section class="panneau bloc-exemple" id="bloc-exemple" aria-labelledby="t-exemple" hidden>
+    <div class="etiq"><span id="t-exemple"><span class="badge-exemple">exemple</span> Commandes d'exemple, jamais additionnées aux chiffres réels</span></div>
+    <div class="grille-kpi" id="exemple"></div>
+  </section>
+
+  <section class="panneau" aria-labelledby="t-avert" id="bloc-avert" hidden>
+    <div class="etiq"><span id="t-avert">Lignes à vérifier</span></div>
+    <ul class="liste-texte" id="avertissements"></ul>
+  </section>
+
+  <section class="panneau" aria-labelledby="t-hyp">
+    <div class="etiq"><span id="t-hyp">Hypothèses du calcul</span></div>
+    <ul class="liste-texte" id="hypotheses"></ul>
+  </section>
+  <p class="note-bas">Page en lecture seule. Les commandes arriveront par un import manuel d'un export Stripe ; rien n'est envoyé ni payé depuis ce tableau de bord.</p>
+</div>
+
+</body></html>

@@ -83,7 +83,7 @@ faq:
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Écrivez-nous avec une photo. Nous vous envoyons la pièce ou un kit de remplacement, sans frais : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
   - { question: "À partir de quel âge ?", reponse: "14 ans et plus, comme toutes les maquettes de la boutique." }
 seo:
-  titre: "Maquette mécanique en bois à engrenages | Rouage & Laiton"
+  titre: "Maquette mécanique en bois à engrenages"
   description: "Boîte à engrenages en bois à monter soi-même : une première maquette mécanique, niveau facile, environ 2 h d'assemblage. Pour adultes, 14 ans et plus."
 audit_conformite: ""
 ---

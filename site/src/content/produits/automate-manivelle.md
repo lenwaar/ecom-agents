@@ -85,7 +85,7 @@ faq:
   - { question: "Faut-il de la colle ou des outils ?", reponse: "À VÉRIFIER. La réponse sera reprise de la notice du fabricant dès que le modèle réel sera choisi." }
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Envoyez-nous une photo par email. Nous vous faisons parvenir la pièce ou un kit de remplacement : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
 seo:
-  titre: "Automate en bois à manivelle à monter | Rouage & Laiton"
+  titre: "Automate en bois à manivelle à monter"
   description: "Automate en bois à assembler : cames et poussoirs animent la scène à chaque tour de manivelle. Environ 8 h, niveau moyen, 14 ans et plus."
 audit_conformite: ""
 ---

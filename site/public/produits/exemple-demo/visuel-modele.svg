@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800" role="img" aria-label="Emplacement réservé au visuel du produit">
+  <rect width="800" height="800" fill="#F1F0EB"/>
+  <rect x="40" y="40" width="720" height="720" rx="18" fill="none" stroke="#C9C6BE" stroke-width="3" stroke-dasharray="14 12"/>
+  <g fill="none" stroke="#8C8A84" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="280" y="300" width="240" height="180" rx="16"/>
+    <circle cx="340" cy="360" r="20"/>
+    <path d="M290 460l70-60 50 40 40-30 60 50"/>
+  </g>
+  <text x="400" y="560" text-anchor="middle" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="30" fill="#4B5563">Visuel à venir</text>
+</svg>

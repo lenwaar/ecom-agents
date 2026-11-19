@@ -85,7 +85,7 @@ faq:
   - { question: "Je n'ai monté qu'une maquette facile. Est-ce trop difficile ?", reponse: "Le niveau moyen de notre échelle suppose d'avoir déjà monté une maquette : plus de pièces et quelques réglages. Comptez environ cinq heures, idéalement en deux séances." }
   - { question: "Une pièce manque ou est abîmée à la réception : que faire ?", reponse: "Envoyez-nous une photo par email. Nous vous envoyons la pièce ou un kit de remplacement : c'est la garantie légale de conformité. Délai de réponse : À VÉRIFIER." }
 seo:
-  titre: "Coffre-fort à combinaison en bois | Rouage & Laiton"
+  titre: "Coffre-fort à combinaison en bois"
   description: "Coffre-fort en bois à assembler : il ne s'ouvre qu'avec la bonne combinaison. Environ 5 h de montage, niveau moyen, pour adultes, 14 ans et plus."
 audit_conformite: ""
 ---

@@ -1,0 +1,55 @@
+---
+/**
+ * Bloc « Sécurité du produit » (règlement GPSR) en liste de définitions :
+ * Produits physiques seulement. Fabricant, Personne responsable dans l'UE, Avertissements, Référence. Valeur inconnue : « À définir ».
+ */
+import ShieldCheck from '@lucide/astro/icons/shield-check';
+import ADefinir from './ADefinir.astro';
+import Coordonnees from './Coordonnees.astro';
+import type { Gpsr } from '../../lib/produit-modele';
+
+interface Props {
+  gpsr: Gpsr;
+}
+
+const { gpsr } = Astro.props;
+---
+
+<section aria-labelledby="titre-gpsr" class="rounded-carte border border-bordure bg-carte p-5 md:p-6">
+  <h2 id="titre-gpsr" class="flex items-center gap-2.5 text-[20px] font-semibold md:text-[22px]">
+    <ShieldCheck size={22} stroke-width={1.75} aria-hidden="true" class="shrink-0 text-laiton-fonce" />
+    Sécurité du produit
+  </h2>
+  <dl class="mt-5 grid gap-5 text-[15px] sm:grid-cols-2">
+    <div>
+      <dt class="font-semibold">Fabricant</dt>
+      <dd class="mt-1.5 break-words text-gris-fort"><Coordonnees c={gpsr.fabricant} /></dd>
+    </div>
+    <div>
+      <dt class="font-semibold">Personne responsable dans l'UE</dt>
+      <dd class="mt-1.5 break-words text-gris-fort"><Coordonnees c={gpsr.personne_responsable_ue} /></dd>
+    </div>
+    <div>
+      <dt class="font-semibold">Avertissements</dt>
+      <dd class="mt-1.5 text-gris-fort">
+        {
+          gpsr.avertissements === null ? (
+            <ADefinir />
+          ) : gpsr.avertissements.length === 0 ? (
+            'Aucun'
+          ) : (
+            <ul class="list-disc space-y-1 pl-5">
+              {gpsr.avertissements.map((a) => (
+                <li>{a}</li>
+              ))}
+            </ul>
+          )
+        }
+      </dd>
+    </div>
+    <div>
+      <dt class="font-semibold">Référence</dt>
+      <dd class="mt-1.5 break-words text-gris-fort">{gpsr.reference === null ? <ADefinir /> : gpsr.reference}</dd>
+    </div>
+  </dl>
+</section>

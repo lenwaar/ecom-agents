@@ -11,7 +11,7 @@ L'entreprise compte 137 agents (fiches dans `entreprise/agents/`, carte dans `en
 - Réponds toujours à l'humain en français, même quand les outils ou les agents écrivent en anglais.
 - Ne jamais inventer un chiffre (prix, délai, stock, avis, statistique) : citer la source ou écrire `À VÉRIFIER`.
 - Ne jamais inventer d'avis clients, de témoignages ou de fausses promos (« -70 % » sans prix de référence réel) : c'est illégal en France (pratiques commerciales trompeuses).
-- Un avis client n'apparaît sur le site que s'il porte une référence de commande réelle présente dans `data/commandes.json`. Aucun avis inventé, jamais, y compris pour la démonstration ou les exemples.
+- **Avis clients** : un avis n'est affiché (site, pub, e-mail) que s'il porte une **référence de commande réelle** (`data/avis.json`, champ `reference_commande`). Aucun avis inventé, jamais, y compris pour une démonstration, un test visuel ou un exemple : l'état vide affiche « Aucun avis pour le moment. Seuls les clients ayant commandé peuvent en laisser un. » et un lien « Comment nous vérifions les avis ».
 - Aucune allégation santé/médicale sur les produits beauté/bien-être.
 - Chaque livrable va dans `outputs/` avec l'en-tête YAML décrit dans l'architecture.
 - Tout livrable public passe par `conformite-qa` avant validation humaine.

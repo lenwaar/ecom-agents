@@ -1,0 +1,30 @@
+---
+/**
+ * Nom, adresse et contact d'une personne du bloc GPSR. Tout inconnu : une seule étiquette « À définir ».
+ */
+import ADefinir from './ADefinir.astro';
+import type { Coordonnees } from '../../lib/produit-modele';
+
+interface Props {
+  c: Coordonnees;
+}
+
+const { c } = Astro.props;
+const lignes = [c.nom, c.adresse, c.contact];
+const rienDeConnu = lignes.every((l) => l === null);
+---
+
+{
+  rienDeConnu ? (
+    <ADefinir />
+  ) : (
+    <Fragment>
+      {lignes.map((l, i) => (
+        <Fragment>
+          {i > 0 && <br />}
+          {l === null ? <ADefinir /> : l}
+        </Fragment>
+      ))}
+    </Fragment>
+  )
+}

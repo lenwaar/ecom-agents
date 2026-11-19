@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modules · QG</title>
+<link rel="preload" href="polices/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="qg.css">
+<link rel="stylesheet" href="boutique.css">
+<script src="modules.js" defer></script>
+</head><body>
+
+<div class="page">
+  <header class="tete">
+    <div>
+      <h1>Modules <em>de la boutique</em></h1>
+      <p>Ce qui fonctionne déjà et ce qui reste à brancher, lu dans data/modules.json.</p>
+    </div>
+    <nav class="onglets" aria-label="Pages du tableau de bord"><a href="/">QG</a><a href="/studio">Studio</a><a href="/boutique">Boutique</a><a href="/modules" aria-current="page">Modules</a></nav>
+  </header>
+
+  <p class="message" id="message" role="status">Chargement…</p>
+  <section class="panneau" aria-labelledby="t-modules">
+    <div class="etiq"><span id="t-modules">Modules</span> <b id="nb-modules">—</b></div>
+    <ul class="modules" id="modules"></ul>
+  </section>
+  <p class="note-bas">« À venir » veut dire : pas encore en place. Aucune date n'est fixée ici.</p>
+</div>
+
+</body></html>

@@ -69,7 +69,7 @@ test("synchro : le vrai coordination/de-cowork.md se lit sans erreur (lecture se
   if (!fs.existsSync(p)) return;
   const s = lireSynchro(fs.readFileSync(p, "utf8"), QUINZE);
   assert.ok(s && s.numero > 0 && s.taches.length > 0);
-  s.taches.forEach(t => assert.match(t.id, /^T\d+/));
+  s.taches.forEach(t => assert.match(t.id, /^(T\d+|V\d+-\d+)/));
 });
 
 test("plan du QG : 13 pièces, 19 agents (ceux de .claude/agents/), chacun dans sa pièce", () => {

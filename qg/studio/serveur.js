@@ -11,11 +11,7 @@
 //   STUDIO_COORDINATION  dossier surveillé pour savoir quand Cowork travaille (coordination/ par défaut)
 //   STUDIO_DE_COWORK  consignes de Cowork lues pour la synchro en cours (de-cowork.md du dossier de coordination par défaut)
 //   STUDIO_AGENTS   dossier des agents installés (.claude/agents/ par défaut)
-//   STUDIO_DATA     dossier des données de la boutique, lu seulement (data/ à la racine par défaut) :
-//                   commandes.json (vrais chiffres), commandes.exemple.json (exemple), modules.json
-//
-// Pages : « / » (QG), « /studio », « /boutique » et « /modules » (lecture seule) ;
-// API JSON : /api/etat, /api/boutique, /api/modules.
+//   STUDIO_DATA     données de la boutique : commandes.json et modules.json (data/ par défaut)
 "use strict";
 const http = require("node:http");
 const fs = require("node:fs");
@@ -25,7 +21,7 @@ const { creerSuivi } = require("./cowork.js");
 const { listerAgents, lireLivrables, resumeLivrables } = require("./equipe.js");
 const { lireSynchro } = require("./synchro.js");
 const { lireEntreprise } = require("./entreprise.js");
-const { donneesBoutique, donneesModules, renduBoutique, renduModules } = require("./boutique.js");
+const { lireBoutique, lireModules } = require("./boutique.js");
 
 const HOTE = "127.0.0.1";
 const PORT = Number(process.env.STUDIO_PORT) || 4178;
@@ -54,10 +50,6 @@ function dansDossier(dossier, cible) {
   return rel !== "" && !rel.startsWith("..") && !path.isAbsolute(rel);
 }
 function lireTexte(p) { try { return fs.readFileSync(p, "utf8"); } catch { return null; } }
-function html(res, code, texte) {
-  res.writeHead(code, { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" });
-  res.end(texte);
-}
 function json(res, code, objet) {
   res.writeHead(code, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store" });
   res.end(JSON.stringify(objet));
@@ -180,8 +172,18 @@ function etat() {
 // Prévenir la page quand les livrables, le calendrier ou les vidéos changent.
 let signature = "";
 function pousserSiChange() {
-  const s = JSON.stringify(etat());
-  if (s !== signature) { signature = s; for (const res of abonnes) envoyer(res, "etat", JSON.parse(s)); }
+  // Appelée par un minuteur et par fs.watchFile : une exception ici arrêterait le serveur.
+  let s, donnees;
+  try {
+    donnees = etat();                   // une seule lecture de l'état, sans reparser
+    s = JSON.stringify(donnees);
+    if (s === signature) return;
+  } catch (e) {
+    console.error("QG : état illisible, envoi ignoré :", e && e.message);
+    return;
+  }
+  signature = s;
+  for (const res of abonnes) envoyer(res, "etat", donnees);
 }
 setInterval(pousserSiChange, 2000).unref();
 // La synchro en cours change dès que Cowork (ou Claude Code) modifie de-cowork.md.
@@ -252,10 +254,8 @@ const serveur = http.createServer((req, res) => {
     return;
   }
   if (req.method === "GET" && url.pathname === "/api/etat") return json(res, 200, etat());
-  if (req.method === "GET" && url.pathname === "/api/boutique") return json(res, 200, donneesBoutique(DATA));
-  if (req.method === "GET" && url.pathname === "/api/modules") return json(res, 200, donneesModules(DATA));
-  if (req.method === "GET" && (url.pathname === "/boutique" || url.pathname === "/boutique/")) return html(res, 200, renduBoutique(donneesBoutique(DATA)));
-  if (req.method === "GET" && (url.pathname === "/modules" || url.pathname === "/modules/")) return html(res, 200, renduModules(donneesModules(DATA)));
+  if (req.method === "GET" && url.pathname === "/api/boutique") return json(res, 200, lireBoutique(DATA));
+  if (req.method === "GET" && url.pathname === "/api/modules") return json(res, 200, lireModules(DATA));
   if (url.pathname === "/api/valider") {
     if (req.method !== "POST") return json(res, 405, { erreur: "POST seulement." });
     const origine = req.headers.origin;
@@ -278,13 +278,15 @@ const serveur = http.createServer((req, res) => {
     return fichierStatique(req, res, MEDIAS, url.pathname.slice("/medias/".length));
   }
   if (url.pathname === "/studio" || url.pathname === "/studio/") return fichierStatique(req, res, PUBLIC, "studio.html");
+  if (url.pathname === "/boutique" || url.pathname === "/boutique/") return fichierStatique(req, res, PUBLIC, "boutique.html");
+  if (url.pathname === "/modules" || url.pathname === "/modules/") return fichierStatique(req, res, PUBLIC, "modules.html");
   return fichierStatique(req, res, PUBLIC, url.pathname === "/" ? "index.html" : url.pathname.slice(1));
 });
 
 serveur.listen(PORT, HOTE, () => {
   console.log(`QG en direct : ${ORIGINE}/`);
   console.log(`Studio en direct : ${ORIGINE}/studio`);
-  console.log(`Boutique : ${ORIGINE}/boutique (données : ${DATA})`);
+  console.log(`Boutique et modules : ${ORIGINE}/boutique, ${ORIGINE}/modules (données : ${DATA})`);
   console.log(`Journal lu en continu : ${JOURNAL}`);
   console.log(`Livrables : ${OUTPUTS}`);
   console.log(`Coordination (Cowork) : ${COORDINATION}`);

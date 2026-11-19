@@ -36,8 +36,8 @@ const lienSecondaire = registre === 'clair' ? 'text-gris-fort hover:text-encre' 
   class={`sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-300 ease-sortie ${registre === 'sombre' ? 'registre-sombre' : 'registre-clair'} ${fond}`}
 >
   <nav aria-label="Navigation principale" class="conteneur flex h-14 items-center justify-between gap-6 md:h-16">
-    <a href="/" class="titre-serif text-[23px] leading-none" aria-label="Rouage & Laiton, accueil">
-      Rouage <span class={registre === 'clair' ? 'text-laiton-fonce' : 'text-laiton'}>&amp;</span> Laiton
+    <a href="/" class="titre-serif text-[23px] leading-none" aria-label="Accueil">
+      [Nom de marque à choisir]
     </a>
 
     <ul class="hidden items-center gap-7 text-[14px] md:flex">
@@ -57,7 +57,6 @@ const lienSecondaire = registre === 'clair' ? 'text-gris-fort hover:text-encre' 
     </ul>
 
     <div class="flex items-center gap-1 md:hidden">
-      <a href="/maquettes/" class={`px-3 py-3 text-[14px] ${lienSecondaire}`}>Maquettes</a>
       <a
         href="#pied-de-page"
         id="ouvrir-menu"

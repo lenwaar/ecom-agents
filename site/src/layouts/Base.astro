@@ -55,7 +55,8 @@ const indexer = !modeDemo && !noindex;
     </a>
     {modeDemo && <BandeauDemo />}
     <Navigation registre={registre} />
-    {registre === 'clair' && <BandeauReassurance />}
+    {/* Masqué tant que rien n'est en vente (audit conformite-qa D1 : « 14 jours » contredit l'accès immédiat). */}
+    {registre === 'clair' && !modeDemo && <BandeauReassurance />}
     <main id="contenu" tabindex="-1" class="outline-none">
       <slot />
     </main>

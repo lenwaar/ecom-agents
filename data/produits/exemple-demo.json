@@ -1,24 +1,17 @@
 {
   "slug": "exemple-demo",
-  "demo": true,
   "nom": "Produit de démonstration",
-  "description": "Ce produit n'existe pas et n'est pas vendu. Cette page sert de modèle : elle montre où se placeront la description, le prix, le délai, la sécurité du produit et les avis quand un vrai produit sera choisi.",
+  "type": "numerique",
+  "demo": true,
+  "format": null,
   "prix_ttc": null,
-  "frais_port_ttc": null,
-  "delai_livraison_jours": { "min": null, "max": null },
-  "age_minimum": 14,
-  "gpsr": {
-    "fabricant": { "nom": "À VÉRIFIER", "adresse": "À VÉRIFIER", "email": "À VÉRIFIER" },
-    "responsable_ue": { "nom": "À VÉRIFIER", "adresse": "À VÉRIFIER", "email": "À VÉRIFIER" },
-    "reference": "À VÉRIFIER",
-    "avertissements": ["À VÉRIFIER"]
-  },
+  "frais_port_ttc": "sans objet",
+  "delai": null,
+  "age_minimum": "sans objet",
+  "gpsr": "sans objet",
+  "description": "Cette page est un modèle de fiche produit numérique. Elle montre où apparaîtront le prix, le format du fichier, les conditions d'accès au téléchargement et les avis clients. Aucun produit n'est en vente pour l'instant.",
   "visuels": [
-    {
-      "src": "/images/exemple-demo/illustration.svg",
-      "alt": "Illustration neutre d'un engrenage aux couleurs nuit et laiton, utilisée pour la page de démonstration",
-      "type": "illustration"
-    }
+    { "src": "/produits/exemple-demo/visuel-modele.svg", "alt": "Emplacement réservé au visuel du produit : cadre gris neutre, aucune photo." }
   ],
-  "paiement": { "lien": null, "actif": false }
+  "paiement": { "actif": false, "url": null }
 }

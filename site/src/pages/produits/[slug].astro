@@ -1,0 +1,23 @@
+---
+/**
+ * Page produit modèle /produits/[slug]/ : une page par fichier de data/produits/ (racine du dépôt).
+ * Les données sont validées à la construction (src/lib/produit-modele.ts) : une erreur bloque la build.
+ * Produit de démonstration : noindex, nofollow.
+ */
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import FicheProduit from '../../components/produit-modele/FicheProduit.astro';
+import { produitsModele } from '../../lib/donnees-partagees';
+
+export const getStaticPaths = (() =>
+  produitsModele().map((produit) => ({ params: { slug: produit.slug }, props: { produit } }))) satisfies GetStaticPaths;
+
+const { produit } = Astro.props;
+const description = produit.demo
+  ? 'Page de démonstration : modèle de fiche produit, aucun produit en vente.'
+  : produit.description.slice(0, 155);
+---
+
+<Base titre={produit.demo ? `${produit.nom} (démonstration)` : produit.nom} description={description} noindex={produit.demo}>
+  <FicheProduit produit={produit} />
+</Base>
