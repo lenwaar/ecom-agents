@@ -49,6 +49,8 @@ site/src/lib/avis.ts       filtrage pur des avis (avisDuProduit, raisonRejet, no
 site/src/lib/donnees-partagees.ts  lecture de data/ (remonte depuis le dossier courant ; BOUTIQUE_DATA pour forcer)
 site/outils/verifier-produit-avis.test.mjs  tests (npm test)
 site/outils/captures-produit.mjs  captures pleine page 390 et 1280 px (npm run captures)
+site/outils/captures-animations.mjs  captures avant/après des composants animés et poids JS par page (V2-2)
+site/src/components/animes/  îlots React (V2-2) : 4 copies React Bits (Aurora, SplitText, ScrollStack, Carousel) et leurs enveloppes
 ```
 
 ## Produits du modèle de page (data/produits/)
@@ -98,6 +100,7 @@ npm run build       # doit passer sans erreur ni avertissement (59 pages avec /p
 npm run preview     # aperçu de dist/ sur http://localhost:4321/
 npm test            # règles des produits et des avis (node --test, Node 22.18+)
 npm run captures -- exemple-demo 2026-11-19   # après la build : outputs/captures/<date>-produit-demo-390.png et -1280.png
+node outils/captures-animations.mjs apres --reduit --positions   # après la build : captures V2-2 et poids-js.json
 ```
 Captures : `site/outils/captures-produit.mjs` sert `dist/` sur un port libre et utilise `playwright-core` de `qg/studio/node_modules` (Chromium installé par Playwright, comme `qg/studio/tests/qg-page.test.js`) ; depuis un worktree sans ces dépendances, il prend celles du dépôt principal. Il échoue si la page déborde horizontalement ou lève une erreur JavaScript.
 Une fiche `demo: false` qui contient encore « À VÉRIFIER » fait échouer `npm run build` (le message liste les champs à compléter). Sur une fiche `demo: true`, ces valeurs ne sont pas affichées.
@@ -105,3 +108,35 @@ Une fiche `demo: false` qui contient encore « À VÉRIFIER » fait échouer `np
 **Vérification des liens** : `npm run build` lance ensuite `tools/verifier_liens.py` (script `postbuild`), qui parcourt `site/dist/` et échoue s'il trouve un lien interne (href, src, srcset) vers une page ou un fichier absent, ou une ancre `#id` absente de la page cible.
 À la main : `npm run verifier-liens` dans `site/`, ou `py tools/verifier_liens.py` depuis la racine. Interpréteur essayé : `py`, puis `python3`, puis `python`.
 Sans Python, la vérification est sautée avec un avertissement ; `VERIFIER_LIENS_OBLIGATOIRE=1` en fait un échec.
+
+## Composants animés (V2-2)
+Choix de `architecte-web` du 2026-11-20 (statut : à valider). Spécification complète : `outputs/2026-11-20-architecte-web-composants-animes.md`.
+- **4 composants retenus, tous de React Bits** (version gratuite, jamais React Bits Pro, qui est payant).
+- Intégration : `@astrojs/react` ; chaque composant est un îlot React chargé en `client:visible`. Le reste du site reste en Astro et en GSAP sans React.
+- Règles : `prefers-reduced-motion` donne une version statique complète ; le bouton Pause de l'accueil arrête le fond animé ; aucun emoji ; icônes Lucide (`lucide-react`) à la place des icônes d'origine ; couleurs prises dans les variables de `site/src/styles/global.css` ; aucun effet ne couvre le prix ni le bouton d'achat.
+- Chaque fichier recopié garde en commentaire d'en-tête la source, la licence « MIT + Commons Clause », la mention « Copyright (c) 2026 David Haz » et le commit d'origine.
+- Commons Clause : on peut utiliser les composants dans le site, y compris pour vendre nos produits. On ne peut **pas** vendre ni redistribuer les composants eux-mêmes (pas de pack de composants ni de modèle de site revendu).
+- Le poids JS par page se mesure sur la build et va dans le rapport de `developpeur-web`. Les poids ci-dessous non mesurés restent « À VÉRIFIER ».
+
+| Composant | Source | Licence | URL de preuve (lue le 2026-11-20) | Dépendances npm | Place sur le site |
+|---|---|---|---|---|---|
+| Aurora (fond) | React Bits, https://reactbits.dev/backgrounds/aurora | MIT + Commons Clause, usage commercial autorisé | https://github.com/DavidHDev/react-bits/blob/main/LICENSE.md | `react` seul (WebGL natif) | Accueil, fond du héros |
+| SplitText (texte) | React Bits, https://reactbits.dev/text-animations/split-text | MIT + Commons Clause, usage commercial autorisé | même URL ; GSAP : https://gsap.com/standard-license | `gsap` (déjà présent, 3.15.1), `@gsap/react` 2.1.2 (licence standard GSAP, gratuite en usage commercial) | Accueil, titre du héros |
+| ScrollStack (cartes empilées) | React Bits, https://reactbits.dev/components/scroll-stack | MIT + Commons Clause, usage commercial autorisé | même URL | `react` seul | Accueil, sélection de produits |
+| Carousel | React Bits, https://reactbits.dev/components/carousel | MIT + Commons Clause, usage commercial autorisé | même URL | `react` ; icônes d'origine `@hugeicons/*` **remplacées** par `lucide-react` (ISC) | Fiche produit, visuels |
+| Socle | `@astrojs/react` **5.0.7** (et non 7.1.9, voir ci-dessous), `react` et `react-dom` 19.3.1, `@gsap/react` 2.1.2, `lucide-react` 1.72.0 ; `@types/react` et `@types/react-dom` 19.3.0 en dépendances de développement | MIT (lucide-react : ISC) | https://registry.npmjs.org/@astrojs/react/5.0.7 | `@vitejs/plugin-react` 5.2.0 (installé par `@astrojs/react`) | Toutes les pages qui ont un îlot |
+
+Mise en œuvre (`developpeur-web`, 2026-11-20) :
+- **Version de `@astrojs/react`** : 7.x et 6.x dépendent de Vite 8 (`@vitejs/plugin-react` 6, ou `vite` ^8 directement) et vont avec Astro 7. Avec Astro 6.4.8 et Vite 7.3.8 figés, la bonne version est **5.0.7** (`vite` ^7.3.2, même `@astrojs/internal-helpers` 0.10.0 qu'Astro 6.4.8). Build sans avertissement.
+- `astro.config.mjs` : `react({ include: ['**/components/animes/**'] })` ; `tsconfig.json` : `jsx: react-jsx`.
+- Îlots : `FondHeros`, `TitreHeros`, `PileProduits` (accueil) et `CarrouselVisuels` (fiche `/produits/<slug>/`, seulement à partir de 2 visuels). Leur rendu serveur est toujours la version statique ; l'animation n'est montée qu'après hydratation, si `html.js-anim` est présent et sans mouvement réduit (`components/animes/etat.ts`).
+- La pause de l'accueil est lue sur la classe `html.anim-pause` (MutationObserver), sans dépendre du module `scripts/etat-animation.ts`.
+- `PileProduits` reçoit les `CarteProduit` d'Astro en emplacements nommés `carte0` à `carte4` (noms fixes : Astro refuse un nom calculé).
+- Fiche produit : un script en ligne pose `html.js-visuels` ; avec JavaScript, seul le premier visuel est montré avant le montage du carrousel (place des commandes réservée) : décalage de mise en page mesuré à 0.
+
+Sources écartées :
+| Source | Licence lue | URL de preuve | Décision |
+|---|---|---|---|
+| Skiper UI (skiper-ui.com) | Aucune licence ouverte. Conditions d'utilisation : « All intellectual property rights are reserved », usage « for your own personal use », redistribution interdite. Composants « Premium » payants (129 $) | https://skiper-ui.com/docs/terms-of-service, https://skiper-ui.com/pricing | **Refusé** : pas d'usage commercial clairement autorisé |
+| Vengeance UI (vengenceui.com) | MIT, « Copyright (c) 2025-2026 Ashutoshx7 » | https://raw.githubusercontent.com/Ashutoshx7/VengenceUI/main/LICENSE | Licence acceptable, mais **aucun composant retenu** : prévu pour Next.js et Framer Motion (une dépendance de plus), et React Bits couvre déjà les 4 besoins |
+| React Bits Pro | Offre payante | https://github.com/DavidHDev/react-bits (README) | **Refusé** (payant) |

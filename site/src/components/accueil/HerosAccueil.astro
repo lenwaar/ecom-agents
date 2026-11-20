@@ -7,10 +7,15 @@
  * - Animations (scripts/accueil.ts) : entrée R1 / R2, rotation continue accélérée au défilement,
  *   parallaxe au pointeur (ordinateur), sortie liée au défilement, pause hors écran.
  * - Sans JavaScript ou sans animation : tout est visible, immobile.
+ * - V2-2 : fond animé Aurora (îlot FondHeros, ordinateur seulement, figé par le bouton pause) et titre
+ *   révélé ligne par ligne (îlot TitreHeros, SplitText). Les deux îlots sont en client:visible ; leur rendu
+ *   serveur est la version statique (fond CSS ci-dessous, titre d'un bloc).
  */
 import Truck from '@lucide/astro/icons/truck';
 import Bouton from '../ui/Bouton.astro';
 import Roue from './Roue.astro';
+import FondHeros from '../animes/FondHeros';
+import TitreHeros from '../animes/TitreHeros';
 import { premiereRoue, roueVoisine } from '../../lib/engrenages';
 import { getDelaisEnVente, getProduitsPublies } from '../../lib/donnees';
 import { getReglagesAccueil, textesRecit } from '../../lib/accueil';
@@ -39,6 +44,7 @@ const fond = premiereRoue(0, 0, 40, 12);
   class="heros grain relative -mt-14 flex min-h-[max(620px,100svh)] items-center overflow-hidden pt-14 md:-mt-16 md:pt-16"
 >
   <div data-halo class="halo pointer-events-none absolute inset-0" aria-hidden="true"></div>
+  <FondHeros client:visible />
 
   <div data-engrenages class="engrenages pointer-events-none absolute" aria-hidden="true">
     <svg viewBox="-60 -60 1020 1020" class="h-full w-full overflow-visible">
@@ -55,10 +61,12 @@ const fond = premiereRoue(0, 0, 40, 12);
   </div>
 
   <div data-texte-heros class="conteneur relative z-[1] py-16">
-    <h1 id="titre-heros" class="titre-serif ombre-texte mt-6 text-[52px] leading-[0.92] md:text-[clamp(54px,9.2vw,132px)]">
-      <span data-ligne class="block overflow-hidden pb-[0.06em]"><span class="block">La mécanique,</span></span>
-      <span data-ligne class="block overflow-hidden pb-[0.06em]"><span class="block"><em>pièce par pièce.</em></span></span>
-    </h1>
+    <TitreHeros
+      client:visible
+      ligne1="La mécanique,"
+      ligne2="pièce par pièce."
+      className="titre-serif mt-6 text-[52px] leading-[0.92] md:text-[clamp(54px,9.2vw,132px)]"
+    />
     <p class="ombre-texte mt-6 max-w-[460px] text-[16px] leading-[1.65] text-creme-secondaire" data-entree-bloc>{heros}</p>
     <div class="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap" data-entree-bloc>
       <Bouton registre="sombre" href="/maquettes/" class="aimant w-full sm:w-auto">Découvrir les maquettes</Bouton>
@@ -106,8 +114,21 @@ const fond = premiereRoue(0, 0, 40, 12);
     filter: blur(2px);
     opacity: 0.35;
   }
-  .ombre-texte {
+  .ombre-texte,
+  :global(#titre-heros) {
     text-shadow: 0 2px 30px rgba(10, 15, 26, 0.6);
+  }
+  /* Titre (îlot SplitText) : place pour les jambages dans les masques de ligne de GSAP. */
+  :global(#titre-heros > div) {
+    padding-bottom: 0.06em;
+  }
+  /* Attente du découpage : masqué seulement si l'animation va tourner ; jamais plus de 3 s (secours). */
+  :global(html.js-anim #titre-heros[data-split-attente]) {
+    visibility: hidden;
+    animation: secours-titre 0s linear 3s forwards;
+  }
+  @keyframes secours-titre {
+    to { visibility: visible; }
   }
   .indice-defiler i {
     width: 1px;
@@ -124,9 +145,6 @@ const fond = premiereRoue(0, 0, 40, 12);
     100% { transform: scaleY(0); transform-origin: bottom; }
   }
   /* États initiaux de l'entrée : seulement si l'animation va tourner (html.js-anim). */
-  :global(html.js-anim) [data-heros] [data-ligne] > span {
-    transform: translateY(110%);
-  }
   :global(html.js-anim) [data-heros] [data-entree-bloc] {
     opacity: 0;
     transform: translateY(20px);

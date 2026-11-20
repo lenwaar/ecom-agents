@@ -1,0 +1,114 @@
+{
+  "accueil-390": {
+    "fichiers": [
+      {
+        "fichier": "/_astro/Base.astro_astro_type_script_index_0_lang.BxvJq8Cl.js",
+        "brut": 595,
+        "gzip": 393
+      },
+      {
+        "fichier": "/_astro/Comparateur.astro_astro_type_script_index_0_lang.1xmniWoh.js",
+        "brut": 46,
+        "gzip": 66
+      },
+      {
+        "fichier": "/_astro/QuestionnaireAccueil.astro_astro_type_script_index_0_lang.Dvc_NfUl.js",
+        "brut": 7033,
+        "gzip": 2995
+      },
+      {
+        "fichier": "/_astro/ScrollTrigger.D_by9TBS.js",
+        "brut": 43652,
+        "gzip": 18103
+      },
+      {
+        "fichier": "/_astro/comparateur.CYjxA2Mv.js",
+        "brut": 1644,
+        "gzip": 747
+      },
+      {
+        "fichier": "/_astro/gsap.BmURElnN.js",
+        "brut": 70859,
+        "gzip": 27714
+      },
+      {
+        "fichier": "/_astro/index.astro_astro_type_script_index_0_lang.D5HlMWsZ.js",
+        "brut": 12317,
+        "gzip": 3784
+      },
+      {
+        "fichier": "/_astro/preload-helper.CVfkMyKi.js",
+        "brut": 1254,
+        "gzip": 704
+      }
+    ],
+    "total_brut": 137400,
+    "total_gzip": 54506
+  },
+  "accueil-1280": {
+    "fichiers": [
+      {
+        "fichier": "/_astro/Base.astro_astro_type_script_index_0_lang.BxvJq8Cl.js",
+        "brut": 595,
+        "gzip": 393
+      },
+      {
+        "fichier": "/_astro/Comparateur.astro_astro_type_script_index_0_lang.1xmniWoh.js",
+        "brut": 46,
+        "gzip": 66
+      },
+      {
+        "fichier": "/_astro/QuestionnaireAccueil.astro_astro_type_script_index_0_lang.Dvc_NfUl.js",
+        "brut": 7033,
+        "gzip": 2995
+      },
+      {
+        "fichier": "/_astro/ScrollTrigger.D_by9TBS.js",
+        "brut": 43652,
+        "gzip": 18103
+      },
+      {
+        "fichier": "/_astro/comparateur.CYjxA2Mv.js",
+        "brut": 1644,
+        "gzip": 747
+      },
+      {
+        "fichier": "/_astro/gsap.BmURElnN.js",
+        "brut": 70859,
+        "gzip": 27714
+      },
+      {
+        "fichier": "/_astro/index.astro_astro_type_script_index_0_lang.D5HlMWsZ.js",
+        "brut": 12317,
+        "gzip": 3784
+      },
+      {
+        "fichier": "/_astro/preload-helper.CVfkMyKi.js",
+        "brut": 1254,
+        "gzip": 704
+      }
+    ],
+    "total_brut": 137400,
+    "total_gzip": 54506
+  },
+  "produit-demo-390": {
+    "fichiers": [],
+    "total_brut": 0,
+    "total_gzip": 0
+  },
+  "produit-demo-1280": {
+    "fichiers": [],
+    "total_brut": 0,
+    "total_gzip": 0
+  },
+  "mentions-legales-390": {
+    "fichiers": [],
+    "total_brut": 0,
+    "total_gzip": 0
+  },
+  "mentions-legales-1280": {
+    "fichiers": [],
+    "total_brut": 0,
+    "total_gzip": 0
+  }
+}

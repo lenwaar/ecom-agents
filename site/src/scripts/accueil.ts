@@ -63,7 +63,7 @@ function animerHeros(gsap: Gsap, ScrollTrigger: ScrollTriggerType): (() => void)
   const texte = heros.querySelector<HTMLElement>('[data-texte-heros]')!;
   const halo = heros.querySelector<HTMLElement>('[data-halo]')!;
 
-  gsap.fromTo(heros.querySelectorAll('[data-ligne] > span'), { y: 0, yPercent: 110 }, { yPercent: 0, duration: 1.2, stagger: 0.12, delay: 0.15, ease: 'expo.out' });
+  // Titre : révélé par l'îlot TitreHeros (SplitText, V2-2), plus par ce script.
   gsap.fromTo(heros.querySelectorAll('[data-entree-bloc]'), { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, stagger: 0.1, delay: 0.5, ease: 'expo.out' });
   gsap.fromTo(heros.querySelector('[data-entree-roues]'), { opacity: 0, scale: 0.9, transformOrigin: '50% 50%' }, { opacity: 1, scale: 1, duration: 1.8, ease: 'expo.out' });
 

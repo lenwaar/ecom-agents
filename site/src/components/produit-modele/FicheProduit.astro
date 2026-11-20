@@ -15,6 +15,7 @@ import AValider from '../ui/AValider.astro';
 import ADefinir from './ADefinir.astro';
 import BlocGpsr from './BlocGpsr.astro';
 import Avis from './Avis.astro';
+import CarrouselVisuels from '../animes/CarrouselVisuels';
 import { SANS_OBJET, formatEuros, type ProduitModele } from '../../lib/produit-modele';
 
 interface Props {
@@ -39,22 +40,32 @@ const paiementPossible = !p.demo && p.paiement.actif && p.paiement.url !== null;
 
 <article class="conteneur pt-6 pb-20 md:pt-10">
   <div class="grid gap-8 lg:grid-cols-2 lg:gap-12">
-    <!-- Visuels -->
-    <div class="grid gap-4 lg:self-start">
-      {
-        p.visuels.map((v, i) => (
-          <img
-            src={v.src}
-            alt={v.alt}
-            width="800"
-            height="800"
-            loading={i === 0 ? 'eager' : 'lazy'}
-            decoding="async"
-            class="aspect-square w-full rounded-carte border border-bordure bg-encart object-cover"
-          />
-        ))
-      }
-    </div>
+    <!-- Visuels : carrousel (îlot client:visible, V2-2) dès 2 visuels ; rendu serveur et sans JS en colonne. -->
+    {
+      p.visuels.length >= 2 ? (
+        <Fragment>
+          {/* Avec JavaScript : seul le premier visuel est montré avant le montage du carrousel, place des
+              commandes réservée, pour éviter que le bloc Achat ne remonte (décalage de mise en page). */}
+          {/* Sécurité : si l'îlot ne s'est pas monté au bout de 4 s, tous les visuels réapparaissent. */}
+          <script is:inline>document.documentElement.classList.add('js-visuels');setTimeout(function(){if(document.querySelector('[data-visuels-statiques]'))document.documentElement.classList.remove('js-visuels')},4000)</script>
+          <CarrouselVisuels client:visible visuels={p.visuels} />
+        </Fragment>
+      ) : (
+        <div class="grid gap-4 lg:self-start">
+          {p.visuels.map((v, i) => (
+            <img
+              src={v.src}
+              alt={v.alt}
+              width="800"
+              height="800"
+              loading={i === 0 ? 'eager' : 'lazy'}
+              decoding="async"
+              class="aspect-square w-full rounded-carte border border-bordure bg-encart object-cover"
+            />
+          ))}
+        </div>
+      )
+    }
 
     <!-- Achat -->
     <div class="min-w-0 lg:sticky lg:top-24 lg:self-start">
@@ -159,3 +170,12 @@ const paiementPossible = !p.demo && p.paiement.actif && p.paiement.url !== null;
     <Avis slug={p.slug} demo={p.demo} />
   </div>
 </article>
+
+<style>
+  :global(html.js-visuels [data-visuels-statiques] img:not(:first-child)) {
+    display: none;
+  }
+  :global(html.js-visuels [data-visuels-statiques]) {
+    padding-bottom: 80px;
+  }
+</style>

@@ -244,7 +244,7 @@ Dépôt : https://github.com/Jakeschincariol/founder-skill (MIT, 11 skills : `/f
 - Livrable : `outputs/2026-11-20-founder-test-niches.md`. Verdict par idée, marge par commande, point mort, objections du panel. Préciser que le taux d'achat du panel est un maximum et non une prévision : ce sont des clients simulés.
 - Sert à trancher la question ouverte de la niche (décision finale : l'humain).
 
-### V2-2 · Composants animés premium pour le site (vidéo « 3 librairies ») · `à faire`
+### V2-2 · Composants animés premium pour le site (vidéo « 3 librairies ») · `fait` (4 composants React Bits en local ; audit conformite-qa À CORRIGER, 8 points corrigés)
 Sources : React Bits (reactbits.dev), Skiper UI (skiper-ui.com), Vengeance UI (vengenceui.com).
 - `architecte-web` : choisir au plus 5 composants qui servent la conversion (fond du héros, texte animé du titre, cartes empilées au scroll pour les produits, carrousel). Vérifier la licence de chaque composant et la noter dans `docs/site-technique.md`.
 - `developpeur-web` : ajouter l'intégration React d'Astro (`@astrojs/react`) en îlots `client:visible` uniquement sur ces composants. Respecter `prefers-reduced-motion`, sans emojis (règle de design existante). Le poids JS par page est noté dans le rapport.

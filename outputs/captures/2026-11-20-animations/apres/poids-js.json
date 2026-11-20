@@ -1,0 +1,174 @@
+{
+  "accueil-390": {
+    "fichiers": [
+      {
+        "fichier": "/_astro/Base.astro_astro_type_script_index_0_lang.BxvJq8Cl.js",
+        "brut": 595,
+        "gzip": 393
+      },
+      {
+        "fichier": "/_astro/Comparateur.astro_astro_type_script_index_0_lang.1xmniWoh.js",
+        "brut": 46,
+        "gzip": 66
+      },
+      {
+        "fichier": "/_astro/FondHeros.CXR9dpYC.js",
+        "brut": 12266,
+        "gzip": 5287
+      },
+      {
+        "fichier": "/_astro/QuestionnaireAccueil.astro_astro_type_script_index_0_lang.Dvc_NfUl.js",
+        "brut": 7033,
+        "gzip": 2995
+      },
+      {
+        "fichier": "/_astro/ScrollTrigger.D_by9TBS.js",
+        "brut": 43652,
+        "gzip": 18103
+      },
+      {
+        "fichier": "/_astro/TitreHeros.ygdPuMz9.js",
+        "brut": 14969,
+        "gzip": 6708
+      },
+      {
+        "fichier": "/_astro/client.CRcH24xP.js",
+        "brut": 214876,
+        "gzip": 66870
+      },
+      {
+        "fichier": "/_astro/comparateur.CYjxA2Mv.js",
+        "brut": 1644,
+        "gzip": 747
+      },
+      {
+        "fichier": "/_astro/etat.DAUXigkD.js",
+        "brut": 840,
+        "gzip": 382
+      },
+      {
+        "fichier": "/_astro/gsap.BmURElnN.js",
+        "brut": 70859,
+        "gzip": 27714
+      },
+      {
+        "fichier": "/_astro/index.BF06b7nT.js",
+        "brut": 7965,
+        "gzip": 3036
+      },
+      {
+        "fichier": "/_astro/index.astro_astro_type_script_index_0_lang.xmDGXB0X.js",
+        "brut": 11423,
+        "gzip": 3560
+      },
+      {
+        "fichier": "/_astro/jsx-runtime.u17CrQMm.js",
+        "brut": 479,
+        "gzip": 309
+      },
+      {
+        "fichier": "/_astro/preload-helper.CVfkMyKi.js",
+        "brut": 1254,
+        "gzip": 704
+      }
+    ],
+    "total_brut": 387901,
+    "total_gzip": 136874
+  },
+  "accueil-1280": {
+    "fichiers": [
+      {
+        "fichier": "/_astro/Base.astro_astro_type_script_index_0_lang.BxvJq8Cl.js",
+        "brut": 595,
+        "gzip": 393
+      },
+      {
+        "fichier": "/_astro/Comparateur.astro_astro_type_script_index_0_lang.1xmniWoh.js",
+        "brut": 46,
+        "gzip": 66
+      },
+      {
+        "fichier": "/_astro/FondHeros.CXR9dpYC.js",
+        "brut": 12266,
+        "gzip": 5287
+      },
+      {
+        "fichier": "/_astro/QuestionnaireAccueil.astro_astro_type_script_index_0_lang.Dvc_NfUl.js",
+        "brut": 7033,
+        "gzip": 2995
+      },
+      {
+        "fichier": "/_astro/ScrollTrigger.D_by9TBS.js",
+        "brut": 43652,
+        "gzip": 18103
+      },
+      {
+        "fichier": "/_astro/TitreHeros.ygdPuMz9.js",
+        "brut": 14969,
+        "gzip": 6708
+      },
+      {
+        "fichier": "/_astro/client.CRcH24xP.js",
+        "brut": 214876,
+        "gzip": 66870
+      },
+      {
+        "fichier": "/_astro/comparateur.CYjxA2Mv.js",
+        "brut": 1644,
+        "gzip": 747
+      },
+      {
+        "fichier": "/_astro/etat.DAUXigkD.js",
+        "brut": 840,
+        "gzip": 382
+      },
+      {
+        "fichier": "/_astro/gsap.BmURElnN.js",
+        "brut": 70859,
+        "gzip": 27714
+      },
+      {
+        "fichier": "/_astro/index.BF06b7nT.js",
+        "brut": 7965,
+        "gzip": 3036
+      },
+      {
+        "fichier": "/_astro/index.astro_astro_type_script_index_0_lang.xmDGXB0X.js",
+        "brut": 11423,
+        "gzip": 3560
+      },
+      {
+        "fichier": "/_astro/jsx-runtime.u17CrQMm.js",
+        "brut": 479,
+        "gzip": 309
+      },
+      {
+        "fichier": "/_astro/preload-helper.CVfkMyKi.js",
+        "brut": 1254,
+        "gzip": 704
+      }
+    ],
+    "total_brut": 387901,
+    "total_gzip": 136874
+  },
+  "produit-demo-390": {
+    "fichiers": [],
+    "total_brut": 0,
+    "total_gzip": 0
+  },
+  "produit-demo-1280": {
+    "fichiers": [],
+    "total_brut": 0,
+    "total_gzip": 0
+  },
+  "mentions-legales-390": {
+    "fichiers": [],
+    "total_brut": 0,
+    "total_gzip": 0
+  },
+  "mentions-legales-1280": {
+    "fichiers": [],
+    "total_brut": 0,
+    "total_gzip": 0
+  }
+}

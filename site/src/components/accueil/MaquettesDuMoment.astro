@@ -3,23 +3,25 @@
  * 6. Les maquettes du moment (§4.1.6, repris du prototype v2). Sélection ÉDITORIALE (accueil.yaml,
  * selection_du_moment), jamais « meilleures ventes » ni « populaires ».
  * - Cartes produit §4.0 (CarteProduit). Mobile 1 colonne, 2 dès 640 px, 4 dès 1024 px.
- * - Ordinateur avec animation (prototype v2) : rail horizontal épinglé qui défile avec la page,
- *   barre de progression ; la hauteur de la section est calculée par scripts/accueil.ts.
- * - Sans animation / sans JS : grille simple, tout visible.
+ * - V2-2 : avec animation, cartes empilées au défilement (îlot PileProduits, ScrollStack de React Bits,
+ *   client:visible), à toutes les largeurs ; au plus 5 cartes, le lien « Tout le catalogue » fait le reste.
+ * - Sans animation / sans JS / mouvement réduit : grille simple, tout visible (rendu serveur de l'îlot).
  */
 import ArrowRight from '@lucide/astro/icons/arrow-right';
 import CarteProduit from '../produit/CarteProduit.astro';
+import PileProduits from '../animes/PileProduits';
 import { getProduitsPublies } from '../../lib/donnees';
 import { getReglagesAccueil, produitParSlug } from '../../lib/accueil';
 
 const reglages = await getReglagesAccueil();
 const tous = await getProduitsPublies();
-const selection = reglages.selection_du_moment.map((slug) => produitParSlug(tous, slug, 'selection_du_moment'));
+const selection = reglages.selection_du_moment.map((slug) => produitParSlug(tous, slug, 'selection_du_moment')).slice(0, 5);
 const demo = selection.some((p) => p.data.demo);
+const tailles = '(min-width: 1024px) 340px, (min-width: 640px) 50vw, 100vw';
 ---
 
 <section data-moment aria-labelledby="titre-moment" class="moment relative">
-  <div class="epingle py-20 md:py-28">
+  <div class="py-20 md:py-28">
     <div class="conteneur flex flex-wrap items-end justify-between gap-6">
       <div>
         <p class="kicker text-laiton-fonce" data-revele="bloc">Sélection</p>
@@ -37,60 +39,15 @@ const demo = selection.some((p) => p.data.demo);
       </div>
     </div>
 
-    <div class="cadre-rail conteneur mt-10">
-      <ul data-moment-rail class="rail grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4" data-revele="cartes">
-        {
-          selection.map((produit) => (
-            <li class="carte-rail">
-              <CarteProduit produit={produit} sizes="(min-width: 1024px) 340px, (min-width: 640px) 50vw, 100vw" />
-            </li>
-          ))
-        }
-        <li class="fin-rail hidden" aria-hidden="true">
-          <a
-            href="/maquettes/"
-            tabindex="-1"
-            class="flex h-full min-h-[320px] flex-col justify-end rounded-carte bg-nuit p-6 text-creme transition-colors hover:bg-nuit-2"
-          >
-            <span class="titre-serif text-[34px] leading-none">Tout <em class="text-laiton">le catalogue.</em></span>
-            <ArrowRight size={22} stroke-width={1.75} class="mt-4" />
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="barre-rail conteneur mt-8 hidden" aria-hidden="true">
-      <span class="relative block h-[2px] overflow-hidden bg-bordure"><b data-moment-barre class="absolute inset-0 origin-left scale-x-0 bg-laiton-fonce"></b></span>
+    <div class="conteneur mt-10">
+      <PileProduits client:visible nombre={selection.length}>
+        {/* Emplacements nommés carte0 à carte4 (noms fixes : Astro n'accepte pas de nom calculé). */}
+        {selection[0] && <CarteProduit slot="carte0" produit={selection[0]} sizes={tailles} />}
+        {selection[1] && <CarteProduit slot="carte1" produit={selection[1]} sizes={tailles} />}
+        {selection[2] && <CarteProduit slot="carte2" produit={selection[2]} sizes={tailles} />}
+        {selection[3] && <CarteProduit slot="carte3" produit={selection[3]} sizes={tailles} />}
+        {selection[4] && <CarteProduit slot="carte4" produit={selection[4]} sizes={tailles} />}
+      </PileProduits>
     </div>
   </div>
 </section>
-
-<style>
-  /* Rail horizontal : ordinateur, avec animation, quand le script l'active (classe .horizontal). */
-  .moment.horizontal .epingle {
-    position: sticky;
-    top: 0;
-    height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    overflow: hidden;
-    padding-block: 72px 32px;
-  }
-  .moment.horizontal .cadre-rail {
-    max-width: none;
-    padding-right: 0;
-  }
-  .moment.horizontal .rail {
-    display: flex;
-    width: max-content;
-    will-change: transform;
-  }
-  .moment.horizontal .carte-rail,
-  .moment.horizontal .fin-rail {
-    display: block;
-    width: clamp(280px, 24vw, 330px);
-  }
-  .moment.horizontal .barre-rail {
-    display: block;
-  }
-</style>

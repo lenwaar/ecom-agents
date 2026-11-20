@@ -7,9 +7,8 @@ import { poserPosition } from './comparateur';
 const borne = (v: number) => Math.max(0, Math.min(1, v));
 const sortieExpo = (t: number) => (t === 1 ? 1 : 1 - Math.pow(2, -10 * t));
 
-export function animerSections(gsap: Gsap, ScrollTrigger: ScrollTriggerType): void {
-  // Les sections dont la hauteur change passent en premier (le rail horizontal), avant les autres déclencheurs.
-  maquettesDuMoment(gsap, ScrollTrigger);
+export function animerSections(gsap: Gsap, _ScrollTrigger: ScrollTriggerType): void {
+  // 6. Les maquettes du moment : cartes empilées par l'îlot PileProduits (ScrollStack, V2-2).
   recit(gsap);
   comparateur(gsap);
   eclate(gsap);
@@ -232,30 +231,6 @@ function collections(gsap: Gsap) {
       obs.observe(carte);
     }
   });
-}
-
-/** 6. Les maquettes du moment : rail horizontal épinglé (ordinateur, écran assez haut). */
-function maquettesDuMoment(gsap: Gsap, ScrollTrigger: ScrollTriggerType) {
-  const section = document.querySelector<HTMLElement>('[data-moment]');
-  const rail = section?.querySelector<HTMLElement>('[data-moment-rail]');
-  if (!section || !rail) return;
-  const ok = window.matchMedia('(min-width: 1024px)').matches && window.innerHeight >= 680;
-  if (!ok) return;
-  section.classList.add('horizontal');
-  rail.querySelector<HTMLElement>('.fin-rail')?.classList.remove('hidden');
-  const distance = () => Math.max(0, rail.scrollWidth - (rail.parentElement?.clientWidth ?? window.innerWidth) + 48);
-  const hauteur = () => {
-    section.style.height = `${window.innerHeight + distance()}px`;
-  };
-  hauteur();
-  ScrollTrigger.addEventListener('refreshInit', hauteur);
-  gsap.to(rail, {
-    x: () => -distance(),
-    ease: 'none',
-    scrollTrigger: { trigger: section, start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true },
-  });
-  const barre = section.querySelector('[data-moment-barre]');
-  if (barre) gsap.to(barre, { scaleX: 1, ease: 'none', scrollTrigger: { trigger: section, start: 'top top', end: 'bottom bottom', scrub: 0.6 } });
 }
 
 /** 8. Échelle : segments qui se remplissent un à un (0,8 s, décalage 0,15 s), une fois à 80 %. */
