@@ -1,5 +1,12 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
+## 2026-11-20 · Synchro n°18 « fonctionnalités des vidéos 2 à 7 » : en cours
+
+Synchro transmise par l'humain, recopiée à la fin de `de-cowork.md` avec ses ajustements : pas de tickets GitHub, 6 vidéos, V2-6 optionnelle en dernier, V2-1 et V2-4 coupées en deux (installation maintenant, usage après redémarrage : V2-1b, V2-4b), V2-4b sans `/yt-viral`. T73 passée en `fait` (6 brouillons rendus le 2026-11-13), T74 reprise dans la clôture de cette synchro. V2-2 (conception), V2-3 et V2-5 lancées en parallèle (fichiers distincts) ; les agents ont été interrompus par la limite d'usage, puis relancés.
+
+### Suivi en direct
+- V2-1 et V2-4 `fait` : les 2 dépôts lus en entier hors du projet (README, 22 `SKILL.md`, 10 scripts). Scripts en Python, bibliothèque standard seule, **aucun appel réseau**, aucune clé API (aucune skill YouTube n'utilise l'API YouTube). Copie d'abord bloquée par le mode auto de Claude Code, faite après accord explicite de l'humain. Revue : `outputs/2026-11-20-claude-code-revue-skills-tiers.md`. Skills non lancées dans cette session (règle permanente).
+
 ## 2026-11-19 · Synchro n°17 « V1, admin de boutique (vidéo 1) » + V1 bis : fait
 
 Fusion avec `main` : la version V1 ci-dessous (commit 12896ab, route `/produit/`) est remplacée par celle-ci (route `/produits/`, V1 bis, modèle numérique), sur décision de l'humain le 2026-11-19 ; ses doublons de code sont supprimés, ses rapports restent dans `outputs/` pour l'historique.

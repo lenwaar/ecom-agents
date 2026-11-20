@@ -235,7 +235,7 @@ Règles pour toute la synchro :
 - Coût : 0 €. Pas d'abonnement, pas de clé API payante.
 - Une ligne dans `coordination/vers-cowork.md` après chaque tâche. Un commit par tâche.
 
-### V2-1 · Tester l'entreprise avant de lancer (vidéo « Founder skill ») · `à faire`
+### V2-1 · Tester l'entreprise avant de lancer (vidéo « Founder skill ») · `fait` (11 skills dans .claude/skills/, revue : outputs/2026-11-20-claude-code-revue-skills-tiers.md)
 Dépôt : https://github.com/Jakeschincariol/founder-skill (MIT, 11 skills : `/founder-board`, `/founder-marketing`, `/founder-cfo`, `/founder-consumer` avec un panel de 100 acheteurs simulés, `/founder-plan`, etc.).
 - Installer dans `.claude/skills/` du projet (pas en global). Lire le README et chaque `SKILL.md` avant.
 
@@ -258,7 +258,7 @@ Principe : Recherche → Contenu → Publication → Boucle (quels posts rapport
 - « Suivi des revenus par post » (`data/posts.json`, hors Git comme `commandes.json`) qui relie un post à des commandes réelles. Vide au départ, exemples séparés comme pour `/boutique`.
 - Page du lundi (page du matin) : ajouter un bloc marketing (ce qui a marché, ce qui part ensuite).
 
-### V2-4 · Équipe YouTube / vidéos courtes : installation (vidéo « YouTube Agent Skill ») · `à faire`
+### V2-4 · Équipe YouTube / vidéos courtes : installation (vidéo « YouTube Agent Skill ») · `fait` (11 skills, aucune ne demande de clé API)
 Dépôt : https://github.com/Jakeschincariol/youtube-agent-skill (MIT, 11 skills : `/yt-script`, `/yt-package`, `/yt-edit`, `/yt-plan`, `/yt-viral`, `/yt-retention`, réponses aux commentaires…).
 - Installer dans `.claude/skills/` après lecture. Noter quelles skills ont besoin d'une clé API YouTube : celles-là restent inactives.
 
