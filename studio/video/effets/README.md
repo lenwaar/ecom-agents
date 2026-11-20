@@ -7,7 +7,7 @@ Chaque effet a un exemple de 3 s (composition `ex-<effet>` dans `src/Racine.tsx`
 | N° | Effet | Fichier | Exemple de 3 s | État |
 |---|---|---|---|---|
 | 1 | `accroche-texte` | `AccrocheTexte.tsx` | `ex-accroche-texte` | fait (T54) |
-| 2 | `sous-titres-mot-a-mot` | `SousTitres.tsx` | `ex-sous-titres-mot-a-mot` | fait (T54) |
+| 2 | `sous-titres-mot-a-mot` | `SousTitres.tsx` (Remotion) ; `sous_titres_mot_a_mot.py` (Python, sur un MP4 déjà rendu : transcription faster-whisper + rendu mot par mot + titre derrière le sujet) | `ex-sous-titres-mot-a-mot` ; exemple Python : `medias/apercus/montage-4-couches/` | fait (T54) ; version Python (V2-5) |
 | 3 | `orbite-produit` | `OrbiteProduit.tsx` + rendu `studio/orbite.js` | `ex-orbite-produit` | fait (T54) |
 | 4 | `projecteur` | (version simple dans `src/DeLaPlancheALObjet.tsx`, plan « Nuit ») | à faire | à faire |
 | 5 | `cartes-verre` | `CartesVerre.tsx` | `ex-cartes-verre` | fait (T54) |
@@ -48,3 +48,15 @@ npx remotion render src/index.ts DeLaPlancheALObjet .cache/rendus/v1.mp4 --publi
 npx remotion render src/index.ts DeLaPlancheALObjet .cache/rendus/v2.mp4 --public-dir=.cache/public --props=.cache/sous-titres/props-v2.json --muted
 sh outils/planche_a_objet_assembler.sh                  # assemblage ffmpeg + son à -14 LUFS (outils/normaliser_lufs.py), mesure finale
 ```
+
+## Sous-titres mot à mot en Python et montage « viral » en 4 couches (V2-5)
+Mode d'emploi complet en tête de `sous_titres_mot_a_mot.py` et de `outils/montage_viral_4_couches.py` (brief §2 bis).
+```
+cd studio/video
+py -m pip install --user -r requirements.txt     # ajoute Pillow (HPND)
+py effets/sous_titres_mot_a_mot.py transcrire <voix.wav> <mots.json> large-v3 <texte-valide.txt>
+py effets/sous_titres_mot_a_mot.py incruster <entree.mp4> <mots.json> <sortie.mp4> [y=1240] [taille=76]
+py outils/montage_viral_4_couches.py video     # 4 couches + son -14 LUFS + planche contact
+py outils/montage_viral_4_couches.py apercus   # couches 1 à 4 côte à côte
+```
+Le masquage « texte derrière le sujet » est une version simple (fond uni seulement), voir l'en-tête du fichier.

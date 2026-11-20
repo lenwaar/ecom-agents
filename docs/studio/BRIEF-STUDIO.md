@@ -25,6 +25,21 @@ Contrainte permanente : **aucun visage, aucune personne filmée**. Tout est tour
 | 8. Déclinaisons 1:1, 16:9, 4:5 | `studio-video` | fichiers |
 | 9. Publication | **l'humain** (ou Cowork sur son accord explicite) | |
 
+### 2 bis. Style de montage « viral » : l'étape 6 se monte en 4 couches (V2-5, synchro n°18)
+
+On monte couche par couche et on regarde une image clé après chacune ; une couche ne corrige jamais la précédente.
+
+| Couche | Contenu | Outil | Contrôle avant de passer à la suivante |
+|---|---|---|---|
+| 1. Brute | La prise seule : plans dans l'ordre du script, sans texte ni son ajouté (seule la mention légale est posée) | Remotion (composition sans sous-titres, `mention: ""`), ou la vidéo tournée | Rythme : un plan nouveau toutes les 1,5 à 3 s |
+| 2. B-roll + suivi + netteté | Plans de coupe courts (0,5 à 0,8 s) qui illustrent le mot dit ; recadrage qui suit le sujet (léger zoom, lissé, jamais saccadé) ; léger accentuage | `outils/montage_viral_4_couches.py` (images de `site/public/produits/`, `unsharp`) | Aucun bord du sujet coupé, aucun plan flou |
+| 3. Sous-titres mot à mot + masquage | Mots qui apparaissent un par un au moment où ils sont dits, mot actif en laiton ; un grand titre qui passe **derrière** le sujet | `effets/sous_titres_mot_a_mot.py` (faster-whisper, temps par mot, orthographe calée sur le texte validé) | Zone sûre, au moins 48 px, aucun doublon avec un titre déjà à l'écran, titre lisible malgré le sujet devant |
+| 4. Animations + effets sonores + musique | Coups de zoom sur les mots forts, transitions filées aux coupes (pas de noir), bruitages calés sur l'image, musique de fond 12 à 18 dB sous la voix | `outils/montage_viral_4_couches.py` + `outils/son.py` (sons fabriqués par le code) puis `outils/normaliser_lufs.py` | Son à -14 LUFS ± 1 mesuré sur le MP4 final, crête vraie sous -1 dBTP |
+
+- Masquage « derrière le sujet » : version **simple** en local (fond estimé sur les bords, distance de couleur, masque lissé). Elle marche sur fond uni (rendus 3D sur fond crème ou nuit) et rate sur fond chargé : choisir le plan en conséquence. Un vrai détourage par modèle de segmentation n'est pas installé (licence à vérifier par `veille-outils` d'abord).
+- Sons et musique : création interne par le code (CC0 de fait) ou source libre pour usage commercial notée dans `medias/licences.md` ; 0 € dépensé sans accord de l'humain.
+- Essais dans `medias/brouillons/` (hors Git), images clés et planche contact dans `medias/apercus/<nom>/`.
+
 ## 3. Les outils du studio
 
 Tout est dans `studio/video/` (le dossier `studio/` sert déjà aux rendus 3D).
@@ -70,6 +85,12 @@ Chaque effet est un composant réutilisable dans `studio/video/effets/`, avec un
 - [ ] **Aucun plan vide ou presque vide** (ni fond seul avant un logo, ni noir entre deux plans), sauf effet voulu de moins de 0,2 s ; la planche contact le vérifie.
 - [ ] **Cartes et textes nets et entiers** : rien de coupé par un bord (marge d'au moins 40 px), aucun texte flou une fois posé (déplacements au pixel entier, rotation nulle à l'arrêt), vérifié sur une image clé en taille réelle.
 - [ ] **Son à -14 LUFS ± 1** (intégré, mesuré sur le MP4 final avec `ebur128`), crête vraie sous -1 dBTP, valeurs notées dans le rapport.
+
+Montage « viral » en 4 couches (§2 bis), une case par couche :
+- [ ] **Couche 1, brute** : la prise seule tient debout (ordre des plans, rythme), la mention légale est posée dès cette couche et n'est jamais zoomée ni recadrée par les couches suivantes.
+- [ ] **Couche 2, b-roll + suivi + netteté** : chaque plan de coupe illustre le mot dit et dure 0,5 à 0,8 s ; le recadrage suit le sujet sans saccade et ne coupe ni le sujet ni une carte ; accentuage léger (pas de halo).
+- [ ] **Couche 3, sous-titres mot à mot + masquage** : les mots apparaissent au moment exact où ils sont dits (faster-whisper, orthographe du texte validé), aucun sous-titre en double d'un titre déjà à l'écran ; le texte placé derrière le sujet reste lisible (le sujet n'en cache qu'une partie).
+- [ ] **Couche 4, animations + sons + musique** : coups de zoom et transitions sur des courbes douces, aucun noir entre deux plans ; chaque bruitage et la musique ont une ligne dans `medias/licences.md` (création interne ou licence libre pour usage commercial) ; musique 12 à 18 dB sous la voix.
 
 ## 6. Photos d'ambiance (« shooting numérique »)
 

@@ -179,7 +179,7 @@ export const DeLaPlancheALObjet: React.FC<PropsPlanche> = ({mots, mention}) => {
 			</Sequence>
 			<Vignette />
 			<SousTitres mots={mots} masquerApres={P.fin[0] / 30} />
-			<Mention texte={mention} />
+			{mention ? <Mention texte={mention} /> : null /* mention vide : posée après coup (montage 4 couches) */}
 		</AbsoluteFill>
 	);
 };

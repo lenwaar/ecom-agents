@@ -267,7 +267,7 @@ Dépôt : https://github.com/Jakeschincariol/youtube-agent-skill (MIT, 11 skills
 - `/yt-viral` n'est pas branché dans cette synchro (la niche n'est pas choisie) : il le sera sur la veille concurrentielle une fois la niche décidée.
 - Livrable : `outputs/2026-11-20-studio-video-skills-youtube.md` avec un exemple de script et 5 accroches pour un produit de démonstration.
 
-### V2-5 · Style de montage « viral » dans le studio vidéo (vidéo « Style viral étape par étape ») · `à faire`
+### V2-5 · Style de montage « viral » dans le studio vidéo (vidéo « Style viral étape par étape ») · `fait` (rapport : outputs/2026-11-20-studio-video-montage-4-couches.md)
 Pas d'outil à installer. Montage en 4 couches : 1. Brute (la prise seule) ; 2. B-roll + suivi + netteté ; 3. Sous-titres mot à mot + masquage (texte derrière le sujet) ; 4. Animations + effets sonores + musique de fond.
 - `studio-video` : ajouter ces 4 couches comme étapes dans `docs/studio/BRIEF-STUDIO.md` et dans la grille de qualité §5. Créer un effet réutilisable « sous-titres mot à mot » dans `studio/video/effets/` (faster-whisper est déjà installé).
 - Rendre une version test sur `medias/de-la-planche-a-l-objet-9x16.mp4` avec les 4 couches, en gardant la mention « Produit de démonstration, non vendu ». Sons et musique : uniquement des sources libres, notées dans `medias/licences.md`.

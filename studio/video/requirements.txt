@@ -5,3 +5,5 @@ ctranslate2==4.9.0
 av==18.1.0
 # Piper (OHF-Voice/piper1-gpl, GPL-3.0) : seules les voix fr_FR-siwis-medium et fr_FR-mls-medium sont autorisées (CC BY 4.0, crédit obligatoire)
 piper-tts==1.8.0
+# Pillow (licence HPND, usage commercial libre) : rendu des sous-titres mot à mot en Python (effets/sous_titres_mot_a_mot.py)
+pillow==13.0.0
