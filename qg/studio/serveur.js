@@ -11,7 +11,7 @@
 //   STUDIO_COORDINATION  dossier surveillé pour savoir quand Cowork travaille (coordination/ par défaut)
 //   STUDIO_DE_COWORK  consignes de Cowork lues pour la synchro en cours (de-cowork.md du dossier de coordination par défaut)
 //   STUDIO_AGENTS   dossier des agents installés (.claude/agents/ par défaut)
-//   STUDIO_DATA     données de la boutique : commandes.json et modules.json (data/ par défaut)
+//   STUDIO_DATA     données de la boutique : commandes.json, modules.json, posts.json, file-marketing.json (data/ par défaut)
 "use strict";
 const http = require("node:http");
 const fs = require("node:fs");
@@ -22,6 +22,7 @@ const { listerAgents, lireLivrables, resumeLivrables } = require("./equipe.js");
 const { lireSynchro } = require("./synchro.js");
 const { lireEntreprise } = require("./entreprise.js");
 const { lireBoutique, lireModules } = require("./boutique.js");
+const marketing = require("./marketing.js");
 
 const HOTE = "127.0.0.1";
 const PORT = Number(process.env.STUDIO_PORT) || 4178;
@@ -256,6 +257,24 @@ const serveur = http.createServer((req, res) => {
   if (req.method === "GET" && url.pathname === "/api/etat") return json(res, 200, etat());
   if (req.method === "GET" && url.pathname === "/api/boutique") return json(res, 200, lireBoutique(DATA));
   if (req.method === "GET" && url.pathname === "/api/modules") return json(res, 200, lireModules(DATA));
+  // Boucle marketing (V2-3) : lecture seule, sauf la décision qui change un statut local. Aucun appel réseau sortant.
+  if (req.method === "GET" && url.pathname === "/api/marketing") return json(res, 200, { file: marketing.lireFile(DATA), posts: marketing.lirePosts(DATA) });
+  if (url.pathname === "/api/marketing/decision") {
+    if (req.method !== "POST") return json(res, 405, { erreur: "POST seulement." });
+    const origine = req.headers.origin;
+    if (origine !== ORIGINE && origine !== `http://localhost:${PORT}`) return json(res, 403, { erreur: "Origine refusée." });
+    if (!/^application\/json/.test(req.headers["content-type"] || "")) return json(res, 415, { erreur: "JSON attendu." });
+    let corps = "";
+    req.on("data", d => { corps += d; if (corps.length > 4096) req.destroy(); });
+    req.on("end", () => {
+      let donnees;
+      try { donnees = JSON.parse(corps); } catch { return json(res, 400, { erreur: "JSON invalide." }); }
+      let r;
+      try { r = marketing.decider(DATA, donnees && donnees.id, donnees && donnees.decision, dateDuJour()); } catch { r = { code: 500, erreur: "Écriture impossible." }; }
+      json(res, r.code, r);
+    });
+    return;
+  }
   if (url.pathname === "/api/valider") {
     if (req.method !== "POST") return json(res, 405, { erreur: "POST seulement." });
     const origine = req.headers.origin;
@@ -280,13 +299,14 @@ const serveur = http.createServer((req, res) => {
   if (url.pathname === "/studio" || url.pathname === "/studio/") return fichierStatique(req, res, PUBLIC, "studio.html");
   if (url.pathname === "/boutique" || url.pathname === "/boutique/") return fichierStatique(req, res, PUBLIC, "boutique.html");
   if (url.pathname === "/modules" || url.pathname === "/modules/") return fichierStatique(req, res, PUBLIC, "modules.html");
+  if (url.pathname === "/marketing" || url.pathname === "/marketing/") return fichierStatique(req, res, PUBLIC, "marketing.html");
   return fichierStatique(req, res, PUBLIC, url.pathname === "/" ? "index.html" : url.pathname.slice(1));
 });
 
 serveur.listen(PORT, HOTE, () => {
   console.log(`QG en direct : ${ORIGINE}/`);
   console.log(`Studio en direct : ${ORIGINE}/studio`);
-  console.log(`Boutique et modules : ${ORIGINE}/boutique, ${ORIGINE}/modules (données : ${DATA})`);
+  console.log(`Boutique, modules et marketing : ${ORIGINE}/boutique, ${ORIGINE}/modules, ${ORIGINE}/marketing (données : ${DATA})`);
   console.log(`Journal lu en continu : ${JOURNAL}`);
   console.log(`Livrables : ${OUTPUTS}`);
   console.log(`Coordination (Cowork) : ${COORDINATION}`);

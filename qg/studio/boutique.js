@@ -119,23 +119,24 @@ function hypotheses(p) {
   ];
 }
 
-// Lit et calcule. Ne lève jamais : un fichier absent ou invalide donne un état lisible.
-function lireBoutique(dossierData, p = parametres()) {
+// Lit data/commandes.json (repli sur commandes.vide.json) et sépare les lignes valides.
+// Ne lève jamais. Utilisée par lireBoutique et par marketing.js (revenus par post).
+function chargerCommandes(dossierData) {
   // data/commandes.json (vraies commandes) est hors de Git (.gitignore). S'il n'existe pas encore,
   // on lit le modèle vide versionné data/commandes.vide.json : 0 commande, aucun chiffre inventé.
   let fichier = path.join(dossierData, "commandes.json");
   if (!fs.existsSync(fichier) && fs.existsSync(path.join(dossierData, "commandes.vide.json"))) fichier = path.join(dossierData, "commandes.vide.json");
-  const base = { fichier: "data/" + path.basename(fichier), hypotheses: hypotheses(p), visiteurs: { valeur: null, note: "Aucune source de mesure" } };
+  const nomFichier = "data/" + path.basename(fichier);
   let texte;
   try { texte = fs.readFileSync(fichier, "utf8"); } catch {
-    return { ...base, etat: "absent", message: "Fichier data/commandes.json introuvable : aucun chiffre ne peut être affiché.", reel: totaux([], p), exemple: null, avertissements: [] };
+    return { fichier: nomFichier, etat: "absent", message: "Fichier data/commandes.json introuvable : aucun chiffre ne peut être affiché.", donnees: null, valides: [], avertissements: [] };
   }
   let donnees;
   try { donnees = JSON.parse(texte.replace(/^﻿/, "")); } catch (e) {
-    return { ...base, etat: "invalide", message: "Fichier data/commandes.json illisible (JSON invalide) : corrigez-le ou remettez le modèle vide.", reel: totaux([], p), exemple: null, avertissements: [] };
+    return { fichier: nomFichier, etat: "invalide", message: "Fichier data/commandes.json illisible (JSON invalide) : corrigez-le ou remettez le modèle vide.", donnees: null, valides: [], avertissements: [] };
   }
   if (!donnees || typeof donnees !== "object" || !Array.isArray(donnees.commandes)) {
-    return { ...base, etat: "invalide", message: "Fichier data/commandes.json mal formé : la liste « commandes » est absente.", reel: totaux([], p), exemple: null, avertissements: [] };
+    return { fichier: nomFichier, etat: "invalide", message: "Fichier data/commandes.json mal formé : la liste « commandes » est absente.", donnees: null, valides: [], avertissements: [] };
   }
   const avertissements = [];
   const valides = [];
@@ -147,8 +148,17 @@ function lireBoutique(dossierData, p = parametres()) {
     if (!estNombre(c.cout_produit) || !estNombre(c.cout_port)) avertissements.push(`Commande ${nom} : coût produit ou port absent, compté 0 € (À VÉRIFIER).`);
     valides.push(c);
   });
-  const reelles = valides.filter(c => c.exemple !== true);
-  const exemples = valides.filter(c => c.exemple === true);
+  return { fichier: nomFichier, etat: "ok", message: "", donnees, valides, avertissements };
+}
+
+// Lit et calcule. Ne lève jamais : un fichier absent ou invalide donne un état lisible.
+function lireBoutique(dossierData, p = parametres()) {
+  const ch = chargerCommandes(dossierData);
+  const base = { fichier: ch.fichier, hypotheses: hypotheses(p), visiteurs: { valeur: null, note: "Aucune source de mesure" } };
+  if (ch.etat !== "ok") return { ...base, etat: ch.etat, message: ch.message, reel: totaux([], p), exemple: null, avertissements: [] };
+  const donnees = ch.donnees;
+  const reelles = ch.valides.filter(c => c.exemple !== true);
+  const exemples = ch.valides.filter(c => c.exemple === true);
   return {
     ...base,
     etat: reelles.length ? "ok" : "vide",
@@ -157,7 +167,7 @@ function lireBoutique(dossierData, p = parametres()) {
     importe_le: typeof donnees.importe_le === "string" ? donnees.importe_le : null,
     reel: totaux(reelles, p),
     exemple: exemples.length ? totaux(exemples, p) : null,
-    avertissements
+    avertissements: ch.avertissements
   };
 }
 
@@ -187,5 +197,5 @@ function lireModules(dossierData) {
 module.exports = {
   STRIPE_TAUX, STRIPE_FIXE, STRIPE_TAUX_PRUDENT, STRIPE_FIXE_PRUDENT, COTISATIONS, COTISATIONS_VL,
   PROVISION_RETOURS, LIVRAISON_CLIENT_EN_PLUS, EMBALLAGE, ECO_PARTICIPATION,
-  parametres, margeNette, totaux, lireBoutique, lireModules
+  parametres, margeNette, totaux, chargerCommandes, lireBoutique, lireModules
 };

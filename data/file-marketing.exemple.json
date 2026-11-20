@@ -1,0 +1,7 @@
+{
+  "_note": "EXEMPLE FICTIF pour montrer le format de la file à valider. Jamais lu par le QG ni par la page du lundi. Ne pas copier dans file-marketing.json.",
+  "elements": [
+    { "id": "EXEMPLE-2099-01-01-tiktok-01", "type": "post", "plateforme": "TikTok", "titre": "EXEMPLE script court", "texte": "EXEMPLE : texte de la vidéo ou de la légende, tel qu'il serait publié.", "agent": "createur-contenu", "code": "M06", "livrable": null, "statut": "à-valider", "date_decision": null, "decide_par": null, "exemple": true },
+    { "id": "EXEMPLE-2099-01-01-lettre-01", "type": "e-mail", "plateforme": "E-mail", "titre": "EXEMPLE lettre d'information", "texte": "EXEMPLE : objet et corps de l'e-mail.", "agent": "crm-email", "code": "M16", "livrable": null, "statut": "à-valider", "date_decision": null, "decide_par": null, "exemple": true }
+  ]
+}

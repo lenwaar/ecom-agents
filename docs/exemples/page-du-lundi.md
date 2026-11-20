@@ -37,11 +37,24 @@ Période : du 2026-11-09 au 2026-11-16.
 
 - À compléter par le sous-agent `cerveau` (3 actions maximum, chacune liée à une fiche).
 
+## 5. Marketing
+
+### Ce qui a marché
+
+- TikTok · EXEMPLE vidéo du tableur Budget mensuel (`EXEMPLE-post-tiktok-01`) : 10,00 € TTC, 1 commande(s) payée(s)
+- Source : `data/posts.exemple.json` relié à `data/commandes.exemple.json` (commandes d'exemple seulement, aucun chiffre réel).
+
+### Ce qui part ensuite
+
+- En attente de votre décision : post TikTok « EXEMPLE script court » (M06)
+- En attente de votre décision : e-mail « EXEMPLE lettre d'information » (M16)
+- Décider : page `/marketing` du QG (`cd qg/studio && npm start`). Rien n'est publié ni envoyé automatiquement.
+
 ## Autres chiffres
 
 - Tickets résolus : 1
 - Factures payées : 0
-- Nouveaux prospects : 1
+- Nouveaux prospects : 0
 - Dépenses : 0,00 €
 
 Décider : `python tools/base.py valider <n°> oui|non`.

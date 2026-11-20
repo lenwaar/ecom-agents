@@ -32,3 +32,8 @@ data/commandes.json
 # Exports bruts (Stripe ou autre) : données personnelles, jamais dans Git (audit conformite-qa M7).
 data/*.csv
 data/imports/
+# Boucle marketing (V2-3) : posts reliés aux vraies commandes et décisions locales de l'humain, jamais dans Git.
+# Versionnés : data/posts.vide.json, data/file-marketing.vide.json (modèles vides lus par défaut)
+# et data/posts.exemple.json, data/file-marketing.exemple.json (formats fictifs, jamais lus).
+data/posts.json
+data/file-marketing.json

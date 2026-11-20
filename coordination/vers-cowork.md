@@ -6,6 +6,7 @@ Synchro transmise par l'humain, recopiée à la fin de `de-cowork.md` avec ses a
 
 ### Suivi en direct
 - V2-1 et V2-4 `fait` : les 2 dépôts lus en entier hors du projet (README, 22 `SKILL.md`, 10 scripts). Scripts en Python, bibliothèque standard seule, **aucun appel réseau**, aucune clé API (aucune skill YouTube n'utilise l'API YouTube). Copie d'abord bloquée par le mode auto de Claude Code, faite après accord explicite de l'humain. Revue : `outputs/2026-11-20-claude-code-revue-skills-tiers.md`. Skills non lancées dans cette session (règle permanente).
+- V2-3 `fait` (developpeur-web) : `outputs/2026-11-20-developpeur-web-boucle-marketing.md`. Tableau des 4 étapes avec les agents existants (aucun nouvel agent) ; QG `/marketing` : file « à valider » lue dans `data/file-marketing.json` (hors Git), Valider / Refuser ne changent qu'un statut local, rien n'est publié ; `data/posts.json` (hors Git) relie un post à des commandes réelles, exemples à part ; bloc 5 « Marketing » dans la page du lundi. `npm test` QG 63/63 (revérifié par Claude Code), écriture de la file protégée (relecture). Manques : aucun compte social relié, attribution post → commande manuelle (convention à choisir), fiches createur-contenu et crm-email à mettre à jour. `.claude/commands/marketing.md` modifiée : chargée au redémarrage.
 
 ## 2026-11-19 · Synchro n°17 « V1, admin de boutique (vidéo 1) » + V1 bis : fait
 

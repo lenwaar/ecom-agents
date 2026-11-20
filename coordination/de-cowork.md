@@ -251,7 +251,7 @@ Sources : React Bits (reactbits.dev), Skiper UI (skiper-ui.com), Vengeance UI (v
 - Tests : build OK, 0 lien cassé, captures 390 et 1280 px avant/après dans `outputs/captures/2026-11-20-animations/`.
 - `conformite-qa` : contrôle accessibilité (contraste, mouvement réduit, clavier).
 
-### V2-3 · Boucle marketing avec validation (vidéo « 36 agents, 0 employé ») · `à faire`
+### V2-3 · Boucle marketing avec validation (vidéo « 36 agents, 0 employé ») · `fait` (rapport : outputs/2026-11-20-developpeur-web-boucle-marketing.md)
 Principe : Recherche → Contenu → Publication → Boucle (quels posts rapportent), et rien ne sort sans l'accord de l'humain.
 - Partir de l'existant (`marketing/`, `/marketing`, département marketing des 137 agents). Ne pas recréer 36 agents : tableau de correspondance des 4 étapes avec les agents déjà présents, et liste des manques.
 - Page `/marketing` dans le QG : file « à valider » (posts, légendes, e-mails) avec boutons Valider / Refuser. Rien ne se publie automatiquement : la publication reste manuelle par l'humain tant qu'aucun compte n'est relié.

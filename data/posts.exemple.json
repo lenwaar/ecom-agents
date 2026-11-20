@@ -1,0 +1,9 @@
+{
+  "_note": "EXEMPLE FICTIF pour montrer le format. Valeurs inventées, jamais lues par le QG ni par la page du lundi, jamais additionnées aux vrais chiffres. Ne pas copier dans posts.json. Un vrai post ne cite que des identifiants de commandes réelles présents dans data/commandes.json.",
+  "source": "exemple",
+  "mis_a_jour": null,
+  "posts": [
+    { "id": "EXEMPLE-post-tiktok-01", "plateforme": "TikTok", "date": "2099-01-01", "sujet": "EXEMPLE vidéo du tableur Budget mensuel", "lien": null, "references_commandes": ["EXEMPLE-001"], "exemple": true },
+    { "id": "EXEMPLE-post-pinterest-01", "plateforme": "Pinterest", "date": "2099-01-02", "sujet": "EXEMPLE épingle Budget étudiant", "lien": null, "references_commandes": [], "exemple": true }
+  ]
+}

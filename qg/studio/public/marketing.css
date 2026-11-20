@@ -1,0 +1,21 @@
+/* Page Marketing du QG : complète qg.css et boutique.css (mêmes couleurs, mêmes polices locales). */
+.avis-publication { margin: 0; padding: 12px 14px; border: 1px solid var(--laiton); border-radius: 12px; color: var(--laiton-vif); font-size: 13.5px; line-height: 1.5; background: rgba(200,161,90,.08); }
+.file-marketing { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.element { background: var(--panneau-2); border: 1px solid var(--trait); border-radius: 12px; padding: 14px; display: grid; gap: 8px; }
+.element-tete { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.element-tete strong { font: 600 15px/1.3 var(--ui); color: var(--texte); }
+.element-texte { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13.5px; line-height: 1.55; color: var(--texte); }
+.element .doux, .doux { margin: 0; color: var(--doux); font-size: 12.5px; overflow-wrap: anywhere; }
+.badge.type { color: var(--doux); }
+.badge.valide { color: var(--vert); }
+.badge.refuse { color: var(--rouge); }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.bouton { border: 1px solid var(--trait); background: transparent; color: var(--texte); font: 600 13px/1 var(--ui); padding: 10px 14px; border-radius: 9px; cursor: pointer; min-height: 40px; }
+.bouton.valider { border-color: var(--vert); color: var(--vert); }
+.bouton.refuser { border-color: var(--rouge); color: var(--rouge); }
+.bouton:disabled { opacity: .5; cursor: wait; }
+.table-defile { overflow-x: auto; }
+.table-posts { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table-posts th, .table-posts td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--trait); vertical-align: top; }
+.table-posts th { color: var(--doux); font: 600 11px/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; }
+.bloc-exemple .table-posts td, .bloc-exemple .element-texte { color: var(--doux); }

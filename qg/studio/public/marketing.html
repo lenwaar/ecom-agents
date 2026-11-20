@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marketing · QG</title>
+<link rel="preload" href="polices/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="qg.css">
+<link rel="stylesheet" href="boutique.css">
+<link rel="stylesheet" href="marketing.css">
+<script src="marketing.js" defer></script>
+</head><body>
+
+<div class="page">
+  <header class="tete">
+    <div>
+      <h1>Marketing <em>boucle</em></h1>
+      <p>Recherche, contenu, publication, puis ce qui rapporte. Rien ne sort sans votre accord.</p>
+    </div>
+    <nav class="onglets" aria-label="Pages du tableau de bord"><a href="/">QG</a><a href="/studio">Studio</a><a href="/boutique">Boutique</a><a href="/modules">Modules</a><a href="/marketing" aria-current="page">Marketing</a></nav>
+  </header>
+
+  <p class="avis-publication" id="note-publication">Publication manuelle : aucun compte de réseau social ni outil d'envoi n'est relié. Valider ou Refuser change seulement un statut dans data/file-marketing.json sur cet ordinateur ; rien n'est publié ni envoyé. Vous publiez vous-même.</p>
+  <p class="message" id="message" role="status">Chargement…</p>
+
+  <section class="panneau" aria-labelledby="t-file">
+    <div class="etiq"><span id="t-file">À valider : posts, légendes, e-mails</span> <b id="source-file">—</b></div>
+    <p class="message" id="message-file"></p>
+    <ul class="file-marketing" id="file"></ul>
+  </section>
+
+  <section class="panneau" aria-labelledby="t-decides" id="bloc-decides" hidden>
+    <div class="etiq"><span id="t-decides">Déjà décidés</span></div>
+    <ul class="file-marketing" id="decides"></ul>
+  </section>
+
+  <section class="panneau" aria-labelledby="t-posts">
+    <div class="etiq"><span id="t-posts">Suivi des revenus par post</span> <b id="source-posts">—</b></div>
+    <p class="message" id="message-posts"></p>
+    <div class="table-defile"><table class="table-posts" id="table-posts" hidden>
+      <thead><tr><th scope="col">Post</th><th scope="col">Plateforme</th><th scope="col">Date</th><th scope="col">Commandes réelles</th><th scope="col">CA TTC</th><th scope="col">Marge nette</th></tr></thead>
+      <tbody id="posts"></tbody>
+    </table></div>
+    <p class="note-bas" id="total-posts"></p>
+  </section>
+
+  <section class="panneau bloc-exemple" id="bloc-exemple" aria-labelledby="t-exemple" hidden>
+    <div class="etiq"><span id="t-exemple"><span class="badge-exemple">exemple</span> Lignes d'exemple, jamais additionnées aux chiffres réels ni décidables</span></div>
+    <ul class="file-marketing" id="file-exemple"></ul>
+    <div class="table-defile"><table class="table-posts" id="table-posts-exemple" hidden>
+      <thead><tr><th scope="col">Post</th><th scope="col">Plateforme</th><th scope="col">Date</th><th scope="col">Commandes d'exemple</th><th scope="col">CA TTC</th><th scope="col">Marge nette</th></tr></thead>
+      <tbody id="posts-exemple"></tbody>
+    </table></div>
+  </section>
+
+  <section class="panneau" aria-labelledby="t-avert" id="bloc-avert" hidden>
+    <div class="etiq"><span id="t-avert">Lignes à vérifier</span></div>
+    <ul class="liste-texte" id="avertissements"></ul>
+  </section>
+
+  <p class="note-bas">Sources : data/file-marketing.json (file à valider) et data/posts.json (posts reliés à des références de commandes réelles de data/commandes.json). Ces trois fichiers restent sur cet ordinateur, hors de Git. Un revenu n'est affiché que s'il vient d'une commande réelle.</p>
+</div>
+
+</body></html>
