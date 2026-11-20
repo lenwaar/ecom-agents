@@ -1,6 +1,6 @@
 # Comptes rendus de Claude Code (le plus récent en haut)
 
-## 2026-11-20 · Synchro n°18 « fonctionnalités des vidéos 2 à 7 » : en cours
+## 2026-11-20 · Synchro n°18 « fonctionnalités des vidéos 2 à 7 » : fait (sauf V2-1b et V2-4b, après redémarrage)
 
 Synchro transmise par l'humain, recopiée à la fin de `de-cowork.md` avec ses ajustements : pas de tickets GitHub, 6 vidéos, V2-6 optionnelle en dernier, V2-1 et V2-4 coupées en deux (installation maintenant, usage après redémarrage : V2-1b, V2-4b), V2-4b sans `/yt-viral`. T73 passée en `fait` (6 brouillons rendus le 2026-11-13), T74 reprise dans la clôture de cette synchro. V2-2 (conception), V2-3 et V2-5 lancées en parallèle (fichiers distincts) ; les agents ont été interrompus par la limite d'usage, puis relancés.
 
@@ -9,6 +9,22 @@ Synchro transmise par l'humain, recopiée à la fin de `de-cowork.md` avec ses a
 - V2-3 `fait` (developpeur-web) : `outputs/2026-11-20-developpeur-web-boucle-marketing.md`. Tableau des 4 étapes avec les agents existants (aucun nouvel agent) ; QG `/marketing` : file « à valider » lue dans `data/file-marketing.json` (hors Git), Valider / Refuser ne changent qu'un statut local, rien n'est publié ; `data/posts.json` (hors Git) relie un post à des commandes réelles, exemples à part ; bloc 5 « Marketing » dans la page du lundi. `npm test` QG 63/63 (revérifié par Claude Code), écriture de la file protégée (relecture). Manques : aucun compte social relié, attribution post → commande manuelle (convention à choisir), fiches createur-contenu et crm-email à mettre à jour. `.claude/commands/marketing.md` modifiée : chargée au redémarrage.
 - V2-5 `fait` (studio-video) : `outputs/2026-11-20-studio-video-montage-4-couches.md`. 4 couches dans `docs/studio/BRIEF-STUDIO.md` (§2 bis et grille §5) ; effet `studio/video/effets/sous_titres_mot_a_mot.py` (faster-whisper, temps par mot, recalage sur le texte validé, mot actif en laiton, zone sûre) ; vidéo test 20 s 1080×1920 hors Git (`medias/brouillons/montage-4-couches/`), -14,3 LUFS mesuré sur le MP4 final, mention démo 36 px tout du long ; musique et bruitages générés par le code (0 €, notés dans `medias/licences.md`). Limites : masquage simple (fond uni seulement, pas un vrai détourage) ; prise brute re-rendue sans les anciens sous-titres ; « Rouage & Laiton » encore sur la carte de fin, donc non publiable. Relecture : erreurs de fichiers et de ffmpeg gérées (codes de sortie non nuls).
 - V2-2 `fait` (architecte-web, developpeur-web, conformite-qa). Spec `outputs/2026-11-20-architecte-web-composants-animes.md` : 4 composants React Bits (Aurora, SplitText, ScrollStack, Carousel), licence MIT + Commons Clause (usage dans le site autorisé, revente interdite) ; Skiper UI refusé (usage personnel, Premium payant) ; Vengeance UI (MIT) non retenu. Intégration `outputs/2026-11-20-developpeur-web-composants-animes.md` : `@astrojs/react` 5.0.7 (compatible Astro 6.4.8), îlots `client:visible` seulement, version statique en mouvement réduit, Pause du fond animé. JS de l'accueil : 54,5 Ko → 136,9 Ko compressés ; fiche à 1 visuel et pages légales : 0. Lighthouse mobile non mesuré. Audit `outputs/2026-11-20-conformite-qa-accessibilite-animations.md` : À CORRIGER, 0 bloquant ; les 8 points ont été traités (le 1,54:1 était une erreur de mesure, contraste réel ≥ 9,8:1). Build 0 lien cassé sur 3 512, tests site 15/15 (revérifiés par Claude Code). Captures `outputs/captures/2026-11-20-animations/`.
+- V2-6 `fait` (optionnel, en dernier) : `docs/jarvis.md` (installation par l'humain seulement, prérequis, preset `morning-digest`, Gmail/Agenda, ce qui sort du PC) et `tools/page_matin_texte.py` (page du lundi en texte brut, sans réseau, testé sur la vraie page et l'exemple, erreurs gérées). Constat : la voix de Jarvis passe par Cartesia ou OpenAI (clé API payante, texte envoyé en ligne), contraire à la règle 0 € : la doc propose la synthèse vocale de Windows, locale et gratuite. Aucun preset Windows documenté ; Python 3.14 non pris en charge par Jarvis.
+
+**Commits poussés** : ff69ae8 (synchro), 9d4fe5a (V2-1), 4077534 (V2-4), 656fc8a (V2-3), b741bcd (V2-5), ec3f754 (V2-2), puis V2-6 et la clôture. Vérificateur : 0 erreur, 1 avertissement ancien. Tests : QG 63/63, site 15/15, build 0 lien cassé.
+
+**Remarques pour toi (Cowork)**
+- Le site et la vidéo test portent encore l'ancienne niche (maquettes en bois, « Rouage & Laiton »), alors que `memo.md` dit tableurs numériques : signalé par conformite-qa et studio-video.
+- `tools/verifier_livrables.py` ne cherche pas les emojis dans les `.tsx` / `.jsx` (vérifié à la main cette fois) : extension proposée.
+- La limite d'usage a interrompu les agents deux fois ; ils ont été repris sans perte.
+
+### 🔔 ACTION HUMAINE
+1. **Redémarrer Claude Code** : les 22 skills (Founder, YouTube) et la commande `/marketing` modifiée ne sont chargées qu'au redémarrage. Ensuite : V2-1b (les 2 idées dans le pipeline Founder ; commencer par `/founder-consumer --quick`, 20 acheteurs, plutôt que 100 sous-agents) et V2-4b (`/yt-script` et `/yt-package` sur studio-video, sans `/yt-viral`).
+2. **Site (V2-2)** : `cd site && npm run build && npm run preview`. Décider : garder React sur l'accueil (+82 Ko compressés ; mesurer Lighthouse mobile, viser 90 ou plus) ; carrousel en React ou en CSS seul ; rendu des cartes empilées sur ordinateur.
+3. **Vidéo test (V2-5)** : regarder `medias/brouillons/montage-4-couches/de-la-planche-a-l-objet-viral-test-9x16.mp4` et dire si le style convient (sous-titres sans boîte, zooms, titre derrière le sujet).
+4. **QG (V2-3)** : `cd qg/studio && npm start`, puis http://127.0.0.1:4178/marketing. Choisir la convention d'attribution post → commande (lien UTM ou métadonnée Stripe).
+5. **Jarvis (V2-6, optionnel)** : lire `docs/jarvis.md` ; n'installer que si vous le voulez, vous-même. Pas de voix Cartesia ni OpenAI (payantes).
+6. Trancher la niche : site et vidéos montrent encore l'ancienne (maquettes en bois).
 
 ## 2026-11-19 · Synchro n°17 « V1, admin de boutique (vidéo 1) » + V1 bis : fait
 

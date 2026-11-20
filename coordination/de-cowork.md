@@ -272,10 +272,10 @@ Pas d'outil à installer. Montage en 4 couches : 1. Brute (la prise seule) ; 2. 
 - `studio-video` : ajouter ces 4 couches comme étapes dans `docs/studio/BRIEF-STUDIO.md` et dans la grille de qualité §5. Créer un effet réutilisable « sous-titres mot à mot » dans `studio/video/effets/` (faster-whisper est déjà installé).
 - Rendre une version test sur `medias/de-la-planche-a-l-objet-9x16.mp4` avec les 4 couches, en gardant la mention « Produit de démonstration, non vendu ». Sons et musique : uniquement des sources libres, notées dans `medias/licences.md`.
 
-### V2-6 · Briefing du matin vocal en local (vidéo « OpenJarvis ») · `à faire` (optionnel, en dernier)
+### V2-6 · Briefing du matin vocal en local (vidéo « OpenJarvis ») · `fait` (optionnel ; docs/jarvis.md et tools/page_matin_texte.py, rien d'installé)
 Projet : https://github.com/open-jarvis/OpenJarvis (Stanford, Apache 2.0, local, sans abonnement).
 - **Ne pas l'installer depuis Claude Code.** L'humain lance l'installateur lui-même s'il le veut (plusieurs Go, modèles locaux via Ollama).
 - Écrire `docs/jarvis.md` (installation, preset `morning-digest`, connexion Gmail/Agenda par OAuth faite par l'humain) et un petit script qui exporte la page du matin du QG en texte brut, pour que Jarvis puisse la lire à voix haute.
 
-### Fin de synchro · `à faire`
+### Fin de synchro · `fait`
 Vérificateur `py tools/verifier_livrables.py` à 0 erreur. Tests QG et site verts. Compte rendu dans `vers-cowork.md` avec une section 🔔 ACTION HUMAINE, puis demander à l'humain de redémarrer Claude Code pour V2-1b et V2-4b.
