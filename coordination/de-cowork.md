@@ -201,10 +201,10 @@ En parallèle quand c'est possible, une ligne dans `vers-cowork.md` après chaqu
 ### T72 · Messages à Robotime · `fait`
 `redacteur-catalogue` : brouillon de message à la boutique Robotime AliExpress et à Robotime Europe : accord pour le dropshipping et droit d'utiliser leurs photos et vidéos officielles dans nos pubs. Rien n'est envoyé.
 
-### T73 · Modèles de pub · `à faire`
+### T73 · Modèles de pub · `fait` (6 brouillons rendus le 2026-11-13)
 `createur-contenu` + `studio-video` : 3 modèles de pub (accroche, démonstration, avant/après) prêts à recevoir les médias officiels, rendus en brouillon avec des cadres vides marqués « média fournisseur ».
 
-### T74 · Clôture · `à faire`
+### T74 · Clôture · `fait` (reprise dans la clôture de la synchro n°18)
 Vérificateur, commit, push, compte rendu avec 🔔 ACTION HUMAINE.
 
 ## Règle permanente
@@ -221,3 +221,61 @@ Produit et fournisseur non décidés (Robotime refuse le dropshipping, minimum 1
 ### V1-3 · Route /boutique du QG (data/commandes.json, marge de tools/calcul_marge.py) · `fait`
 ### V1-4 · Page Modules (data/modules.json) · `fait`
 ### V1-5 · Contrôle conformite-qa et rapport outputs/2026-11-19-developpeur-web-video1-boutique.md · `fait`
+
+---
+
+## Synchro n°18 (2026-11-20, demandée par l'humain) : fonctionnalités des vidéos 2 à 7
+
+Contexte : la vidéo 1 (admin de boutique) est faite (synchro n°17) et la vidéo « 137 agents » aussi (synchro du 2026-11-14). Il reste 6 vidéos utiles. Une vidéo de la série n'a rien à installer : c'est un tutoriel de montage, repris en V2-5.
+Produit et niche toujours pas décidés : rien ne se met en ligne, rien n'est publié, rien n'est payé. Pas de tickets GitHub : tout le suivi se fait dans ce fichier et dans `vers-cowork.md`.
+
+Règles pour toute la synchro :
+- **Skills tiers** : avant d'installer un skill venu de GitHub, lire son `SKILL.md` et ses scripts en entier. Noter dans le rapport ce qu'ils exécutent et quels réseaux ils appellent. Refuser tout script qui envoie des données ailleurs sans que ce soit dit.
+- **Règle permanente** : un skill ou un agent installé ou modifié n'est pas lancé dans la même session. Terminer la synchro, puis demander à l'humain de redémarrer Claude Code. Les tâches marquées « après redémarrage » se font dans la session suivante.
+- Coût : 0 €. Pas d'abonnement, pas de clé API payante.
+- Une ligne dans `coordination/vers-cowork.md` après chaque tâche. Un commit par tâche.
+
+### V2-1 · Tester l'entreprise avant de lancer (vidéo « Founder skill ») · `à faire`
+Dépôt : https://github.com/Jakeschincariol/founder-skill (MIT, 11 skills : `/founder-board`, `/founder-marketing`, `/founder-cfo`, `/founder-consumer` avec un panel de 100 acheteurs simulés, `/founder-plan`, etc.).
+- Installer dans `.claude/skills/` du projet (pas en global). Lire le README et chaque `SKILL.md` avant.
+
+### V2-1b · Passage des 2 idées dans le pipeline Founder · `à faire (après redémarrage)`
+- Passer les 2 idées en concurrence dans le pipeline complet : (A) produits numériques (tableurs de budget en français) et (B) marque de tech fleece. Utiliser les chiffres réels de `knowledge/` et `tools/calcul_marge.py` (cotisations 21,2 % pour le numérique). Ne rien inventer : si un chiffre manque, écrire « À VÉRIFIER ».
+- Livrable : `outputs/2026-11-20-founder-test-niches.md`. Verdict par idée, marge par commande, point mort, objections du panel. Préciser que le taux d'achat du panel est un maximum et non une prévision : ce sont des clients simulés.
+- Sert à trancher la question ouverte de la niche (décision finale : l'humain).
+
+### V2-2 · Composants animés premium pour le site (vidéo « 3 librairies ») · `à faire`
+Sources : React Bits (reactbits.dev), Skiper UI (skiper-ui.com), Vengeance UI (vengenceui.com).
+- `architecte-web` : choisir au plus 5 composants qui servent la conversion (fond du héros, texte animé du titre, cartes empilées au scroll pour les produits, carrousel). Vérifier la licence de chaque composant et la noter dans `docs/site-technique.md`.
+- `developpeur-web` : ajouter l'intégration React d'Astro (`@astrojs/react`) en îlots `client:visible` uniquement sur ces composants. Respecter `prefers-reduced-motion`, sans emojis (règle de design existante). Le poids JS par page est noté dans le rapport.
+- Tests : build OK, 0 lien cassé, captures 390 et 1280 px avant/après dans `outputs/captures/2026-11-20-animations/`.
+- `conformite-qa` : contrôle accessibilité (contraste, mouvement réduit, clavier).
+
+### V2-3 · Boucle marketing avec validation (vidéo « 36 agents, 0 employé ») · `à faire`
+Principe : Recherche → Contenu → Publication → Boucle (quels posts rapportent), et rien ne sort sans l'accord de l'humain.
+- Partir de l'existant (`marketing/`, `/marketing`, département marketing des 137 agents). Ne pas recréer 36 agents : tableau de correspondance des 4 étapes avec les agents déjà présents, et liste des manques.
+- Page `/marketing` dans le QG : file « à valider » (posts, légendes, e-mails) avec boutons Valider / Refuser. Rien ne se publie automatiquement : la publication reste manuelle par l'humain tant qu'aucun compte n'est relié.
+- « Suivi des revenus par post » (`data/posts.json`, hors Git comme `commandes.json`) qui relie un post à des commandes réelles. Vide au départ, exemples séparés comme pour `/boutique`.
+- Page du lundi (page du matin) : ajouter un bloc marketing (ce qui a marché, ce qui part ensuite).
+
+### V2-4 · Équipe YouTube / vidéos courtes : installation (vidéo « YouTube Agent Skill ») · `à faire`
+Dépôt : https://github.com/Jakeschincariol/youtube-agent-skill (MIT, 11 skills : `/yt-script`, `/yt-package`, `/yt-edit`, `/yt-plan`, `/yt-viral`, `/yt-retention`, réponses aux commentaires…).
+- Installer dans `.claude/skills/` après lecture. Noter quelles skills ont besoin d'une clé API YouTube : celles-là restent inactives.
+
+### V2-4b · Branchement sur le studio vidéo, sans /yt-viral · `à faire (après redémarrage)`
+- Adapter au format de la boutique (vidéos courtes 9:16 TikTok / Instagram / Shorts, sans visage, produit seul). Brancher `/yt-script` et `/yt-package` (21 accroches, titres) sur l'agent `studio-video`.
+- `/yt-viral` n'est pas branché dans cette synchro (la niche n'est pas choisie) : il le sera sur la veille concurrentielle une fois la niche décidée.
+- Livrable : `outputs/2026-11-20-studio-video-skills-youtube.md` avec un exemple de script et 5 accroches pour un produit de démonstration.
+
+### V2-5 · Style de montage « viral » dans le studio vidéo (vidéo « Style viral étape par étape ») · `à faire`
+Pas d'outil à installer. Montage en 4 couches : 1. Brute (la prise seule) ; 2. B-roll + suivi + netteté ; 3. Sous-titres mot à mot + masquage (texte derrière le sujet) ; 4. Animations + effets sonores + musique de fond.
+- `studio-video` : ajouter ces 4 couches comme étapes dans `docs/studio/BRIEF-STUDIO.md` et dans la grille de qualité §5. Créer un effet réutilisable « sous-titres mot à mot » dans `studio/video/effets/` (faster-whisper est déjà installé).
+- Rendre une version test sur `medias/de-la-planche-a-l-objet-9x16.mp4` avec les 4 couches, en gardant la mention « Produit de démonstration, non vendu ». Sons et musique : uniquement des sources libres, notées dans `medias/licences.md`.
+
+### V2-6 · Briefing du matin vocal en local (vidéo « OpenJarvis ») · `à faire` (optionnel, en dernier)
+Projet : https://github.com/open-jarvis/OpenJarvis (Stanford, Apache 2.0, local, sans abonnement).
+- **Ne pas l'installer depuis Claude Code.** L'humain lance l'installateur lui-même s'il le veut (plusieurs Go, modèles locaux via Ollama).
+- Écrire `docs/jarvis.md` (installation, preset `morning-digest`, connexion Gmail/Agenda par OAuth faite par l'humain) et un petit script qui exporte la page du matin du QG en texte brut, pour que Jarvis puisse la lire à voix haute.
+
+### Fin de synchro · `à faire`
+Vérificateur `py tools/verifier_livrables.py` à 0 erreur. Tests QG et site verts. Compte rendu dans `vers-cowork.md` avec une section 🔔 ACTION HUMAINE, puis demander à l'humain de redémarrer Claude Code pour V2-1b et V2-4b.
